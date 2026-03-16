@@ -1,0 +1,511 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discom Topology</title>
+    <link rel="shortcut icon" href="{% static 'assets/img/favicons/aptransco-favicon.ico' %}" type="image/x-icon">
+
+    <!--Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'topologybootstrap/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'topologubootstrap/bs_css_icons/bs_icons.css' %}">
+
+    <!--Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/topology2/transco-styles.css' %}">
+     <link rel="stylesheet" href="{% static 'css/topology2.css' %}">
+    <link rel="stylesheet" href="{% static 'css/topology1.css' %}">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-1 shadow-sm py-0 sticky-top">
+
+        <div class="container-fluid font-sm">
+
+            <a href="#" class="navbar-brand">
+                <img class="img-fluid" src="{% static 'img/logo/multi-color-logo.png' %}" width="30" alt="APTRANSCO">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+
+                <ul id="topNav" class="navbar-nav me-auto mb-2 mb-md-0">
+
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{% url 'home' %}">Home</a>
+                    </li>
+
+
+<!--                     <li class="nav-item">-->
+<!--                        <a class="nav-link" href="#">Sub Station</a>-->
+<!--                    </li>-->
+
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'discoms' %}">Discom</a>
+                    </li>
+                    <li class="nav-item font-sm">
+                        <a class="nav-link" href="{% url 'reports' %}">Reports</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dataentry' %}">User Management</a>
+                    </li>
+                </ul>
+
+                <div class="ms-auto">
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                        <li class="nav-item me-2">
+                            <ul class="navbar-nav py-2 font-sm">
+                                <li class="nav-item">1086345</li>
+                                <li class="nav-item ms-1">S.Appa Rao,</li>
+                                <li class="nav-item ms-1">ACIDO/IT Apps,</li>
+                                <li class="nav-item ms-1">Vidyut Soudha/Vijayawada</li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropstart font-sm">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <img src="{% static 'img/uifaces/002_Elder.jpg' %}" alt="Profile Icon"
+                                    class="rounded rounded-pill img" width="20" height="20">
+                            </a>
+                            <ul class="dropdown-menu font-sm">
+
+                                <li><a class="dropdown-item fw-semibold" href="#">
+                                        <i class="bi bi-person-fill"></i>
+                                        Profile</a></li>
+
+                                <li><a class="dropdown-item fw-semibold" href="changepwd.html">
+                                        <i class="bi bi-gear-fill"></i>
+                                        Change Password</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item fw-semibold" href="login.html">
+                                        <i class="bi bi-box-arrow-right"></i>
+                                        Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <form action="" method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="row bg-light px-3 mt-1 rounded-3 shadow-sm">
+                    <div class="col-sm-12 border-success border-opacity-25">
+                        <div class="row">
+                            <label for="zone" class="col-1 col-form-label font-sm">Zone</label>
+                            <div class="col-sm-3">
+
+                               <select name="zone" id="zone" class="form-select" >
+                                                    <option value="-- Select Zone --">-- Select Zone --</option>
+                                                    {% for zone in zonedata %}
+                                                        <option value="{{ zone.zone_id }}" {% if zone.zone_id == data.zone %}selected{% endif %}>{{ zone.zone_name }}</option>
+                                                    {% endfor %}
+                                                </select>
+
+                            </div>
+
+                            <label for="circle" class="col-1 col-form-label font-sm">Circle</label>
+                            <div class="col-sm-3">
+                                <select  id="circle" name="circle" class="form-select" >
+                                                <option value="-- Select Circle --">-- Select Cirle --</option>
+                                                {% for circle in circldata %}
+                                                        <option value="{{ circle.circle_id }}" {% if circle.circle_id == data.circle %}selected{% endif %}>{{ circle.circle_name }}</option>
+                                                    {% endfor %}
+                                            </select>
+                            </div>
+
+
+                            <label for="div" class="col-1 col-form-label font-sm">Division</label>
+                            <div class="col-sm-3">
+                                <select  id="div" name="division" class="form-select" >
+                                                <option value="-- Select Division --">-- Select Division --</option>
+                                                {% for division in divdata %}
+                                                        <option value="{{ division.div_id }}" {% if division.div_id == data.division %}selected{% endif %}>{{ division.div_name }}</option>
+                                                    {% endfor %}
+                                            </select>
+                            </div>
+
+
+                                <label for="subdiv" class="col-1 col-form-label font-sm mt-2">Sub Division</label>
+                                <div class="col-sm-3 mt-2">
+                                    <select  id="subdiv" name="sub_div" class="form-select">
+                                                 <option value="-- Select Sub-Division --">-- Select Sub-Division --</option>
+                                                {% for sub_div in subdivdata %}
+                                                        <option value="{{ sub_div.subdiv_id }}" {% if sub_div.subdiv_id == data.sub_div %}selected{% endif %}>{{ sub_div.subdiv_name }}</option>
+                                                    {% endfor %}
+                                            </select>
+                                </div>
+
+
+                            <label for="gentype" class="col-1 col-form-label font-sm">Generation Type</label>
+                            <div class="col-sm-3 mt-2">
+                               <select name="gentype" id="gentype" class="form-select">
+                                   <option value="">Select...</option>
+                                   <option value="Wind">Wind</option>
+                                   <option value="Solar">Solar</option>
+                                   <option value="Bagasse">Bagasse</option>
+                                   <option value="Biomass">Biomass</option>
+                                   <option value="Mini Hydel">Mini Hydel</option>
+                                   <option value="Industrial Waste">Industrial Waste</option>
+                                   <option value="Municipal Waste">Municipal Waste</option>
+                               </select>
+                            </div>
+                            <label for="discom" class="col-1 col-form-label font-sm mt-2">Discom</label>
+                            <div class="col-sm-3 mt-2">
+                               <select name="discom" id="discom" class="form-select">
+                                   <option value="">Select...</option>
+                                   <option value="APSPDCL">APSPDCL</option>
+                                   <option value="APEPDCL">APEPDCL</option>
+                                   <option value="APCPDCL">APCPDCL</option>
+                                </select>
+                            </div>
+                             <label for="gencompany" class="col-1 col-form-label font-sm" style="padding-top:0px!important;">Generation Company</label>
+                            <div class="col-sm-3 mt-2">
+                               <input name="gencompany" id="gencompany" type="text" class="form-control">
+                            </div>
+                            <label class="col-1 col-form-label font-sm" style="padding-top:0px!important;">&nbsp;</label>
+                            <div class="col-sm-3 mt-2">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0" class="font-sm">
+                                      <tr>
+                                        <td><input class="form-check-input" type="radio"
+                                                name="conntype" id="conntypegrid" checked
+                                                value="Grid Connected"></td>
+                                        <td><label for="conntypegrid" class="form-label mt-1">Grid Connected</label></td>
+                                        <td><input class="form-check-input" type="radio"
+                                                name="conntype" id="conntypecaptive"
+                                                value="Capacity"></td>
+                                        <td><label for="conntypecaptive" class="form-label mt-1">Captive</label></td>
+                                      </tr>
+                                </table>
+                            </div>
+                            <div class="col-sm-4 mt-2">
+                                <div class="input-group">
+                                    <label class="input-group-text"><strong style="font-size: small;">Geo Location</strong></label>
+                                    <label for="lat" class="input-group-text font-sm">Lat</label>
+                                    <input type="text" name="lat" id="lat" class="form-control">
+                                    <label for="long" class="input-group-text font-sm">Long</label>
+                                    <input type="text" name="long" id="long" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="selectedFieldset" name="selectedFieldset" value="">
+            </div>
+        </div>
+        {{errmsg}}
+        {{msg}}
+        <div class="row mt-2">
+            <div class="col-sm-6" style="border-right:solid 1px #ccc;">
+                <div class="row" id="div1">
+                    <div class="col-sm-12"><strong>Discom</strong></div>
+                    <label for="dis_ssname" class="col-2 col-form-label font-sm" style="float:left;">SS Name</label>
+                    <div class="col-sm-4" style="float:left;">
+                        <input name="dis_ssname" id="dis_ssname" type="text" class="form-control mt-1">
+                    </div>
+                    <label for="dis_voltage" style="float:left;" class="col-2 col-form-label font-sm">Voltage</label>
+                    <div class="col-sm-4" style="float:left;">
+                        <select name="dis_voltage" id="dis_voltage" class="form-select">
+                            <option value="">Select...</option>
+                            <option value="11kv">11kv</option>
+                            <option value="33kv">33kv</option>
+                            <option value="132kv">132kv</option>
+                            <option value="220kv">220kv</option>
+                            <option value="400kv">400kv</option>
+                        </select>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <label for="dis_feedername" class="col-2 col-form-label font-sm mt-1" style="float:left;">Feeder Name</label>
+                    <div class="col-sm-4 mt-1" style="float:left;">
+                        <input type="text" name="dis_feedername" id="dis_feedername" class="form-control">
+
+                    </div>
+                    <div class="col-sm-6 mt-2" style="float:left;">
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="font-sm">
+                          <tr>
+                            <td><input class="form-check-input" type="radio"
+                                    name="dis_feedertype" id="feederdetail"
+                                    value="Detailed"></td>
+                            <td><label for="feederdetail" class="form-label mt-1">Detailed</label></td>
+                            <td><input class="form-check-input" type="radio"
+                                    name="dis_feedertype" id="feedermixed"
+                                    value="Mixed"></td>
+                            <td><label for="feedermixed" class="form-label mt-1">Mixed</label></td>
+                          </tr>
+                        </table>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <label for="dis_nounits" class="col-2 col-form-label font-sm mt-1" style="float:left;">No of Units</label>
+                    <div class="col-sm-4 mt-1" style="float:left;">
+                        <input type="text" id="dis_nounits" name="dis_nounits" class="form-control">
+                    </div>
+                    <label for="dis_unitcap" class="col-2 col-form-label font-sm mt-1" style="float:left;">Unit Capacity</label>
+                    <div class="col-sm-4 mt-2" style="float:left;">
+                        <input type="text" id="dis_unitcap" name="dis_unitcap" class="form-control">
+                    </div>
+                    <div style="clear:both"></div>
+                    <label for="dis_totalcap" class="col-2 col-form-label font-sm" style="float:left;">Total Capacity</label>
+                    <div class="col-sm-4" style="float:left;">
+                        <input type="text" id="dis_totalcap" name="dis_totalcap" class="form-control">
+                    </div>
+                    <div style="clear:both;"></div>
+                    <div class="col-sm-12 mt-2"><strong>Transco</strong></div>
+                    <label for="trans_ssname" class="col-2 col-form-label font-sm mt-1" style="float:left;">Station Name</label>
+                    <div class="col-sm-4 mt-1" style="float:left;">
+                        <select name="trans_ssname" id="trans_ssname" class="form-select" onchange="trans_ss_details(this)">
+                            <option value="0">Select...</option>
+                            {% for data in ssdata %}
+                            {% if data.1 == formdict.substation %}
+                            <option selected value="{{data.1}}">{{data.0}}</option>
+                            {% else %}
+                            <option value="{{data.1}}">{{data.0}}</option>
+                            {% endif %}
+                            {% endfor %}
+                       </select>
+                    </div>
+                    <label for="trans_voltage" class="col-2 col-form-label font-sm" style="float:left;">Voltage</label>
+                    <div class="col-sm-4" style="float:left;">
+                        <select name="trans_voltage" id="trans_voltage" class="form-select" onchange="trans_busno()">
+                            <option value="0">Select...</option>
+                        </select>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <label for="busid" class="col-2 col-form-label font-sm" style="float:left;">Bus ID</label>
+                    <div class="col-sm-4 mt-2" style="float:left;">
+                        <select name="busid" id="busid" class="form-select" onchange="trans_busname(this)">
+                          <option value="0">Select...</option>
+                        </select>
+                    </div>
+                    <label for="busname" class="col-2 col-form-label font-sm mt-1" style="float:left;">Bus Name</label>
+                    <div class="col-sm-4 mt-2" style="float:left;">
+                        <input type="text" name="busname" id="busname" class="form-control" disabled>
+                    </div>
+                    <label for="trans_feeder" class="col-2 col-form-label font-sm mt-1" style="float:left;">Feeder</label>
+                    <div class="col-sm-4 mt-2" style="float:left;">
+                        <select name="trans_feeder" id="trans_feeder" class="form-select">
+                          <option value="0">Select...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row" id="div2" style="display:none;">
+                    <div class="col-sm-12"><strong>Captive</strong></div>
+                    <label for="cap_ssname" class="col-2 col-form-label font-sm mt-1" style="float:left;">Discom Name</label>
+                    <div class="col-sm-4 mt-2" style="float:left;">
+                        <input type="text" name="cap_ssname" id="cap_ssname" class="form-control">
+                    </div>
+                    <label for="cap_feedername" class="col-2 col-form-label font-sm mt-1" style="float:left;">Feeder Name</label>
+                    <div class="col-sm-4 mt-2" style="float:left;">
+                        <input type="text" name="cap_feedername" id="cap_feedername" class="form-control">
+                    </div>
+                    <div style="clear:both;"></div>
+                    <label for="cap_voltage" class="col-2 col-form-label font-sm mt-1" style="float:left;">Voltage</label>
+                    <div class="col-sm-4 mt-2" style="float:left;">
+                        <select name="cap_voltage" id="cap_voltage" class="form-select">
+                            <option value="0">Select...</option>
+                            <option value="11kv">11kv</option>
+                            <option value="33kv">33kv</option>
+                            <option value="132kv">132kv</option>
+                            <option value="220kv">220kv</option>
+                            <option value="400kv">400kv</option>
+                        </select>
+                    </div>
+                    <label for="cap_nounits" class="col-2 col-form-label font-sm mt-1" style="float:left;">Units</label>
+                    <div class="col-sm-4 mt-2" style="float:left;">
+                        <input type="text" name="cap_nounits" id="cap_nounits" class="form-control">
+                    </div>
+                    <div style="clear:both"></div>
+                    <label for="cap_unitcapacity" class="col-2 col-form-label font-sm mt-1" style="float:left;">Unit Capacity</label>
+                    <div class="col-sm-4 mt-2" style="float:left;">
+                        <input type="text" id="cap_unitcapacity" name="cap_unitcapacity" class="form-control">
+                    </div>
+                    <label for="cap_totalcapacity" class="col-2 col-form-label font-sm mt-1" style="float:left;">Total</label>
+                    <div class="col-sm-4 mt-2" style="float:left;">
+                        <input type="text" id="cap_totalcapacity" name="cap_totalcapacity" class="form-control">
+                    </div>
+                    <div style="clear:both;"></div>
+                    <label for="cap_connvoltage" class="col-2 col-form-label font-sm mt-1" style="float:left;">Connected Voltage</label>
+                    <div class="col-sm-4 mt-2" style="float:left;">
+                        <select name="cap_connvoltage" id="cap_connvoltage" class="form-select">
+                            <option value="0">Select...</option>
+                            <option value="11kv">11kv</option>
+                            <option value="33kv">33kv</option>
+                            <option value="132kv">132kv</option>
+                            <option value="220kv">220kv</option>
+                            <option value="400kv">400kv</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row" style="float:right;margin:0.5rem!important">
+                    <button type="submit" class="mt-2 btn btn-sm btn-primary float-end btn-custom-primary fw-semibold" type="button">Save <i class="bi bi-save-fill"></i></button>
+                </div>
+            </div>
+        </div>
+        </form>
+        <div class="row mt-2">
+            <div class="col-sm-12">
+                <h2>Grid connected Generators</h2>
+                <div class="table-responsive" style="height:300px; overflow:scroll!important;">
+                    <table class="table table-bordered table-sm font-sm">
+                        <thead>
+                            <tr>
+                                <th>S No</th>
+                                <th>Generator Type</th>
+                                <th>Discom</th>
+                                <th>Generator Company</th>
+                                <th>Latitude</th>
+                                <th>Longitude</th>
+                                <th>Discom Name</th>
+                                <th>Connected voltage</th>
+                                <th>Feeder Name</th>
+                                <th>Feeder Type</th>
+                                <th>No of Units</th>
+                                <th>Unit Capacity</th>
+                                <th>Staion Name</th>
+                                <th>Transco Voltage</th>
+                                <th>Bus ID</th>
+                                <th>Bus name</th>
+                                <th>Feeder</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for grid in gridlist %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td>{{grid.0}}</td>
+                                <td>{{grid.1}}</td>
+                                <td>{{grid.2}}</td>
+                                <td>{{grid.3}}</td>
+                                <td>{{grid.4}}</td>
+                                <td>{{grid.5}}</td>
+                                <td>{{grid.6}}</td>
+                                <td>{{grid.7}}</td>
+                                <td>{{grid.8}}</td>
+                                <td>{{grid.9}}</td>
+                                <td>{{grid.10}}</td>
+                                <td>{{grid.11}}</td>
+                                <td>{{grid.12}}</td>
+                                <td>{{grid.13}}</td>
+                                <td>{{grid.14}}</td>
+                                <td>{{grid.15}}</td>
+                                <td class="text-center"><button class="btn p-0 font-sm"><i class="bi bi-pencil-fill"></i></button></td>
+                                <td class="text-center"><button class="btn p-0 font-sm"><i class="bi bi-trash-fill"></i></button></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <h2>Captive connected Generators</h2>
+                <div class="table-responsive" style="height:300px; overflow:scroll!important;">
+                    <table class="table table-bordered table-sm font-sm">
+                        <thead>
+                            <tr>
+                                <th>S No</th>
+                                <th>Generator Type</th>
+                                <th>Generator Company</th>
+                                <th>Latitude</th>
+                                <th>Longitude</th>
+                                <th>Discom Name</th>
+                                <th>Voltage</th>
+                                <th>Feeder</th>
+                                <th>No of Units</th>
+                                <th>Unit Capacity</th>
+                                <th>Connected Voltage</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for captive in captivelist %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td>{{captive.0}}</td>
+                                <td>{{captive.1}}</td>
+                                <td>{{captive.2}}</td>
+                                <td>{{captive.3}}</td>
+                                <td>{{captive.4}}</td>
+                                <td>{{captive.5}}</td>
+                                <td>{{captive.6}}</td>
+                                <td>{{captive.7}}</td>
+                                <td>{{captive.8}}</td>
+                                <td>{{captive.9}}</td>
+                                <td class="text-center"><button class="btn p-0 font-sm"><i class="bi bi-pencil-fill"></i></button></td>
+                                <td class="text-center"><button class="btn p-0 font-sm"><i class="bi bi-trash-fill"></i></button></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="../static/topologybootstrap/js/bootstrap.bundle.js"></script>
+    <script src="{% static 'js/discom.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+ <script type="text/javascript">
+        $(document).ready(function() {
+            $('#zone').change(function() {
+                var zone_id = $(this).val();
+                $.ajax({
+                    url: '/get_circles/' + zone_id + '/',
+                    success: function(data) {
+                        $('#circle').empty();
+                        $('#circle').append('<option value="">Select Circle</option>');
+                        $.each(data, function(i, item) {
+                            $('#circle').append('<option value="'+item.circle_id+'">'+item.circle_name+'</option>');
+                        });
+                        $('#div').empty().append('<option value="">-- Select Division --</option>');
+                        $('#subdiv').empty().append('<option value="">-- Select Sub-Division --</option>');
+                    }
+                });
+            });
+
+            $('#circle').change(function() {
+                var circle_id = $(this).val();
+                $.ajax({
+                    url: '/get_div/' + circle_id + '/',
+                    success: function(data) {
+                        $('#div').empty();
+                        $('#div').append('<option value="">Select Division</option>');
+                        $.each(data, function(i, item) {
+                            $('#div').append('<option value="'+item.div_id+'">'+item.div_name+'</option>');
+                        });
+                        $('#subdiv').empty().append('<option value="">-- Select Sub-Division --</option>');
+                    }
+                });
+            });
+
+            $('#div').change(function() {
+                var div_id = $(this).val();
+                $.ajax({
+                    url: '/get_subdiv/' + div_id + '/',
+                    success: function(data) {
+                        $('#subdiv').empty();
+                        $('#subdiv').append('<option value="">Select Sub-Division</option>');
+                        $.each(data, function(i, item) {
+                            $('#subdiv').append('<option value="'+item.subdiv_id+'">'+item.subdiv_name+'</option>');
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,450 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modified topology</title>
+    <link rel="shortcut icon" href="{% static 'img/favicons/aptransco-favicon.ico' %}" type="image/x-icon">
+
+    <!--Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'topologybootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'topologybootstrap/bs_css_icons/bs_icons.css' %}">
+
+    <!--Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/transco-styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-1 shadow-sm py-0 sticky-top">
+
+        <div class="container-fluid font-sm">
+
+            <a href="#" class="navbar-brand">
+                <img class="img-fluid" src="{% static 'img/logo/multi-color-logo.png' %}" width="30" alt="APTRANSCO">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+
+                <ul id="topNav" class="navbar-nav me-auto mb-2 mb-md-0">
+
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    </li>
+                    <!--                    <li class="nav-item">-->
+                    <!--                        <a class="nav-link" href="#">Sub Station</a>-->
+                    <!--                1    </li>-->
+                    <li class="nav-item">
+                        <a class="nav-link" href="#discoms">Discom</a>
+                    </li>
+                    <li class="nav-item font-sm">
+                        <a class="nav-link" href="#reports">Reports</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#usermngt">User Management</a>
+                    </li>
+                </ul>
+
+                <div class="ms-auto">
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                        <li class="nav-item me-2">
+                            <ul class="navbar-nav py-2 font-sm">
+                                <li class="nav-item">1086345</li>
+                                <li class="nav-item ms-1">S.Appa Rao,</li>
+                                <li class="nav-item ms-1">ACIDO/IT Apps,</li>
+                                <li class="nav-item ms-1">Vidyut Soudha/Vijayawada</li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropstart font-sm">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="{% static 'img/uifaces/002_Elder.jpg' %}" alt="Profile Icon" class="rounded rounded-pill img" width="20" height="20">
+                            </a>
+                            <ul class="dropdown-menu font-sm">
+
+                                <li>
+                                    <a class="dropdown-item fw-semibold" href="#">
+                                        <i class="bi bi-person-fill"></i>
+                                        Profile
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item fw-semibold" href="changepwd.html">
+                                        <i class="bi bi-gear-fill"></i>
+                                        Change Password
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item fw-semibold" href="login.html">
+                                        <i class="bi bi-box-arrow-right"></i>
+                                        Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </nav>
+
+    <div class="container-fluid mt-2">
+        <div class="row">
+            <form method="post" action="{% url 'deletion' %}" enctype="multipart/form-data">  {% csrf_token %}
+              <div id="view-form" aria-labelledby="first-tab" class="row tab-pane fade show active">
+                <div class="col-sm-12">
+                    <div class="row bg-light px-3 mt-1 rounded-3 shadow-sm">
+                        <div class="col-sm-6 border-end border-success border-opacity-25">
+                            <div class="table-resposive">
+                                <table class="mb-0 table table-sm font-sm table-borderless">
+                                    <tbody>
+                                        <tr>
+
+                                            <th><label  class="">StationName</label></th>
+                                            <td>
+                                                <input type="text" name="stn_name" class="form-control" id="stn_name" value="{{data.stn_name}}">
+                                                <button class="btn btn-sm btn-primary float-end btn-custom-primary fw-semibold" type="submit" id="Viewfindbutton" name="find"  style="display:block">Find </button>
+                                            </td>
+
+                                        </tr>
+
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+              </div>
+            </form>
+        </div>
+    </div>
+
+            <div class="col-12">
+                <ul class="nav border-bottom-0 nav-tabs button-tabs" id="myTab" role="tablist">
+                    <!-- <li class="nav-item" role="presentation">
+                         <button class="nav-link active" id="home-tab" data-bs-toggle="tab"
+                             data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane"
+                             aria-selected="true">Bus</button>
+                     </li>-->
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="lines-tab" data-bs-toggle="tab" data-bs-target="#lines-tab-pane" type="button" role="tab" aria-controls="lines-tab-pane" aria-selected="true">
+                            Lines
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab"
+                                data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane"
+                                aria-selected="false" tabindex="-1">
+                            Transformers
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="contact-tab" data-bs-toggle="tab"
+                                data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane"
+                                aria-selected="false" tabindex="-1">
+                            Reactor
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="cptrBanks-tab" data-bs-toggle="tab" data-bs-target="#cptrBanks-tab-pane" type="button" role="tab" aria-controls="cptrBanks-tab-pane" aria-selected="true">
+                            Capacitors
+                        </button>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="bulkloads-tab" data-bs-toggle="tab" data-bs-target="#bulkloads-tab-pane" type="button" role="tab" aria-controls="bulkloads-tab-pane" aria-selected="true">
+                            Bulk Loads
+                        </button>
+                    </li>
+
+
+                </ul>
+                <div class="tab-content rounded-bottom" id="myTabContent">
+                 
+                    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab"
+                         tabindex="0">
+                        <div class="row">
+                            <div class="col-sm-12 bg-light">
+                                <div class="table-responsive mt-3">
+                                    <table class="table table-bordered table-sm font-sm">
+                                        <thead class="text-center align-middle">
+                                            <tr>
+                                                <th>SNo</th>
+                                                <th>Transformer Type</th>
+                                                <th>VoltageRatio </th>
+                                                <th>Primary BusNumber</th>
+                                                <th>Primary BusName</th>
+                                                <th>Secondary BusNumber</th>
+                                                <th>Secondary BusName</th>
+                                                <th>Transformer Title</th>
+                                                <th>Transformer Capacity(MVA)</th>
+                                                <th>Transformer ID</th>
+                                                <th>Specs</th>
+                                                <th>Transformer Commission Date</th>
+                                                <th>Delete</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody  class="text-center">
+                                             {% for tdata in trfdata %}
+                                                                <tr >
+                                                                    <td>{{forloop.counter}}</td>
+                                                                    <td>{{tdata.trf_type}}</td>
+                                                                    <td>{{tdata.prim_voltage}}/{{tdata.sec_voltage}}</td>
+                                                                    <td>{{tdata.prim_busno}}</td>
+                                                                    <td>{{tdata.prim_busname}}</td>
+                                                                    <td>{{tdata.sec_busno}}</td>
+                                                                    <td>{{tdata.sec_busname}}</td>
+                                                                    <td>{{tdata.trf_title}}</td>
+                                                                    <td>{{tdata.trf_rating}}</td>
+                                                                    <td>{{tdata.trf_id}}</td>
+                                                                    <td><button class="btn btn-sm font-sm" data-bs-toggle="modal" data-bs-target="#specsModal">Specs</button> </td>
+                                                                     <td>{{tdata.trfcmsndt | date:'d-m-Y'}}</td>
+                                                                    <td class="text-center">
+    <form method="POST" class="delete-transformer-form">
+        {% csrf_token %}
+        <input type="hidden" name="trf_id" value="{{ tdata.trf_id }}">
+        <button type="submit" class="btn btn-sm btn-danger delete-btn">
+            <i class="bi bi-trash-fill delete-icon" style="cursor: pointer;"></i>
+        </button>
+    </form>
+</td>
+
+
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 mt-2" align="right">
+                                <a href="{% url 'dataentry' %}"><button class="btn btn-success btn-sm"><i class="bi bi-arrow-return-left"></i> Back to Entry page</button></a>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab"
+                         tabindex="0">
+                        <div class="row font-sm">
+                            <div class="col-sm-12 bg-light">
+                                <div class="table-responsive mt-3" style="height: 150px;">
+                                    <table class="table table-sm font-sm table-bordered">
+                                        <thead class="text-center">
+                                            <tr>
+                                                <th>S No</th>
+                                                <th>Reactor ID</th>
+                                                <th>Type</th>
+                                                <th>Voltage</th>
+                                                <th>Bus No/Line ID</th>
+                                                <th>Bus Name/Line Name</th>
+                                                <th>Capacity/Rating</th>
+                                                <th>Rated Voltage</th>
+                                                <th>Convertible</th>
+                                                <th>Commission Date</th>
+                                                <th>Delete</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="text-center" id="reactorTableBody">
+                                        {% for react in recdata %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{react.react_id}}</td>
+                                                <td>{{react.react_type}}</td>
+                                                <td>{{react.react_voltage}}</td>
+                                                <td>{{react.react_bus}}</td>
+                                                <td>{{react.react_busname|default:react.line_name}}</td>
+                                                <td>{{react.react_cap}}</td>
+                                                <td>{{react.rated_voltage}}</td>
+                                                <td>{{react.convertible}}</td>
+                                                <td>{{react.reccmsndt | date:'d-m-Y'}}</td>
+                                               <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-reactor-id="{{ react.id }}"></i></td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 mt-2" align="right">
+                               <a href="{% url 'dataentry' %}"><button class="btn btn-success btn-sm"><i class="bi bi-arrow-return-left"></i> Back to Entry page</button></a>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="tab-pane fade show" id="cptrBanks-tab-pane" role="tabpanel" aria-labelledby="cptrBanks-tab" tabindex="-1">
+                        <form id="capForm" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="M6SBHhMfBouhnQULg79YzM9FtDH1FevT0NViR8yAovl5YtdivdSJ1wNTpYp42EDw">
+                            <input type="hidden" id="capbnk_id" name="id" value="">
+                            <input type="hidden" name="stn_name" value="TEKKALI 220/132">
+                            <div class="row font-sm">
+                                <div class="col-sm-12 bg-light">
+                                    <div class="table-responsive mt-3" style="height: 150px;">
+                                        <table class="table table-sm font-sm table-bordered">
+                                            <thead class="text-center">
+                                                <tr>
+                                                    <th>S No</th>
+                                                    <th>Capacitor ID</th>
+                                                    <th>Bus Voltage</th>
+                                                    <th>Rated Voltage</th>
+                                                    <th>Bus No</th>
+                                                    <th>Bus Name</th>
+                                                    <th>Rating</th>
+                                                    <th>Commission Date</th>
+                                                    <th>Delete</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="text-center" id="capTableBody">
+                                            {% for cap in capdata %}
+                                                <tr>
+                                                    <td>{{forloop.counter}}</td>
+                                                        <td>{{cap.cap_id}}</td>
+                                                        <td>{{cap.cap_voltage}}</td>
+                                                        <td>{{cap.rated_voltage}}</td>
+                                                        <td>{{cap.bus_no}}</td>
+                                                        <td>{{cap.bus_name}}</td>
+                                                        <td>{{cap.cap_rating}}</td>
+                                                        <td>{{cap.capcmsndt | date:'d-m-Y'}}</td>
+                                                    <td class="text-center">
+                                                            <i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-cap-id="{{ cap.id }}"></i>
+                                                        </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 mt-2" align="right">
+                                    <button class="btn btn-success btn-sm"><i class="bi bi-arrow-return-left"></i> <a href="{% url 'dataentry' %}" class="text-white text-decoration-none">Back to Entry page</a></button>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade active show" id="lines-tab-pane" role="tabpanel" aria-labelledby="line-tab" tabindex="0">
+                        <div class="row mt-3">
+
+                            <div class="col-sm-12 bg-light">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-sm font-sm">
+                                        <thead class="text-center">
+                                            <tr>
+                                                <th>S No</th>
+                                                <th>Ckt No</th>
+                                                <th>Voltage</th>
+                                                <th>From Bus Number</th>
+                                                <th>From Bus Name</th>
+                                                <th>To Bus Number</th>
+                                                <th>To Bus Name</th>
+                                                <th>Total Length</th>
+                                                <th>Conductor</th>
+                                                <th>Length</th>
+                                                <th>Commission Date</th>
+                                                <th>PSSC</th>
+                                                <th>Delete</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody >
+                                        {% for lines in linesdata %}
+                                            <tr >
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{lines.cktno}}</td>
+                                                <td>{{lines.fbus_voltage}}</td>
+                                                <td>{{lines.fbus_no}}</td>
+                                                <td>{{lines.fbus_name}}</td>
+                                                <td>{{lines.to_busno}}</td>
+                                                <td>{{lines.to_busname}}</td>
+                                                <td>{{lines.to_length}}</td>
+                                                <td>{{lines.cond_type}}</td>
+                                                <td> {{lines.cond_length}}</td>
+                                                <td> {{lines.linecmsndt | date:'d-m-Y'}}</td>
+                                                <td>{{lines.pssc}}</td>
+                                               <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" ></i></td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 mt-2" align="right">
+                               <a href="{% url 'dataentry' %}"><button class="btn btn-success btn-sm"><i class="bi bi-arrow-return-left"></i> Back to Entry page</button></a>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade show" id="bulkloads-tab-pane" role="tabpanel" aria-labelledby="bulkloads-tab" tabindex="-1">
+                        <form id="bulkForm" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="KZ7LbrIiI4rijK80wANPyupwuhG4q66UYGasliuDvbi6UnrxLGwA0e3KqCo7Nwex">
+                            <input type="hidden" name="id" id="bulk_id">
+                            <input type="hidden" name="stn_name" value="TEKKALI 220/132">
+                            <div class="row font-sm">
+                                <div class="col-sm-12 bg-light">
+                                    <div class="table-responsive bg-light px-3 py-2 mt-3 shadow-sm" style="overflow:auto; height: 150px;">
+                                        <table class="table table-sm font-sm table-bordered">
+                                            <thead class="text-center">
+                                                <tr>
+                                                    <th>S No</th>
+                                                    <th>Bus Voltage</th>
+                                                    <th>Bus No</th>
+                                                    <th>Bus Name</th>
+                                                    <th>Cons Name</th>
+                                                    <th>Cons Category</th>
+                                                    <th>Discom</th>
+                                                    <th>Contr Load</th>
+                                                    <th>Commission Date</th>
+                                                    <th>Delete</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="bulkTableBody" class="text-center">
+                                            {% for data in bulkdata %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{ data.bus_volt }}</td>
+                                                    <td>{{ data.bus_no }}</td>
+                                                    <td>{{ data.bus_name }}</td>
+                                                    <td>{{ data.cons_name }}</td>
+                                                    <td>{{ data.cons_cat }}</td>
+                                                    <td>{{ data.discom }}</td>
+                                                    <td>{{ data.contr_load }}</td>
+                                                    <td>{{ data.bulkcmsndt | date:'d-m-Y' }}</td>
+                                                    <td><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-bus-id="88"></i></td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 mt-2" align="right">
+                               <button class="btn btn-success btn-sm"><i class="bi bi-arrow-return-left"></i> <a href="{% url 'dataentry' %}" class="text-decoration-none text-white">Back to Entry page</a></button>
+                            </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script src="{% static 'topologybootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/topologybootstrap.bundle.min.js"></script>
+</body>
+
+</html>

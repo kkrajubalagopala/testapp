@@ -1,0 +1,1269 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modified topology</title>
+    <link rel="shortcut icon" href="{% static 'img/favicons/aptransco-favicon.ico' %}" type="image/x-icon">
+
+    <!--Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'topologybootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'topologybootstrap/bs_css_icons/bs_icons.css' %}">
+
+    <!--Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/transco-styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-1 shadow-sm py-0 sticky-top">
+
+        <div class="container-fluid font-sm">
+
+            <a href="#" class="navbar-brand">
+                <img class="img-fluid" src="{% static 'img/logo/multi-color-logo.png' %}" width="30" alt="APTRANSCO">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+
+                <ul id="topNav" class="navbar-nav me-auto mb-2 mb-md-0">
+
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    </li>
+                    <!--                    <li class="nav-item">-->
+                    <!--                        <a class="nav-link" href="#">Sub Station</a>-->
+                    <!--                1    </li>-->
+                    <li class="nav-item">
+                        <a class="nav-link" href="#discoms">Discom</a>
+                    </li>
+                    <li class="nav-item font-sm">
+                        <a class="nav-link" href="#reports">Reports</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#usermngt">User Management</a>
+                    </li>
+                </ul>
+
+                <div class="ms-auto">
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                        <li class="nav-item me-2">
+                            <ul class="navbar-nav py-2 font-sm">
+                                <li class="nav-item">1086345</li>
+                                <li class="nav-item ms-1">S.Appa Rao,</li>
+                                <li class="nav-item ms-1">ACIDO/IT Apps,</li>
+                                <li class="nav-item ms-1">Vidyut Soudha/Vijayawada</li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropstart font-sm">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="{% static 'img/uifaces/002_Elder.jpg' %}" alt="Profile Icon" class="rounded rounded-pill img" width="20" height="20">
+                            </a>
+                            <ul class="dropdown-menu font-sm">
+
+                                <li>
+                                    <a class="dropdown-item fw-semibold" href="#">
+                                        <i class="bi bi-person-fill"></i>
+                                        Profile
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item fw-semibold" href="changepwd.html">
+                                        <i class="bi bi-gear-fill"></i>
+                                        Change Password
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item fw-semibold" href="login.html">
+                                        <i class="bi bi-box-arrow-right"></i>
+                                        Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </nav>
+
+    <div class="container-fluid mt-2">
+
+        <div class="row mt-2">
+            <div class="col-12">
+
+                <ul class="nav border-bottom-0 nav-tabs button-tabs" id="myTab" role="tablist">
+                    <!-- <li class="nav-item" role="presentation">
+                         <button class="nav-link active" id="home-tab" data-bs-toggle="tab"
+                             data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane"
+                             aria-selected="true">Bus</button>
+                     </li>-->
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="lines-tab" data-bs-toggle="tab" data-bs-target="#lines-tab-pane" type="button" role="tab" aria-controls="lines-tab-pane" aria-selected="true">
+                            Lines
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab"
+                                data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane"
+                                aria-selected="false" tabindex="-1">
+                            Transformers
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="contact-tab" data-bs-toggle="tab"
+                                data-bs-target="#contact-tab-pane" type="button" role="tab" aria-controls="contact-tab-pane"
+                                aria-selected="false" tabindex="-1">
+                            Reactor
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="cptrBanks-tab" data-bs-toggle="tab" data-bs-target="#cptrBanks-tab-pane" type="button" role="tab" aria-controls="cptrBanks-tab-pane" aria-selected="true">
+                            Capacitors
+                        </button>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="bulkloads-tab" data-bs-toggle="tab" data-bs-target="#bulkloads-tab-pane" type="button" role="tab" aria-controls="bulkloads-tab-pane" aria-selected="true">
+                            Bulk Loads
+                        </button>
+                    </li>
+
+
+                </ul>
+                <div class="tab-content rounded-bottom" id="myTabContent">
+                    <!--<div class="tab-pane fade active show" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab"
+                        tabindex="0">
+
+                        <div class="row mt-1 pt-1">
+                            <div class="col-sm-3">
+                                <div class="row mb-1 transco-form">
+                                    <label for="busNumber" class="col-4 col-form-label">Bus Number</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row mb-1 transco-form">
+                                    <label for="busCode" class="col-4 col-form-label">Bus Code</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" id="busCode" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row mb-1 transco-form">
+                                    <label for="busName" class="col-4 col-form-label">Bus Name</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" id="busName" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row mb-1 transco-form">
+                                    <label for="bvtgs" class="col-4 col-form-label">Bus Voltage</label>
+                                    <div class="col-sm-8">
+                                        <select name="bvtgs" id="bvtgs" class="form-select">
+                                            <option value="0">Select...</option>
+                                            <option value="1">400 KV</option>
+                                            <option value="1">220 KV</option>
+                                            <option value="1">132 KV</option>
+                                            <option value="1">33 KV</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-1 transco-form">
+                                    <label for="bvtgs" class="col-4 col-form-label">Commission Date</label>
+                                    <div class="col-sm-8">
+                                        <input type="date" class="form-control">
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <button
+                                            class="my-3 w-30 btn btn-sm btn-primary float-end btn-custom-primary fw-semibold"
+                                            type="button">Addition <i class="bi bi-plus-circle"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-9 bg-light">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-sm font-sm">
+                                        <thead class="text-center">
+                                            <tr>
+                                                <th>S No</th>
+                                                <th>Bus Voltage</th>
+                                                <th>Bus code</th>
+                                                <th>Bus Number</th>
+                                                <th>Bus Name</th>
+                                                <th>commission Date</th>
+                                                <th>Delete</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="text-center">
+                                            <tr>
+                                                <td>1</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-bus-id="88"></i></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab"
+                         tabindex="0">
+                         <div id="message" style="color:black;font-size: 30px; display: block; margin: 0 auto; text-align: center;">{{message}}</div>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <form id="trfForm" method="post" enctype="multipart/form-data"> {% csrf_token %}
+                                                        <input type="hidden" id="trans_id" name="id" value="">
+                                                        <input type="hidden" name="stn_name" value="{{stn_name}}">
+                                                        <div class="row transco-form mb-2">
+                                                            <div class="col-sm-6">
+                                                                <label for="trf_type" class="form-label">Transformer Type</label>
+                                                                <select class="form-select" id="trf_type" name="trf_type">
+                                                                    <option value="--- Select ---">--- Select ---</option>
+                                                                    <option value="ICT">ICT</option>
+                                                                    <option value="PTR">PTR</option>
+                                                                    <option value="TR">TR</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <label for="trf_rating" class="form-label">Transformer Capacity/Rating (MVA)</label>
+                                                                <input type="text" class="form-control" id="trf_rating" name="trf_rating">
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <label for="trf_id" class="form-label">Transformer ID</label>
+                                                                <input type="text" class="form-control" id="trf_id" name="trf_id">
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <label for="trf_title" class="form-label">Transformer Title</label>
+                                                                <input type="text" class="form-control" id="trf_title" name="trf_title">
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <label for="prim_voltage" class="form-label">Primary Voltage</label>
+                                                                <select class="form-select" name="prim_voltage" id="prim_voltage">
+                                                                    <option value="-- Select --">-- Select --</option>
+                                                                    {% for voltage in selected_voltages %}
+                                                                    <option value="{{ voltage }}">{{ voltage }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <label for="prim_busno" class="form-label">Primary Bus Number</label>
+                                                                <select class="form-select busno" id="prim_busno" name="prim_busno">
+                                                                    <option value="-- Select --">-- Select --</option>
+                                                                </select>
+                                                                <input type="hidden" id="hidden_prim_bus_name" name="prim_busname">
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <label for="sec_voltage" class="form-label">Secondary Voltage</label>
+                                                                <select class="form-select" name="sec_voltage" id="sec_voltage">
+                                                                    <option value="-- Select --">-- Select --</option>
+                                                                        {% for voltage in selected_voltages %}
+                                                                        <option value="{{ voltage }}" >{{ voltage }}</option>
+                                                                        {% endfor %}
+
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <label for="sec_busno" class="form-label">Secondary Bus Number</label>
+                                                                <select class="form-select busno" id="sec_busno" name="sec_busno">
+                                                                    <option value="-- Select --">-- Select --</option>
+                                                                </select>
+                                                                <input type="hidden" id="hidden_sec_bus_name" name="sec_busname">
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <label  class="form-label">Commission Date</label>
+                                                                <input type="date" class="form-control" name="trfcmsndt" id="trfcmsndt">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <button class="my-3 w-25 btn btn-sm btn-primary float-end btn-custom-primary fw-semibold" type="submit" name="save_trf" id="savetrfButton">
+                                                Save
+                                                <i class="bi bi-save-fill"></i>
+                                            </button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                            </div>
+
+                            <div class="col-sm-7 bg-light">
+                                <div class="table-responsive mt-3">
+                                    <table class="table table-bordered table-sm font-sm">
+                                        <thead class="text-center align-middle">
+                                            <tr>
+                                                <th>SNo</th>
+                                                <th>Transformer Type</th>
+                                                <th>VoltageRatio </th>
+                                                <th>Primary BusNumber</th>
+                                                <th>Primary BusName</th>
+                                                <th>Secondary BusNumber</th>
+                                                <th>Secondary BusName</th>
+                                                <th>Transformer Title</th>
+                                                <th>Transformer Capacity(MVA)</th>
+                                                <th>Transformer ID</th>
+                                                <th>Specs</th>
+                                                <th>Transformer Commission Date</th>
+                                                <th>Delete</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="trfTableBody">
+                                                                {% for tdata in trfdata %}
+                                                                <tr >
+                                                                    <td>{{forloop.counter}}</td>
+                                                                    <td>{{tdata.trf_type}}</td>
+                                                                    <td>{{tdata.prim_voltage}}/{{tdata.sec_voltage}}</td>
+                                                                    <td>{{tdata.prim_busno}}</td>
+                                                                    <td>{{tdata.prim_busname}}</td>
+                                                                    <td>{{tdata.sec_busno}}</td>
+                                                                    <td>{{tdata.sec_busname}}</td>
+                                                                    <td>{{tdata.trf_title}}</td>
+                                                                    <td>{{tdata.trf_rating}}</td>
+                                                                    <td>{{tdata.trf_id}}</td>
+                                                                    <td><button class="btn btn-sm font-sm" data-bs-toggle="modal" data-bs-target="#specsModal">Specs</button> </td>
+                                                                     <td>{{tdata.trfcmsndt | date:'d-m-Y'}}</td>
+
+                                                                    <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-trf-id="{{ tdata.id }}"></i></td>
+                                                                </tr>
+
+                                                                {% endfor %}
+                                                            </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-sm-12 mt-2" align="right">
+                               <a href="{% url 'dataentry' %}"><button class="btn btn-success btn-sm"><i class="bi bi-arrow-return-left"></i> Back to Entry page</button></a>
+                            </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab"
+                         tabindex="0">
+                        <div class="row font-sm">
+                            <div class="col-sm-4">
+                                <form id="reactorForm" method="post" enctype="multipart/form-data"> {% csrf_token %}
+            <div class="row transco-form g-3 mt-2">
+
+                    <input type="hidden" id="reactor_id" name="id" >
+                    <input type="hidden" name="stn_name" value="{{stn_name}}">
+                <label for="react_type" class="col-sm-2 col-form-label">Type</label>
+                <div class="col-sm-4">
+                    <select class="form-select" id="react_type" name="react_type">
+                        <option value="">-- Select --</option>
+                        <option value="Bus">Bus</option>
+                        <option value="Line">Line</option>
+                    </select>
+                </div>
+
+                <label for="react_voltage" class="col-sm-2 col-form-label">Voltage</label>
+                <div class="col-sm-4">
+                    <select id="react_voltage" name="react_voltage" class="form-select">
+                        <option value="-- Select --">-- Select --</option>
+                        {% for voltage in selected_voltages %}
+                          <option value="{{ voltage }}">{{ voltage }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-sm-12 hidden" id="busIDType" >
+                    <div class="row">
+                        <label for="react_bus" class="col-sm-2 col-form-label">Bus ID</label>
+                        <div class="col-sm-4">
+                            <select class="form-select busno" id="react_bus" name="react_bus">
+                            <option value="-- Select --">-- Select --</option>
+                            </select>
+                        </div>
+                        <label for="react_busname" class="col-sm-2 col-form-label">Bus Name</label>
+                        <div class="col-sm-4">
+                            <input type="text" id="react_busname" name="react_busname" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 hidden" id="lineIDType" >
+                    <div class="row">
+                        <label for="line_name" class="col-sm-2 col-form-label">Line Name</label>
+                        <div class="col-sm-10">
+                            <select id="line_name" name="line_name" class="form-select">
+                                <option value="-- Select --">-- Select --</option>
+                                {% for data in addedlinesdata%}
+                                    <option value="{{data.fbus_no}}-{{data.fbus_name}}-{{data.to_busno}}-{{data.to_busname}}-{{data.cktno}}">{{data.fbus_no}}-{{data.fbus_name}}-{{data.to_busno}}-{{data.to_busname}}-{{data.cktno}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <label for="react_cap" class="col-sm-2 col-form-label">Capacity/Rating</label>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="react_cap" name="react_cap" />
+                        <span class="input-group-text font-sm">MVAR</span>
+                    </div>
+                </div>
+
+                <label for="react_id" class="col-sm-2 col-form-label">Reactor ID</label>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="react_id" name="react_id" />
+                    </div>
+                </div>
+
+                <span class="col-sm-2 fw-bold">Convertible</span>
+                <div class="col-sm-4">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="convertible" id="inlineRadio1" value="Yes">
+                        <label class="form-check-label" for="inlineRadio1">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="convertible" id="inlineRadio2" value="No">
+                        <label class="form-check-label" for="inlineRadio2">No</label>
+                    </div>
+                </div>
+
+                <label for="recVoltage" class="col-sm-2 col-form-label">Rated Voltage</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="recVoltage" name="rated_voltage"/>
+                </div>
+                <label  class="col-sm-2 mt-2 col-form-label">Commission Date</label>
+                <div class="col-sm-4 mt-2">
+                    <input type="date" id="reccmsndt" name="reccmsndt" class="form-control" >
+                </div>
+
+                <div class="col-sm-12">
+                    <button  class="my-3 w-25 btn btn-sm btn-primary float-end btn-custom-primary fw-semibold" type="submit" name="save_reactor" id="savereactorButton">Save <i class="bi bi-save-fill"></i></button>
+                </div>
+
+            </div>
+            </form>
+                            </div>
+
+
+                            <div class="col-sm-8 bg-light">
+                                <div class="table-responsive mt-3" style="height: 200px;">
+                                    <table class="table table-sm font-sm table-bordered">
+                                        <thead class="text-center">
+                                            <tr>
+                                                <th>S No</th>
+                                                <th>Reactor ID</th>
+                                                <th>Type</th>
+                                                <th>Voltage</th>
+                                                <th>Bus No/Line ID</th>
+                                                <th>Bus Name/Line Name</th>
+                                                <th>Capacity/Rating</th>
+                                                <th>Rated Voltage</th>
+                                                <th>Convertible</th>
+                                                <th>Commission Date</th>
+                                                <th>Delete</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="reactorTableBody">
+                        {% for react in recdata %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{react.react_id}}</td>
+                            <td>{{react.react_type}}</td>
+                            <td>{{react.react_voltage}}</td>
+                            <td>{{react.react_bus}}</td>
+                            <td>{{react.react_busname|default:react.line_name}}</td>
+                            <td>{{react.react_cap}}</td>
+                            <td>{{react.rated_voltage}}</td>
+                            <td>{{react.convertible}}</td>
+                            <td>{{react.reccmsndt | date:'d-m-Y'}}</td>
+
+                            <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-reactor-id="{{ react.id }}"></i></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-sm-12 mt-2" align="right">
+                               <a href="{% url 'dataentry' %}"><button class="btn btn-success btn-sm"><i class="bi bi-arrow-return-left"></i> Back to Entry page</button></a>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade show" id="cptrBanks-tab-pane" role="tabpanel" aria-labelledby="cptrBanks-tab" tabindex="-1">
+                        <form id="capForm" method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <input type="hidden" id="capbnk_id" name="id" value="">
+                                        <input type="hidden" name="stn_name" value="{{stn_name}}">
+                            <div class="row font-sm">
+                                <div class="col-sm-4">
+                                    <div class="row transco-form g-3 mt-2">
+                                        <label for="cap_voltage" class="col-sm-2 col-form-label">Voltage</label>
+                                                    <div class="col-sm-4">
+                                                        <select class="form-select" name="cap_voltage" id="cap_voltage">
+                                                            <option value="-- Select --">-- Select --</option>
+                                                            {% for voltage in selected_voltages %}
+                                                            <option value="{{ voltage }}">{{ voltage }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                        </div>
+
+                                        <label for="cbus_no" class="col-sm-2 col-form-label">Bus No</label>
+                                        <div class="col-sm-4">
+                                            <select class="form-select busno" id="cbus_no" name="bus_no">
+                                                            <option value="-- Select --">-- Select --</option>
+                                                        </select>
+                                        </div>
+
+                                        <label for="bus_name" class="col-sm-2 col-form-label">Bus Name</label>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" id="capbus_name" name="bus_name" readonly />
+                                        </div>
+
+                                        <label for="cap_rating" class="col-sm-2 col-form-label">Rating</label>
+                                        <div class="col-sm-4">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="cap_rating" name="cap_rating" />
+                                                            <span class="input-group-text font-sm">MVAR</span>
+                                            </div>
+                                        </div>
+
+                                        <label for="cap_id" class="col-sm-2 col-form-label">Capacitor Id</label>
+                                        <div class="col-sm-4">
+                                            <input type="text" id="cap_id" name="cap_id" class="form-control" />
+                                        </div>
+
+                                        <label for="rated_voltage" class="col-sm-2 col-form-label">Rated Voltage</label>
+                                        <div class="col-sm-4">
+                                            <input type="text" id="rated_voltage" name="rated_voltage" class="form-control" />
+                                        </div>
+                                        <label for="rated_voltage" class="col-sm-2 col-form-label">Commission Date</label>
+                                        <div class="col-sm-4">
+                                            <input type="date" class="form-control" name="capcmsndt" id="capcmsndt" >
+                                        </div>
+
+                                        <div class="col-sm-12">
+
+                                                <button class="my-3 w-25 btn btn-sm btn-primary float-end btn-custom-primary fw-semibold" type="submit" name="save_cap" id="savecapButton">
+                                                            Save
+                                                            <i class="bi bi-save-fill"></i>
+                                                        </button>
+
+
+                                        </div>
+                                    </div>
+                                    </form>
+                                </div>
+
+
+
+                                <div class="col-sm-8 bg-light">
+                                    <div class="table-responsive mt-3" style="height: 200px;">
+                                        <table class="table table-sm font-sm table-bordered">
+                                            <thead class="text-center">
+                                                <tr>
+                                                    <th>S No</th>
+                                                    <th>Capacitor ID</th>
+                                                    <th>Bus Voltage</th>
+                                                    <th>Rated Voltage</th>
+                                                    <th>Bus No</th>
+                                                    <th>Bus Name</th>
+                                                    <th>Rating</th>
+                                                    <th>Commission Date</th>
+                                                    <th>Delete</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="capTableBody">
+                                                    {% for cap in capdata %}
+                                                    <tr>
+                                                        <td>{{forloop.counter}}</td>
+                                                        <td>{{cap.cap_id}}</td>
+                                                        <td>{{cap.cap_voltage}}</td>
+                                                        <td>{{cap.rated_voltage}}</td>
+                                                        <td>{{cap.bus_no}}</td>
+                                                        <td>{{cap.bus_name}}</td>
+                                                        <td>{{cap.cap_rating}}</td>
+                                                        <td>{{cap.capcmsndt | date:'d-m-Y'}}</td>
+
+                                                        <td class="text-center">
+                                                            <i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-cap-id="{{ cap.id }}"></i>
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+<div class="col-sm-12 mt-2" align="right">
+                               <a href="{% url 'dataentry' %}"><button class="btn btn-success btn-sm"><i class="bi bi-arrow-return-left"></i> Back to Entry page</button></a>
+                            </div>
+                    </div>
+
+                    <div class="tab-pane fade active show" id="lines-tab-pane" role="tabpanel" aria-labelledby="line-tab" tabindex="0">
+                        <div class="row mt-3">
+                            <div class="col-sm-5">
+                                <form id="addlinesForm" method="post" enctype="multipart/form-data"> {% csrf_token %}
+                <div class="col-sm-4">
+                        <label for="stn_name" class="form-label">Station Name</label>
+                        <input type="text" id="stn_name" name="stn_name" class="form-control">
+
+                    </div>
+                <div class="row transco-form py-3">
+                    <h5 class="fs-6 mb-0">From End</h5>
+                    <div class="col-sm-4">
+                        <label for="fbus_voltage" class="form-label">Bus Voltage</label>
+                        <select class="form-select" name="fbus_voltage" id="fbus_voltage">
+                            <option value="-- Select --">-- Select --</option>
+
+                                <option value="400kv">400kv</option>
+                            <option value="220kv">220kv</option>
+                            <option value="132kv">132kv</option>
+                            <option value="33kv">33kv</option>
+                            <option value="11kv">11kv</option>
+
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="fbus_no" class="form-label">Bus No</label>
+                        <input type="text" id="fbus_no" name="fbus_no" class="form-control">
+
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="fbus_name" class="form-label">Bus Name</label>
+                        <input type="text" id="fbus_name" name="fbus_name" class="form-control">
+                    </div>
+                </div>
+                <hr class="border my-0 border-success border-1 border-opacity-50">
+
+                <div class="row g-2 transco-form">
+                    <h5 class="fs-6 mb-0">To</h5>
+                    <label for="hidden_toss_voltage" class="col-sm-2 col-form-label">SS Voltage</label>
+                    <div class="col-sm-4">
+                        <span id="toss_voltage" name="toss_voltage">-- Select --</span>
+                        <input type="hidden" name="toss_voltage" id="hidden_toss_voltage" value="-- Select --">
+
+                    </div>
+                    <label for="toss_name" class="col-sm-2 col-form-label">SS Name</label>
+                    <div class="col-sm-4">
+                        <input type="text" id="toss_name" name="toss_name" class="form-control">
+
+                    </div>
+
+                    <label for="to_busno" class="col-sm-2 co-form-label">Bus No</label>
+                    <div class="col-sm-4">
+                        <input type="text" name="to_busno" id="to_busno" class="form-control">
+                    </div>
+                    <label for="to_busname" class="col-sm-2 co-form-label">Bus Name</label>
+                    <div class="col-sm-4">
+                        <input type="text" id="to_busname" name="to_busname" class="form-control" >
+                    </div>
+                    <label for="to_length" class="col-sm-2 co-form-label">Length</label>
+                    <div class="col-sm-4">
+                        <input type="text" id="to_length" name="to_length" class="form-control">
+                    </div>
+                    <label for="cktno" class="col-sm-2 co-form-label">CKT No</label>
+                    <div class="col-sm-4">
+                        <input type="text" id="cktno" name="cktno" class="form-control">
+                    </div>
+                    <label for="category" class="col-sm-2 col-form-label">Category</label>
+                    <div class="col-sm-4">
+                        <select id="category" name="category" class="form-select">
+                            <option value="-- Select --">-- Select --</option>
+                            <option value="INDUSTRY">INDUSTRY</option>
+                            <option value="GENERATION">GENERATION</option>
+                            <option value="SS">SS</option>
+                            <option value="PSS">PSS</option>
+                            <option value="RTSS">RTSS</option>
+                        </select>
+                    </div>
+                    <label for="jursidiction" class="col-sm-2 col-form-label">Jurisdiction</label>
+                    <div class="col-sm-4">
+                        <select id="jursidiction" name="jursidiction" class="form-select">
+                            <option value="-- Select --">-- Select --</option>
+                            <option value="IntraState">IntraState</option>
+                            <option value="InterState">InterState</option>
+                        </select>
+                    </div>
+
+
+                        <label class="col-sm-2 col-form-label">Commission Date</label>
+                        <div class="col-sm-4">
+                            <input type="date" id="linecmsndt" name="linecmsndt" class="form-control" >
+                        </div>
+                        <label class="col-2 col-form-label">PSSC</label>
+                        <div class="col-sm-4">
+                            <select id="PSSC" name="pssc" class="form-select">
+                            <option value="-- Select --">-- Select --</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                        </div>
+
+                    <div class="col-sm-12 mb-1">
+                        <div class="input-group rounded-0">
+                            <label for="cond_type" class="input-group-text">Conductor Type</label>
+                            <select name="cond_type" id="cond_type" class="form-control">
+                                <option value="-- Select --">-- Select --</option>
+                                <option value="Moose">Moose</option>
+                                <option value="Twin Moose">Twin Moose</option>
+                                <option value="Quad Moose">Quad Moose</option>
+                                <option value="Zebra">Zebra</option>
+                                <option value="Panther">Panther</option>
+                                <option value="Cable">Cable</option>
+                            </select>
+                            <label for="cond_length" class="input-group-text">Length</label>
+                            <input type="text" id="cond_length" name="cond_length" class="form-control">
+
+                            <button type="button"  class="input-group-text py-0"><i class="bi bi-plus-circle"></i></button>
+
+                        </div>
+                    </div>
+                </div>
+
+            <div class="table-responsive bg-light mt-3" style="height: 130px;">
+                <table id="conductordata" class="table table-sm table-light table-bordered font-sm">
+                    <thead class="sticky-top">
+                        <tr>
+                            <th>Conductor Type</th>
+                            <th>Length</th>
+                             <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody >
+
+                    </tbody>
+                </table>
+            </div>
+                 <div class="col-sm-12">
+                        <button class="my-3 w-25 btn btn-sm btn-primary float-end btn-custom-primary fw-semibold" type="submit" name="addlines" id="saveaddlinesButton">Save <i class="bi bi-save-fill"></i></button>
+                    </div>
+ </form>
+                            </div>
+
+
+                            <div class="col-sm-7 bg-light">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-sm font-sm">
+                                        <thead class="text-center">
+                                            <tr>
+                                                <th>S No</th>
+                                                <th>Ckt No</th>
+                                                <th>Voltage</th>
+                                                <th>From Bus Number</th>
+                                                <th>From Bus Name</th>
+                                                <th>To Bus Number</th>
+                                                <th>To Bus Name</th>
+                                                <th>Total Length</th>
+                                                <th>Conductor</th>
+                                                <th>Length</th>
+                                                <th>Commission Date</th>
+                                                <th>PSSC</th>
+                                                <th>Delete</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="addlinesTableBody">
+                                            {% for lines in addedlinesdata %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{lines.cktno}}</td>
+                                                <td>{{lines.fbus_voltage}}</td>
+                                                <td>{{lines.fbus_no}}</td>
+                                                <td>{{lines.fbus_name}}</td>
+                                                <td>{{lines.to_busno}}</td>
+                                                <td>{{lines.to_busname}}</td>
+                                                <td>{{lines.to_length}}</td>
+                                                <td>{{lines.cond_type}}</td>
+                                                <td> {{lines.cond_length}}</td>
+                                                <td> {{lines.linecmsndt | date:'d-m-Y'}}</td>
+                                                <td>{{lines.pssc}}</td>
+
+                                                <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-lines-id="{{lines.id}}"></i></td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-sm-12 mt-2" align="right">
+                               <a href="{% url 'dataentry' %}"><button class="btn btn-success btn-sm"><i class="bi bi-arrow-return-left"></i> Back to Entry page</button></a>
+                            </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade show" id="bulkloads-tab-pane" role="tabpanel" aria-labelledby="bulkloads-tab" tabindex="-1">
+                        <form id="bulkForm" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="id" id="bulk_id">
+        <input type="hidden" name="stn_name" value="{{ stn_name }}">
+                            <div class="row font-sm">
+                                <div class="col-sm-4">
+                                    <div class="row transco-form mt-2">
+                                        <label for="bulkvoltage" class="col-sm-2 col-form-label">Bus Voltage</label>
+                                        <div class="col-sm-4">
+                                            <select id="bulkvoltage" class="form-select" name="bus_volt">
+                            <option value="-- Select --">-- Select --</option>
+                            {% for voltage in selected_voltages %}
+                                <option value="{{ voltage }}">{{ voltage }}</option>
+                            {% endfor %}
+                        </select>
+                                        </div>
+                                        <div class="col-sm-6"></div>
+
+                                        <label for="bulkbusno" class="col-sm-2 col-form-label">Bus No</label>
+                                        <div class="col-sm-4">
+                                           <select class="form-select bulkbusno" id="bulkbusno" name="bus_no">
+                            <option value="-- Select --">-- Select --</option>
+                        </select>
+                                        </div>
+
+                                        <label for="bulkbusname" class="col-sm-2 col-form-label">Bus Name</label>
+                                        <div class="col-sm-4">
+                                           <input type="text" class="form-control" id="bulkbusname" name="bus_name"/>
+                                        </div>
+
+                                        <label for="cons_name" class="col-sm-2 col-form-label">Cons Name</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="cons_name" name="cons_name"/>
+                                        </div>
+
+                                        <label for="cons_cat" class="col-sm-2 col-form-label">Cons Category</label>
+                                        <div class="col-sm-4">
+                                            <select class="form-select" name="cons_cat" id="cons_cat">
+                            <option>--Select--</option>
+                            <option>Industry</option>
+                            <option>Irrigation</option>
+                            <option>Railway</option>
+                        </select>
+                                        </div>
+
+                                        <label for="bulkdiscom" class="col-sm-2 col-form-label">Discom</label>
+                                        <div class="col-sm-4">
+                                             <select class="form-select" name="discom" id="bulkdiscom">
+                            <option>--Select--</option>
+                            <option>APCPDCL</option>
+                            <option>APEPDLC</option>
+                        </select>
+                                        </div>
+
+                                        <label for="contr_load" class="col-sm-2 col-form-label">Contr Load</label>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" id="contr_load" name="contr_load"/>
+                                        </div>
+
+                                        <label for="bulkcmsndt" class="col-sm-2 col-form-label">Commission Date</label>
+                                        <div class="col-sm-4">
+                                            <input type="date" class="form-control" name="bulkcmsndt" id="bulkcmsndt"/>
+                                        </div>
+                                        <div class="col-sm-12">
+
+                                                <button class="my-3 w-25 btn btn-sm btn-primary float-end btn-custom-primary fw-semibold" type="submit" name="save_bulkloads" id="savebulkButton">
+                            Save <i class="bi bi-save-fill"></i>
+                        </button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                        </form>
+
+
+                                <div class="col-sm-8 bg-light">
+                                    <div class="table-responsive bg-light px-3 py-2 mt-3 shadow-sm" style="overflow:auto; height: 200px;">
+                                        <table class="table table-sm font-sm table-bordered">
+                                            <thead class="text-center">
+                                                <tr>
+                                                    <th>S No</th>
+                                                    <th>Bus Voltage</th>
+                                                    <th>Bus No</th>
+                                                    <th>Bus Name</th>
+                                                    <th>Cons Name</th>
+                                                    <th>Cons Category</th>
+                                                    <th>Discom</th>
+                                                    <th>Contr Load</th>
+                                                    <th>Commission Date</th>
+                                                    <th>Delete</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="bulkTableBody">
+                    {% for data in bulkdata %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ data.bus_volt }}</td>
+                            <td>{{ data.bus_no }}</td>
+                            <td>{{ data.bus_name }}</td>
+                            <td>{{ data.cons_name }}</td>
+                            <td>{{ data.cons_cat }}</td>
+                            <td>{{ data.discom }}</td>
+                            <td>{{ data.contr_load }}</td>
+                            <td>{{ data.bulkcmsndt | date:'d-m-Y' }}</td>
+
+                            <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-bulk-id="{{ data.id }}"></i></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+<div class="col-sm-12 mt-2" align="right">
+                               <a href="{% url 'dataentry' %}"><button class="btn btn-success btn-sm"><i class="bi bi-arrow-return-left"></i> Back to Entry page</button></a>
+                            </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+
+// Lines
+document.addEventListener('DOMContentLoaded', () => {
+        const linesForm = document.getElementById('linesForm');
+        const savelinesButton = document.getElementById('saveaddlinesButton');
+        const linesTableBody = document.getElementById('addlinesTableBody');
+        const messageDiv = document.getElementById('message');
+        const conductorDataTable = document.getElementById('conductordata').querySelector('tbody');
+        const addConductorButton = document.querySelector('.input-group-text.py-0');
+        const condTypeInput = document.getElementById('cond_type');
+        const condLengthInput = document.getElementById('cond_length');
+
+        let editingRow = null; // Variable to track the row being edited
+        let editingLinesId = null; // Variable to track the lines ID being edited
+
+
+
+        function updateBusDropdown(voltageId, busNoId, busNameId) {
+            document.getElementById(voltageId).addEventListener('change', function() {
+                const selectedVoltage = this.value;
+                const busNoDropdown = document.getElementById(busNoId);
+                const busName = document.getElementById(busNameId);
+
+                busNoDropdown.innerHTML = '<option value="-- Select --">-- Select --</option>';
+
+                const filteredBusData = busdata.filter(bus => bus.bus_volt === selectedVoltage);
+
+                filteredBusData.forEach(bus => {
+                    const option = document.createElement('option');
+                    option.value = bus.bus_no;
+                    option.textContent = bus.bus_no;
+                    busNoDropdown.appendChild(option);
+                });
+
+                busNoDropdown.addEventListener('change', function() {
+                    const selectedBusNo = this.value;
+                    const selectedBus = filteredBusData.find(bus => bus.bus_no === selectedBusNo);
+                    busName.value = selectedBus ? selectedBus.bus_name : '';
+                });
+            });
+        }
+
+        updateBusDropdown('fbus_voltage', 'fbus_no', 'fbus_name');
+
+        async function fetchData(url, method, body) {
+            return await fetch(url, {
+                method,
+                body,
+                headers: {
+                    'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value,
+                },
+            });
+        }
+
+        function showMessage(message) {
+            messageDiv.innerText = message;
+            setTimeout(() => {
+                messageDiv.innerText = '';
+            }, 3000);
+        }
+
+        function populateForm(data) {
+            document.getElementById('stn_name').value = data.stn_name || '';
+            document.getElementById('fbus_voltage').value = data.fbus_voltage || '';
+            document.getElementById('fbus_no').value = data.fbus_no || '';
+            document.getElementById('fbus_name').value = data.fbus_name || '';
+            document.getElementById('toss_voltage').value = data.toss_voltage || '';
+            document.getElementById('toss_name').value = data.toss_name || '';
+            document.getElementById('to_busno').value = data.to_busno || '';
+            document.getElementById('to_busname').value = data.to_busname || '';
+            document.getElementById('to_length').value = data.to_length || '';
+            document.getElementById('cktno').value = data.cktno || '';
+            document.getElementById('category').value = data.category || '';
+            document.getElementById('jursidiction').value = data.jursidiction || '';
+            document.getElementById('linecmsndt').value = data.linecmsndt || '';
+            document.getElementById('pssc').value = data.linecmsndt || '';
+
+            // Manually trigger change event to update dropdowns
+            document.getElementById('fbus_voltage').dispatchEvent(new Event('change'));
+
+            document.getElementById('fbus_no').value = data.fbus_no;
+
+            document.getElementById('fbus_name').value = data.fbus_name;
+
+
+            // Populate the conductor data table
+            conductorDataTable.innerHTML = '';
+            if (data.conductor_data) {
+                data.conductor_data.split(', ').forEach(cond => {
+                    const [condType, condLength] = cond.split('-');
+                    addConductorRow(condType, condLength);
+                });
+            }
+
+            savelinesButton.innerHTML = 'Update <i class="bi bi-save-fill"></i>';
+        }
+
+        function clearForm() {
+            linesForm.reset();
+            conductorDataTable.innerHTML = '';  // Clear conductor data table
+            document.getElementById('lines_id').value = '';
+            savelinesButton.innerHTML = 'Save <i class="bi bi-save-fill"></i>';
+            editingRow = null;  // Clear editing row reference
+            editingLinesId = null; // Clear editing lines ID reference
+        }
+
+        function addConductorRow(condType, condLength) {
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${condType}</td>
+                <td>${condLength}</td>
+                <td class="text-center"><i class="bi bi-pencil-fill edit-cond-icon" style="cursor: pointer;"></i></td>
+                <td class="text-center"><i class="bi bi-trash-fill delete-cond-icon" style="cursor: pointer;"></i></td>
+            `;
+            conductorDataTable.appendChild(newRow);
+        }
+
+        addConductorButton.addEventListener('click', function() {
+            const condType = condTypeInput.value;
+            const condLength = condLengthInput.value;
+
+            // Validate before adding the conductor data
+            if (condType !== "-- Select --" && condLength.trim() !== "") {
+                if (editingRow) {
+                    // Update existing row
+                    editingRow.cells[0].textContent = condType;
+                    editingRow.cells[1].textContent = condLength;
+                    editingRow = null;  // Clear editing row reference
+                } else {
+                    // Add new row
+                    addConductorRow(condType, condLength);
+                }
+
+                // Clear inputs after adding
+                condTypeInput.value = "-- Select --";
+                condLengthInput.value = "";
+            } else {
+                showMessage("Please select a conductor type and enter the length.");
+            }
+        });
+
+        conductorDataTable.addEventListener('click', function(event) {
+            const target = event.target;
+
+            if (target.classList.contains('edit-cond-icon')) {
+                const row = target.closest('tr');
+                const condType = row.cells[0].textContent;
+                const condLength = row.cells[1].textContent;
+
+                condTypeInput.value = condType;
+                condLengthInput.value = condLength;
+
+                // Set the row being edited
+                editingRow = row;
+            } else if (target.classList.contains('delete-cond-icon')) {
+                if (confirm('Are you sure you want to delete this conductor data?')) {
+                    target.closest('tr').remove();
+                }
+            }
+        });
+
+        linesForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(linesForm);
+
+            // Add conductor data to form data
+            const conductorData = [];
+            conductorDataTable.querySelectorAll('tr').forEach(row => {
+                const condType = row.cells[0].textContent;
+                const condLength = row.cells[1].textContent;
+                conductorData.push(`${condType}-${condLength}`);
+            });
+            formData.append('conductor_data', conductorData.join(', '));
+            formData.append('lines_id', editingLinesId || ''); // Include lines ID for update
+
+            const response = await fetchData('/addlines/', 'POST', formData);
+            const data = await response.json();
+            showMessage(data.msg || '');
+
+            if (data.laddedlinesdata) {
+                updatelinesTable(data.addedlinesdata);
+                clearForm();
+            }
+        });
+
+        linesTableBody.addEventListener('click', async (event) => {
+            const target = event.target;
+
+            if (target.classList.contains('edit-icon')) {
+                editingLinesId = target.dataset.linesId;
+                const response = await fetchData('/edit_lines/', 'POST', new URLSearchParams({ 'lines_id': editingLinesId }));
+                const data = await response.json();
+
+                if (data.error) {
+                    showMessage(data.error);
+                } else {
+                    populateForm(data);
+                }
+            } else if (target.classList.contains('delete-icon')) {
+                                // Function to open the delete modal with the line ID
+                        function openDeleteModal(lineId) {
+                            // Set the line ID in the hidden input field
+                            document.getElementById('linesid').value = lineId;
+                            // Show the modal
+                            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                            deleteModal.show();
+                        }
+
+                        // Event listener for delete icon clicks
+                        document.addEventListener('click', function (event) {
+                            const target = event.target;
+
+                            // Check if the clicked element is a delete icon
+                            if (target.classList.contains('delete-icon')) {
+                                const linesId = target.dataset.linesId;
+                                openDeleteModal(linesId);
+                            }
+                        });
+
+                        // Event listener for form submission within the modal
+                        document.getElementById('deleteForm').addEventListener('submit', async function (event) {
+                            event.preventDefault(); // Prevent the default form submission
+
+                            const modifiedDate = document.getElementById('modifieddt').value;
+                            const linesId = document.getElementById('linesid').value;
+
+                            if (!modifiedDate) {
+                                alert('Please select a modification date.');
+                                return;
+                            }
+
+                            try {
+                                // Send the delete request
+                                const response = await fetchData('/delete_lines/', 'POST', new URLSearchParams({
+                                    'lines_id': linesId,
+                                    'modifieddt': modifiedDate
+                                }));
+
+                                const data = await response.json();
+                                showMessage(data.msg || data.error);
+
+                                if (!data.error) {
+                                    // Remove the row from the table
+                                    const row = document.querySelector(`tr[data-lines-id="${linesId}"]`);
+                                    if (row) {
+                                        row.remove();
+                                    }
+                                    // Hide the modal
+                                    const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+                                    deleteModal.hide();
+                                }
+                            } catch (error) {
+                                console.error('Error during deletion:', error);
+                                showMessage('An error occurred while trying to delete the data.');
+                            }
+                        });
+
+
+            }
+        });
+
+        function updatelinesTable(addedlinesdata) {
+            linesTableBody.innerHTML = '';
+            addedlinesdata.forEach((lines, index) => {
+                const row = `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${lines.cktno}</td>
+                        <td>${lines.fbus_voltage}</td>
+                        <td>${lines.fbus_no}</td>
+                        <td>${lines.fbus_name}</td>
+                        <td>${lines.to_busno}</td>
+                        <td>${lines.to_busname}</td>
+                        <td>${lines.to_length}</td>
+                        <td>${lines.cond_type}</td>
+                        <td>${lines.cond_length}</td>
+                        <td>${lines.linecmsndt}</td>
+                        <td>${lines.pssc}</td>
+                        <td class="text-center"><i class="bi bi-pencil-fill edit-icon" data-lines-id="${lines.id}" style="cursor: pointer;"></i></td>
+                        <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-lines-id="${lines.id}"></i></td>
+                    </tr>
+                `;
+                linesTableBody.insertAdjacentHTML('beforeend', row);
+            });
+        }
+    });
+</script>
+<!-- Modal for Deletion Confirmation -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Delete Confirmation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="deleteForm" method="post">
+          {% csrf_token %}
+          <input type="hidden" id="linesid" name="lines_id">
+          <div class="mb-3">
+            <label for="modifieddt" class="form-label">Select Modification Date</label>
+            <input type="date" class="form-control" id="modifieddt" name="modifieddt" placeholder="Enter modification date">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+    <script src="{% static 'topologybootstrap/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+<script>
+    document.getElementById('fbus_voltage').addEventListener('change', function() {
+    var selectedVoltage = this.value;
+    var tossVoltageSpan = document.getElementById('toss_voltage');
+    var hiddenTossVoltage = document.getElementById('hidden_toss_voltage');
+
+    // Update the text content of the toss_voltage span
+    tossVoltageSpan.textContent = selectedVoltage;
+    // Update the hidden input value
+    hiddenTossVoltage.value = selectedVoltage;
+});
+
+</script>
+<script>
+        var message_ele = document.getElementById("msg");
+        setTimeout(function() {
+        message_ele.style.display = "none";
+        }, 3000);
+</script>
+
+</html>

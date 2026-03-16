@@ -1,0 +1,3389 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports</title>
+    <link rel="shortcut icon" href="{% static 'img/favicons/aptransco-favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'topologybootstrap/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'topologybootstrap/bs_css_icons/bs_icons.css' %}">
+
+    <!--Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/topology2/transco-styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/topology1.css' %}">
+    <link rel="stylesheet" href="{% static 'css/topology2.css' %}">
+
+
+    <!--Custom CSS -->
+<!--    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>-->
+<!--    <script src="../static/js/topology.js"></script>-->
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-1 shadow-sm py-0 sticky-top">
+
+        <div class="container-fluid font-sm">
+            <a href="#" class="navbar-brand">
+                <img class="img-fluid" src="{% static 'img/logo/multi-color-logo.png' %}" width="30" alt="APTRANSCO">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul id="topNav" class="navbar-nav me-auto mb-2 mb-md-0">
+
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="{% url 'home' %}">Home</a>
+                    </li>
+<!--                     <li class="nav-item">-->
+<!--                        <a class="nav-link" href="#">Sub Station</a>-->
+<!--                    </li>-->
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'discoms' %}">Discom</a>
+                    </li>
+
+                    <li class="nav-item font-sm">
+                        <a class="nav-link active" href="{% url 'reports' %}">Reports</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dataentry' %}">User Management</a>
+                    </li>
+
+                </ul>
+
+                <div class="ms-auto">
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                        <li class="nav-item me-2">
+                            <ul class="navbar-nav py-2 font-sm">
+                                <li class="nav-item">1086345</li>
+                                <li class="nav-item ms-1">S.Appa Rao,</li>
+                                <li class="nav-item ms-1">ACIDO/IT Apps,</li>
+                                <li class="nav-item ms-1">Vidyut Soudha/Vijayawada</li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropstart font-sm">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <img src="{% static 'img/uifaces/002_Elder.jpg' %}" alt="Profile Icon"
+                                    class="rounded rounded-pill img" width="20" height="20">
+                            </a>
+                            <ul class="dropdown-menu font-sm">
+
+                                <li><a class="dropdown-item fw-semibold" href="#">
+                                        <i class="bi bi-person-fill"></i>
+                                        Profile</a></li>
+
+                                <li><a class="dropdown-item fw-semibold" href="">
+                                        <i class="bi bi-gear-fill"></i>
+                                        Change Password</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item fw-semibold" href="logout">
+                                        <i class="bi bi-box-arrow-right"></i>
+                                        Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+    <form method="post" enctype="multipart/form-data"> {% csrf_token %}
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="row bg-light px-3 mt-1 rounded-3 shadow-sm">
+                    <div class="col-sm-12 border-success border-opacity-25">
+                        <div class="row font-sm">
+                            <label for="zone" class="col-1 col-form-label font-sm">Zone</label>
+                            <div class="col-sm-2">
+                               <select name="zone" id="zone" class="form-select">
+                                <option value="ALL">ALL</option>
+                                {% for zone in zonedata %}
+                                    <option value="{{ zone.zone_id }}" {% if zone.zone_id == selected_zone %}selected{% endif %}>{{ zone.zone_name }}</option>
+                                {% endfor %}
+                            </select>
+
+                            </div>
+                        <label for="circle" class="col-1 form-label mt-1">Circle</label>
+                            <div class="col-sm-2">
+
+                                <select id="circle" name="circle" class="form-select">
+                                <option value="ALL">ALL</option>
+                                {% for circle in circldata %}
+                                    <option value="{{ circle.circle_id }}" {% if circle.circle_id == selected_circle %}selected{% endif %}>{{ circle.circle_name }}</option>
+                                {% endfor %}
+                            </select>
+
+                        </div>
+                        <label for="div" class="col-1 form-label mt-1">Division</label>
+                        <div class="col-sm-2">
+                        	 <select id="div" name="division" class="form-select">
+                                <option value="ALL">ALL</option>
+                                {% for division in divdata %}
+                                    <option value="{{ division.div_id }}" {% if division.div_id == selected_division %}selected{% endif %}>{{ division.div_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <label for="subdiv" class="col-1 form-label mt-1">Sub Division</label>
+                        <div class="col-sm-2">
+                        	 <select id="subdiv" name="sub_div" class="form-select">
+                                <option value="ALL">ALL</option>
+                                {% for sub_div in subdivdata %}
+                                    <option value="{{ sub_div.subdiv_id }}" {% if sub_div.subdiv_id == selected_sub_div %}selected{% endif %}>{{ sub_div.subdiv_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <label class="col-1 form-label mt-2">SS Name</label>
+                        <div class="col-sm-2 mt-2">
+                            <input type="text" name="stn_name" class="form-control" id="stn_name" value="{{selected_stn_name}}">
+                        </div>
+                            <label class="col-1 form-label mt-2">Voltage</label>
+                        <div class="col-sm-2 mt-2">
+                        	<select name="voltages" id="voltages" class="form-select">
+                                <option value="" >ALL</option>
+                                <option value="11kv" {% if selected_voltage == "11kv" %} selected {% endif %}>11kv</option>
+                                <option value="33kv" {% if selected_voltage == "33kv" %} selected {% endif %}>33kv</option>
+                                <option value="132kv" {% if selected_voltage == "132kv" %} selected {% endif %}>132kv</option>
+                                <option value="220kv" {% if selected_voltage == "220kv" %} selected {% endif %}>220kv</option>
+                                <option value="400kv" {% if selected_voltage == "400kv" %} selected {% endif %}>400kv</option>
+                            </select>
+                        </div>
+                        <label class="col-1 form-label mt-2">Owner</label>
+                        <div class="col-sm-2 mt-2">
+                        	<select name="owner_list" id="owner_list" class="form-select" onchange="getownercode()">
+                                                    <option value="ALL">ALL</option>
+                                                    {% for owner in ownerdata %}
+                                                        <option value="{{owner.owner_name}}"
+                                                        {% if owner.owner_name == selected_owner_name %} selected {% endif %}>{{owner.owner_name}}</option>
+                                                    {% endfor %}
+
+                            </select>
+                        </div>
+                        <label class="col-1 form-label mt-2">District</label>
+                        <div class="col-sm-2 mt-2">
+                        	<select name="district" id="district" class="form-select">
+                                                    <option value="ALL">ALL</option>
+                                                    {% for dist in distdata %}
+                                                        <option value="{{ dist.dist_name }}" {% if dist.dist_name == selected_dist_name %} selected {% endif %}  >{{ dist.dist_name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                        </div>
+                            <div class="col-12">
+                                <button class="mt-2 mb-1 btn btn-sm btn-primary float-end btn-custom-primary fw-semibold" type="submit" name="Btnsubmit" value="Show">search</button>
+                            </div>
+                        </div>
+
+        </div>
+
+        </div>
+
+        </div>
+
+        </div>
+</form>
+        {{message}}
+        <div class="mt-3">
+            <div class="col-12">
+                <ul class="nav border-bottom-0 nav-tabs button-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="station-tab" data-bs-toggle="tab"
+                            data-bs-target="#station-tab-pane" type="button" role="tab" aria-controls="station-tab-pane"
+                            aria-selected="false">Station</button>
+                    </li>
+
+                    <li class="nav-item " role="presentation">
+                        <button class="nav-link" id="bus-tab" data-bs-toggle="tab"
+                            data-bs-target="#bus-tab-pane" type="button" role="tab" aria-controls="bus-tab-pane"
+                            aria-selected="false">Bus</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="transformers-tab" data-bs-toggle="tab"
+                            data-bs-target="#transformers-tab-pane" type="button" role="tab" aria-controls="transformers-tab-pane"
+                            aria-selected="false" tabindex="-1">Transformers</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="reactor-tab" data-bs-toggle="tab"
+                            data-bs-target="#reactor-tab-pane" type="button" role="tab" aria-controls="reactor-tab-pane"
+                            aria-selected="false" tabindex="-1">Reactor</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="cptrBanks-tab" data-bs-toggle="tab"
+                            data-bs-target="#cptrBanks-tab-pane" type="button" role="tab" aria-controls="cptrBanks-tab-pane"
+                            aria-selected="false" tabindex="-1">Capacitor Bank</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="lines-tab" data-bs-toggle="tab"
+                            data-bs-target="#lines-tab-pane" type="button" role="tab" aria-controls="lines-tab-pane"
+                            aria-selected="false" tabindex="-1">Lines</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="feeders-tab" data-bs-toggle="tab"
+                            data-bs-target="#feeders-tab-pane" type="button" role="tab" aria-controls="feeders-tab-pane"
+                            aria-selected="false" tabindex="-1">Feeder</button>
+                    </li>
+                    <!-- <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="stnTransformer-tab" data-bs-toggle="tab"
+                            data-bs-target="#stnTransformer-tab-pane" type="button" role="tab" aria-controls="stnTransformer-tab-pane"
+                            aria-selected="false" tabindex="-1">Station Transformers</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link " id="generator-tab" data-bs-toggle="tab"
+                            data-bs-target="#generator-tab-pane" type="button" role="tab"
+                            aria-controls="generator-tab-pane" aria-selected="true" tabindex="-1">Generator Station</button>
+                    </li> -->
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="dgSet-tab" data-bs-toggle="tab"
+                            data-bs-target="#dgSet-tab-pane" type="button" role="tab" aria-controls="dgSet-tab-pane"
+                            aria-selected="false" tabindex="-1">DG Set</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="stnTR-tab" data-bs-toggle="tab"
+                            data-bs-target="#stnTR-tab-pane" type="button" role="tab" aria-controls="stnTR-tab-pane"
+                            aria-selected="false" tabindex="-1">Station Transformer</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="discomGen-tab" data-bs-toggle="tab" data-bs-target="#discomGen-tab-pane" type="button" role="tab" aria-controls="discomGen-tab-pane" aria-selected="false" tabindex="-1">
+                            Bulk Loads
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content b-light rounded-bottom" id="myTabContent">
+                    <div class="tab-pane fade" id="bus-tab-pane" role="tabpanel" aria-labelledby="bus-tab"
+                        tabindex="0">
+                        <div class="row pt-1">
+                            <div class="col-sm-12">
+                                <div align="right">
+                <div class="col-sm-6" align="right">
+                    <button id="exportButtonbus" class="btn btn-primary btn-sm">
+                        <i class="bi bi-upload"></i> Export to Excel
+                    </button>
+                </div>
+            </div>
+                                <div class="table-responsive mt-3">
+                                    <table class="table table-bordered table-sm font-sm">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Sl No</th>
+                                                <th>Station ID</th>
+                                                <th>Bus No</th>
+                                                <th>Bus Code</th>
+                                                <th>Bus Name</th>
+                                                <th>Bus Voltage</th>
+                                                <th>Bus Commission Date</th>
+                                                <th>Zone</th>
+                                                <th>Circle</th>
+                                                <th>Division</th>
+                                                <th>Sub Division</th>
+                                                <th>District</th>
+                                            </tr>
+
+                                         <tr>
+
+                                                <th></th>
+                                                <th></th>
+                                                <th>
+                                                <select id="filterbusno" name="filter_bus_no">
+                                    <option value="">All</option>
+                                    {% for bus in busno %}
+                                        <option value="{{ bus.bus_no }}" {% if bus.bus_no == selected_bus_no %} selected {% endif %}>
+                                            {{ bus.bus_no }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                                </th>
+                                                <th>
+                                                <select id="filterbuscode" name="filter_bus_code">
+                                    <option value="">All</option>
+                                    {% for bus in buscode %}
+                                        <option value="{{ bus.bus_code }}" {% if bus.bus_code == selected_bus_code %} selected {% endif %}>
+                                            {{ bus.bus_code }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                                </th>
+                                                <th></th>
+                                                <th>
+                                                <select id="filterbusvolt" name="filter_bus_volt">
+                                    <option value="">All</option>
+                                    {% for bus in busvolt %}
+                                        <option value="{{ bus.bus_volt }}" {% if bus.bus_volt == selected_bus_volt %} selected {% endif %}>
+                                            {{ bus.bus_volt }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                                </th>
+                                                <th></th>
+
+                                                <th>
+
+                                                <select id="filterbuszone" name="filter_bus_zone">
+                                    <option value="">All</option>
+                                    {% for zone in buszones %}
+                                        <option value="{{ zone }}" {% if zone == selected_zone %} selected {% endif %}>
+                                            {{ zone }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterbuscircle" name="filter_bus_circle">
+                                    <option value="">All</option>
+                                    {% for circle in buscircle %}
+                                        <option value="{{ circle }}" {% if circle == selected_circle %} selected {% endif %}>
+                                            {{ circle }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterbusdiv" name="filter_bus_div">
+                                    <option value="">All</option>
+                                    {% for division in busdivision %}
+                                        <option value="{{ division }}" {% if division == selected_division %} selected {% endif %}>
+                                            {{ division }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterbussubdiv" name="filter_bus_subdiv">
+                                    <option value="">All</option>
+                                    {% for sub_div in bussub_div %}
+                                        <option value="{{ sub_div }}" {% if sub_div == selected_sub_div %} selected {% endif %}>
+                                            {{ sub_div }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterbusdistrict" name="filter_bus_district">
+                                    <option value="">All</option>
+                                    {% for district in busdistrict %}
+                                        <option value="{{ district }}" {% if district == selected_dist_name %} selected {% endif %}>
+                                            {{ district }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                            </tr>
+
+                                        </thead>
+                                        <tbody id="busresults">
+                                            {% for entry in bus_with_substation_info %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{ entry.bus.stn_name }}</td>
+                                                    <td>{{ entry.bus.bus_no }}</td>
+                                                    <td>{{ entry.bus.bus_code }}</td>
+                                                    <td>{{ entry.bus.bus_name }}</td>
+                                                    <td>{{ entry.bus.bus_volt }}</td>
+                                                    <td>{{ entry.bus.buscmsndt | date:'d-m-Y' }}</td>
+
+                                                    <!-- Substation information -->
+                                                    <td>{{ entry.zone }}</td>
+                                                    <td>{{ entry.circle }}</td>
+                                                    <td>{{ entry.division }}</td>
+                                                    <td>{{ entry.sub_div }}</td>
+                                                    <td>{{ entry.district }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                   <!--     <div class="modal fade" id="technicalModal" aria-labelledby="techDetailsLable">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header py-0 pt-3">
+                                        <div class="col-sm-12" id="techDetailsLable">
+                                            <div class="row mb-1 transco-form">
+                                                <label for="staName" class="col-2 col-form-label">Stn. Name</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" id="staName" class="form-control placeholder" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-1 transco-form">
+                                                <label for="busNumber" class="col-2 col-form-label">Bus Number</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" id="busNumber" class="form-control" disabled>
+                                                </div>
+
+                                                <label for="busCode" class="col-2 col-form-label">Bus Code</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" id="busCode" class="form-control" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-1 transco-form">
+                                                <label for="busName1" class="col-2 col-form-label">Bus Name</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" id="busName1" class="form-control" disabled>
+                                                </div>
+
+                                                <label for="bvtgs2" class="col-2 col-form-label">Bus Voltage</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" id="bvtgs2" class="form-control" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="#" class="container">
+                                            <div class="row mb-1 font-sm">
+                                                <label for="busConfig" class="col-4 col-form-label">Bus Config</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" id="busConfig" class="form-control" autofocus>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-1 font-sm">
+                                                <label for="cdtrType" class="col-4 col-form-label">Conducter
+                                                    Type</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" id="cdtrType" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="row mb-1 font-sm">
+                                                <label for="cdtrNo" class="col-4 col-form-label">No of
+                                                    Conductors</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" id="cdtrNo" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="row font-sm">
+                                                <label for="bSection" class="col-4 col-form-label">Bus
+                                                    Sectionlizer</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" id="bSection" class="form-control">
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-sm btn-custom-primary w-15">Save</button>
+                                        <button class="btn btn-sm btn-secondary w-15"
+                                            data-bs-dismiss="modal">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+
+                    <div class="tab-pane fade" id="transformers-tab-pane" role="tabpanel" aria-labelledby="transformers-tab" tabindex="0">
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div align="right">
+                <div class="col-sm-6" align="right">
+                    <button id="exportButton" class="btn btn-primary btn-sm">
+                        <i class="bi bi-upload"></i> Export to Excel
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-responsive mt-3">
+                <table class="table table-bordered table-sm font-sm text-center">
+                    <thead>
+                        <tr>
+                            <th>Sl No</th>
+                            <th>Station</th>
+                            <th>Transformer Type</th>
+                            <th>Voltage Ratio</th>
+                            <th>Primary Bus Number</th>
+                            <th>Primary Bus Name</th>
+                            <th>Secondary Bus Number</th>
+                            <th>Secondary Bus Name</th>
+                            <th>Transformer Title</th>
+                            <th>Transformer Capacity (MVA)</th>
+                            <th>Transformer ID</th>
+                            <th>Transformer Commission Date</th>
+                            <th>Zone</th>
+                            <th>Circle</th>
+                            <th>Division</th>
+                            <th>Sub Division</th>
+                            <th>District</th>
+                        </tr>
+                    <tr>
+                            <th></th>
+                            <th></th>
+                            <th>
+                                <select id="filterTrfType" name="filter_trf_type">
+                                    <option value="">All</option>
+                                    {% for trf in trffilters %}
+                                        <option value="{{ trf.trf_type }}" {% if trf.trf_type == selected_trf_type %} selected {% endif %}>
+                                            {{ trf.trf_type }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </th>
+
+                            <th>
+    <select id="filterTrfvoltratio" name="filter_trfvoltratio">
+        <option value="">All</option>
+        {% for trf in voltratio %}
+            <option value="{{ trf.prim_voltage }} / {{ trf.sec_voltage }}"
+                {% if trf.prim_voltage == selected_prim_voltage and trf.sec_voltage == selected_sec_voltage %}
+                    selected
+                {% endif %}>
+                {{ trf.prim_voltage }} / {{ trf.sec_voltage }}
+            </option>
+        {% endfor %}
+    </select>
+</th>
+
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                         <th></th>
+                            <th>
+                                <select id="filterTrfcapacity" name="filter_trfcapacity">
+        <option value="">All</option>
+        {% for trf in trfcapacity %}
+            <option value="{{ trf.trf_rating }} "
+                {% if trf.trf_rating == selected_trf_rating  %} selected {% endif %}>
+                {{ trf.trf_rating }}
+            </option>
+        {% endfor %}
+    </select>
+                            </th>
+                            <th></th>
+                            <th></th>
+                            <th>
+
+                                                <select id="filtertrfzone" name="filter_trf_zone">
+                                    <option value="">All</option>
+                                    {% for zone in trfzones %}
+                                        <option value="{{ zone }}" {% if zone == selected_zone %} selected {% endif %}>
+                                            {{ zone }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filtertrfcircle" name="filter_trf_circle">
+                                    <option value="">All</option>
+                                    {% for circle in trfcircle %}
+                                        <option value="{{ circle }}" {% if circle == selected_circle %} selected {% endif %}>
+                                            {{ circle }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+    <select id="filtertrfdiv" name="filter_trf_div" aria-label="Division">
+        <option value="">All</option>
+        {% for division in trfdivision %}
+            <option value="{{ division }}" {% if division == selected_division %} selected {% endif %}>
+                {{ division }}
+            </option>
+        {% endfor %}
+    </select>
+</th>
+
+                                                <th>
+
+                                                <select id="filtertrfsubdiv" name="filter_trf_subdiv">
+                                    <option value="">All</option>
+                                    {% for sub_div in trfsub_div %}
+                                        <option value="{{ sub_div }}" {% if sub_div == selected_sub_div %} selected {% endif %}>
+                                            {{ sub_div }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filtertrfdistrict" name="filter_trf_district">
+                                    <option value="">All</option>
+                                    {% for district in trfdistrict %}
+                                        <option value="{{ district }}" {% if district == selected_dist_name %} selected {% endif %}>
+                                            {{ district }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                        </tr>
+                    </thead>
+                   <tbody id="transformerResults">
+    {% for tf in trf_with_ss_info %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ tf.transformer.stn_name }}</td>  <!-- Reference 'transformer' fields -->
+            <td>{{ tf.transformer.trf_type }}</td>
+            <td>{{ tf.transformer.prim_voltage }} / {{ tf.transformer.sec_voltage }}</td>
+            <td>{{ tf.transformer.prim_busno }}</td>
+            <td>{{ tf.transformer.prim_busname }}</td>
+            <td>{{ tf.transformer.sec_busno }}</td>
+            <td>{{ tf.transformer.sec_busname }}</td>
+            <td>{{ tf.transformer.trf_title }}</td>
+            <td>{{ tf.transformer.trf_rating }}</td>
+            <td>{{ tf.transformer.trf_id }}</td>
+            <td>{{ tf.transformer.trfcmsndt | date:'d-m-Y' }}</td>
+            <td>{{ tf.zone }}</td>  <!-- Zone info from substation dict -->
+            <td>{{ tf.circle }}</td>  <!-- Circle info from substation dict -->
+            <td>{{ tf.division }}</td>  <!-- Division info from substation dict -->
+            <td>{{ tf.sub_div }}</td>  <!-- Subdivision info from substation dict -->
+            <td>{{ tf.district }}</td>  <!-- District info from substation dict -->
+        </tr>
+    {% endfor %}
+</tbody>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+                    <div class="tab-pane fade" id="lines-tab-pane" role="tabpanel" aria-labelledby="lines-tab"
+                        tabindex="0">
+                        <div class="row mt-3">
+                            <div class="col-sm-12">
+                                <div align="right">
+                <div class="col-sm-6" align="right">
+                    <button id="exportButtonlines" class="btn btn-primary btn-sm">
+                        <i class="bi bi-upload"></i> Export to Excel
+                    </button>
+                </div>
+            </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-sm font-sm text-center">
+                                        <thead>
+                                          <tr>
+                                                <th rowspan="2">SL NO</th>
+                                                <th rowspan="2">Voltage</th>
+                                                <th rowspan="2">From Bus Number</th>
+                                                <th rowspan="2">From Bus Name</th>
+                                                <th rowspan="2">To Bus Number</th>
+                                                <th rowspan="2">To Bus Name</th>
+                                                <th rowspan="2">CKT.NO</th>
+                                                <th rowspan="2">Total Length</th>
+                                                <th rowspan="2">Conductor</th>
+                                                <th rowspan="2">Length</th>
+                                                <th rowspan="2">Commission Date</th>
+                                                <th colspan="5">From Bus</th> <!-- From Bus header spanning 5 columns -->
+                                                <th colspan="5">To Bus</th>   <!-- To Bus header spanning 5 columns -->
+                                            </tr>
+                                            <tr>
+                                                <!-- Sub-headers for From Bus -->
+                                                <th>Zone</th>
+                                                <th>Circle</th>
+                                                <th>Division</th>
+                                                <th>Sub Division</th>
+                                                <th>District</th>
+                                                <!-- Sub-headers for To Bus -->
+                                                <th>Zone</th>
+                                                <th>Circle</th>
+                                                <th>Division</th>
+                                                <th>Sub Division</th>
+                                                <th>District</th>
+                                            </tr>
+                                        <tr>
+                                                <th rowspan="2"></th>
+                                                <th rowspan="2">
+                                                     <select id="filterlinevolt" name="filter_linevolt">
+        <option value="">All</option>
+        {% for line in linevolt %}
+            <option value="{{ line.fbus_voltage }} "
+                {% if line.fbus_voltage == selected_fbus_voltage  %} selected {% endif %}>
+                {{ line.fbus_voltage }}
+            </option>
+        {% endfor %}
+    </select>
+                                                </th>
+                                                <th rowspan="2"></th>
+                                                <th rowspan="2"></th>
+                                                <th rowspan="2"></th>
+                                                <th rowspan="2"></th>
+                                                <th rowspan="2"></th>
+                                                <th rowspan="2"></th>
+                                                <th rowspan="2"></th>
+                                                <th rowspan="2"></th>
+                                                <th rowspan="2"></th>
+                                                   <!-- To Bus header spanning 5 columns -->
+                                            </tr>
+                                            <tr>
+                                                <!-- Sub-headers for From Bus -->
+                                                <th>
+
+                                                <select id="filterlinefromzone" name="filter_line_zone">
+                                    <option value="">All</option>
+                                    {% for zone in flinezones %}
+                                        <option value="{{ zone }}" {% if zone == selected_zone %} selected {% endif %}>
+                                            {{ zone }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterlinefromcircle" name="filter_line_circle">
+                                    <option value="">All</option>
+                                    {% for circle in flinecircle %}
+                                        <option value="{{ circle }}" {% if circle == selected_circle %} selected {% endif %}>
+                                            {{ circle }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterlinefromdiv" name="filter_line_div">
+                                    <option value="">All</option>
+                                    {% for division in flinedivision %}
+                                        <option value="{{ division }}" {% if division == selected_division %} selected {% endif %}>
+                                            {{ division }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterlinefromsubdiv" name="filter_line_subdiv">
+                                    <option value="">All</option>
+                                    {% for sub_div in flinesub_div %}
+                                        <option value="{{ sub_div }}" {% if sub_div == selected_sub_div %} selected {% endif %}>
+                                            {{ sub_div }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterlinefromdistrict" name="filter_line_district">
+                                    <option value="">All</option>
+                                    {% for district in flinedistrict %}
+                                        <option value="{{ district }}" {% if district == selected_dist_name %} selected {% endif %}>
+                                            {{ district }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <!-- Sub-headers for To Bus -->
+                                                <th>
+
+                                                <select id="filterlinetozone" name="filter_line_zone">
+                                    <option value="">All</option>
+                                    {% for zone in tolinezones %}
+                                        <option value="{{ zone }}" {% if zone == selected_zone %} selected {% endif %}>
+                                            {{ zone }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterlinetocircle" name="filter_line_circle">
+                                    <option value="">All</option>
+                                    {% for circle in tolinecircle %}
+                                        <option value="{{ circle }}" {% if circle == selected_circle %} selected {% endif %}>
+                                            {{ circle }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterlinetodiv" name="filter_line_div">
+                                    <option value="">All</option>
+                                    {% for division in tolinedivision %}
+                                        <option value="{{ division }}" {% if division == selected_division %} selected {% endif %}>
+                                            {{ division }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterlinetosubdiv" name="filter_line_subdiv">
+                                    <option value="">All</option>
+                                    {% for sub_div in tolinesub_div %}
+                                        <option value="{{ sub_div }}" {% if sub_div == selected_sub_div %} selected {% endif %}>
+                                            {{ sub_div }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterlinetodistrict" name="filter_line_district">
+                                    <option value="">All</option>
+                                    {% for district in tolinedistrict %}
+                                        <option value="{{ district }}" {% if district == selected_dist_name %} selected {% endif %}>
+                                            {{ district }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="lineresults">
+                                        {% for line in line_with_ss_info %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{line.lines.fbus_voltage}}</td>
+                                                <td>{{line.lines.fbus_no}}</td>
+                                                <td>{{line.lines.fbus_name}}</td>
+                                                <td>{{line.lines.to_busno}}</td>
+                                                <td>{{line.lines.to_busname}}</td>
+                                                <td>{{line.lines.cktno}}</td>
+                                                <td>{{line.lines.to_length}}</td>
+                                                <td>{{line.lines.cond_type}}</td>
+                                                <td> {{line.lines.cond_length}}</td>
+                                                <td> {{line.lines.linecmsndt | date:'d-m-Y'}}</td>
+
+                                                <td>{{ line.fzone }}</td>
+                                                <td>{{ line.fcircle }}</td>
+                                                <td>{{ line.fdivision }}</td>
+                                                <td>{{ line.fsub_div }}</td>
+                                                <td>{{ line.fdistrict }}</td>
+
+                                                <td>{{ line.tozone }}</td>
+                                                <td>{{ line.tocircle }}</td>
+                                                <td>{{ line.todivision }}</td>
+                                                <td>{{ line.tosub_div }}</td>
+                                                <td>{{ line.todistrict }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="cptrBanks-tab-pane" role="tabpanel" aria-labelledby="cptrBanks-tab"
+                        tabindex="-1">
+
+                        <div class="row font-sm">
+                            <div class="col-sm-12">
+                                 <div align="right">
+                <div class="col-sm-6" align="right">
+                    <button id="exportButtoncap" class="btn btn-primary btn-sm">
+                        <i class="bi bi-upload"></i> Export to Excel
+                    </button>
+                </div>
+            </div>
+                                <div class="table-responsive mt-3">
+                                    <table class="table table-bordered table-sm font-sm text-center">
+                                        <thead>
+                                            <tr>
+                                                        <th>S No</th>
+                                                        <th>Station Name</th>
+                                                        <th>Bus Voltage</th>
+                                                        <th>Rated Voltage</th>
+                                                        <th>Bus No</th>
+                                                        <th>Bus Name</th>
+                                                        <th>Rating</th>
+                                                        <th>Capacitor ID</th>
+                                                        <th>Commission Date</th>
+                                                        <th>Zone</th>
+                                                        <th>Circle</th>
+                                                        <th>Division</th>
+                                                        <th>Sub Division</th>
+                                                        <th>District</th>
+                                            </tr>
+                                        <tr>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th>
+                                                            <select id="filtercapvolt" name="filter_capvolt">
+                                    <option value="">All</option>
+                                    {% for cap in capvolt %}
+                                        <option value="{{ cap.cap_voltage }}" {% if cap.cap_voltage == selected_cap_voltage %} selected {% endif %}>
+                                            {{ cap.cap_voltage }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                                        </th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th>
+                                                             <select id="filtercapbusname" name="filter_capbusname">
+                                    <option value="">All</option>
+                                    {% for cap in capbusname %}
+                                        <option value="{{ cap.bus_name }}" {% if cap.bus_name == selected_bus_name %} selected {% endif %}>
+                                            {{ cap.bus_name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                                        </th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th>
+
+                                                <select id="filtercapzone" name="filter_cap_zone">
+                                    <option value="">All</option>
+                                    {% for zone in capzones %}
+                                        <option value="{{ zone }}" {% if zone == selected_zone %} selected {% endif %}>
+                                            {{ zone }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filtercapcircle" name="filter_cap_circle">
+                                    <option value="">All</option>
+                                    {% for circle in capcircle %}
+                                        <option value="{{ circle }}" {% if circle == selected_circle %} selected {% endif %}>
+                                            {{ circle }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filtercapdiv" name="filter_cap_div">
+                                    <option value="">All</option>
+                                    {% for division in capdivision %}
+                                        <option value="{{ division }}" {% if division == selected_division %} selected {% endif %}>
+                                            {{ division }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filtercapsubdiv" name="filter_cap_subdiv">
+                                    <option value="">All</option>
+                                    {% for sub_div in capsub_div %}
+                                        <option value="{{ sub_div }}" {% if sub_div == selected_sub_div %} selected {% endif %}>
+                                            {{ sub_div }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filtercapdistrict" name="filter_cap_district">
+                                    <option value="">All</option>
+                                    {% for district in capdistrict %}
+                                        <option value="{{ district }}" {% if district == selected_dist_name %} selected {% endif %}>
+                                            {{ district }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="capacitorresults">
+                                        {% for cap in cap_with_ss_info %}
+                                            <tr>
+                                                        <td>{{forloop.counter}}</td>
+                                                        <td>{{cap.capacitorbank.stn_name}}</td>
+                                                        <td>{{cap.capacitorbank.cap_voltage}}</td>
+                                                        <td>{{cap.capacitorbank.rated_voltage}}</td>
+                                                        <td>{{cap.capacitorbank.bus_no}}</td>
+                                                        <td>{{cap.capacitorbank.bus_name}}</td>
+                                                        <td>{{cap.capacitorbank.cap_rating}}</td>
+                                                        <td>{{cap.capacitorbank.cap_id}}</td>
+                                                        <td>{{cap.capacitorbank.capcmsndt | date:'d-m-Y'}}</td>
+                                                        <td>{{cap.zone }}</td>
+                                                        <td>{{cap.circle }}</td>
+                                                        <td>{{cap.division }}</td>
+                                                        <td>{{cap.sub_div }}</td>
+                                                        <td>{{cap.district }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="reactor-tab-pane" role="tabpanel" aria-labelledby="reactor-tab"
+                        tabindex="-1">
+
+                        <div class="row font-sm">
+                            <div class="col-sm-12">
+                                <div align="right">
+                <div class="col-sm-6" align="right">
+                    <button id="exportButtonrec" class="btn btn-primary btn-sm">
+                        <i class="bi bi-upload"></i> Export to Excel
+                    </button>
+                </div>
+            </div>
+                                <div class="table-responsive mt-3">
+                                    <table class="table table-bordered table-sm font-sm text-center">
+                                        <thead>
+                                            <tr>
+
+
+                                                <th>SL NO</th>
+                                                <th>Type</th>
+                                                <th>Voltage</th>
+                                                <th>Bus No/Line ID</th>
+                                                <th>Bus Name/Line Name</th>
+                                                <th>Capacity/Rating</th>
+                                                <th>Reactor ID</th>
+                                                <th>RatedVoltage</th>
+                                                <th>Convertible</th>
+                                                <th>Commission Date</th>
+                                                <th>Zone</th>
+                                                <th>Circle</th>
+                                                <th>Division</th>
+                                                <th>Sub Division</th>
+                                                <th>District</th>
+
+                                            </tr>
+                                        <tr>
+                                                <th></th>
+                                                <th>
+                                                    <select id="filterrectype" name="filter_rec_type">
+                                    <option value="">All</option>
+                                    {% for rec in rectype %}
+                                        <option value="{{ rec.react_type }}" {% if rec.react_type == selected_react_type %} selected {% endif %}>
+                                            {{ rec.react_type }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                                </th>
+                                                <th>
+                                                    <select id="filterrecvolt" name="filter_rec_volt">
+                                    <option value="">All</option>
+                                    {% for rec in recvolt %}
+                                        <option value="{{ rec.react_voltage }}" {% if rec.react_voltage == selected_react_voltage %} selected {% endif %}>
+                                            {{ rec.react_voltage }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                                </th>
+                                                <th></th>
+                                                <th></th>
+                                                <th>
+                                                     <select id="filterrecrating" name="filter_rec_volt">
+                                    <option value="">All</option>
+                                    {% for rec in recrating %}
+                                        <option value="{{ rec.react_cap }}" {% if rec.react_cap == selected_react_cap %} selected {% endif %}>
+                                            {{ rec.react_cap }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                                </th>
+                                                <th></th>
+                                                <th></th>
+                                                <th>
+                                                    <select id="filterconv" name="filter_conv">
+                                    <option value="">All</option>
+                                    {% for rec in convertiable %}
+                                        <option value="{{ rec.convertible }}" {% if rec.convertible == selected_convertible %} selected {% endif %}>
+                                            {{ rec.convertible }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                                </th>
+                                                <th></th>
+                                                <th>
+
+                                                <select id="filterreczone" name="filter_rec_zone">
+                                    <option value="">All</option>
+                                    {% for zone in reczones %}
+                                        <option value="{{ zone }}" {% if zone == selected_zone %} selected {% endif %}>
+                                            {{ zone }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterreccircle" name="filter_rec_circle">
+                                    <option value="">All</option>
+                                    {% for circle in reccircle %}
+                                        <option value="{{ circle }}" {% if circle == selected_circle %} selected {% endif %}>
+                                            {{ circle }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterrecdiv" name="filter_rec_div">
+                                    <option value="">All</option>
+                                    {% for division in recdivision %}
+                                        <option value="{{ division }}" {% if division == selected_division %} selected {% endif %}>
+                                            {{ division }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterrecsubdiv" name="filter_rec_subdiv">
+                                    <option value="">All</option>
+                                    {% for sub_div in recsub_div %}
+                                        <option value="{{ sub_div }}" {% if sub_div == selected_sub_div %} selected {% endif %}>
+                                            {{ sub_div }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterrecdistrict" name="filter_rec_district">
+                                    <option value="">All</option>
+                                    {% for district in recdistrict %}
+                                        <option value="{{ district }}" {% if district == selected_dist_name %} selected {% endif %}>
+                                            {{ district }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="reactorresults">
+                                        {% for rect in rec_with_ss_info %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{rect.reactor.react_type}}</td>
+                                                <td>{{rect.reactor.react_voltage}}</td>
+                                                <td>{{rect.reactor.line_id}}</td>
+                                                <td>{{rect.reactor.line_name}}</td>
+                                                <td>{{rect.reactor.react_cap}}</td>
+                                                <td>{{rect.reactor.react_id}}</td>
+                                                <td>{{rect.reactor.rated_voltage}}</td>
+                                                <td>{{rect.reactor.convertible}}</td>
+                                                <td>{{rect.reactor.reccmsndt | date:'d-m-Y'}}</td>
+                                                <td>{{ rect.zone }}</td>
+                                                <td>{{ rect.circle }}</td>
+                                                <td>{{ rect.division }}</td>
+                                                <td>{{ rect.sub_div }}</td>
+                                                <td>{{ rect.district }}</td>
+
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="feeders-tab-pane" role="tabpanel" aria-labelledby="feeders-tab"
+                        tabindex="-1">
+
+                        <div class="row font-sm">
+                            <div class="col-sm-12">
+                                 <div align="right">
+                <div class="col-sm-6" align="right">
+                    <button id="exportButtonfed" class="btn btn-primary btn-sm">
+                        <i class="bi bi-upload"></i> Export to Excel
+                    </button>
+                </div>
+            </div>
+                                <div class="table-responsive mt-3">
+                                    <table class="table table-bordered table-sm font-sm text-center">
+                                        <thead>
+                                            <tr>
+
+                                                <th>SL NO</th>
+                                                <th>Station Name</th>
+                                                <th>Voltage</th>
+                                                <th>Bus No</th>
+                                                <th>Bus Name</th>
+                                                <th>Feeder Name</th>
+                                                <th>Feeder No</th>
+                                                <th>Other End</th>
+                                                <th>Connection Type</th>
+                                                <th>Category</th>
+                                                <th>Autoload</th>
+                                                <th>Commission Date</th>
+                                                <th>Zone</th>
+                                                <th>Circle</th>
+                                                <th>Division</th>
+                                                <th>Sub Division</th>
+                                                <th>District</th>
+                                            </tr>
+                                        <tr>
+
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th>
+                                                    <select id="filterfedcontype" name="filter_contype">
+                                    <option value="">All</option>
+                                    {% for fed in contype %}
+                                        <option value="{{ fed.connectiontype }}" {% if fed.connectiontype == selected_connectiontype %} selected {% endif %}>
+                                            {{ fed.connectiontype }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                                </th>
+                                                <th>
+                                                    <select id="filtercategory" name="filter_category">
+                                    <option value="">All</option>
+                                    {% for fed in category %}
+                                        <option value="{{ fed.cat_loads }}" {% if fed.cat_loads == selected_cat_loads %} selected {% endif %}>
+                                            {{ fed.cat_loads }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                                </th>
+                                                <th></th>
+                                                <th></th>
+                                                <th>
+
+                                                <select id="filterfedzone" name="filter_fed_zone">
+                                    <option value="">All</option>
+                                    {% for zone in fedzones %}
+                                        <option value="{{ zone }}" {% if zone == selected_zone %} selected {% endif %}>
+                                            {{ zone }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterfedcircle" name="filter_fed_circle">
+                                    <option value="">All</option>
+                                    {% for circle in fedcircle %}
+                                        <option value="{{ circle }}" {% if circle == selected_circle %} selected {% endif %}>
+                                            {{ circle }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterfeddiv" name="filter_fed_div">
+                                    <option value="">All</option>
+                                    {% for division in feddivision %}
+                                        <option value="{{ division }}" {% if division == selected_division %} selected {% endif %}>
+                                            {{ division }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterfedsubdiv" name="filter_fed_subdiv">
+                                    <option value="">All</option>
+                                    {% for sub_div in fedsub_div %}
+                                        <option value="{{ sub_div }}" {% if sub_div == selected_sub_div %} selected {% endif %}>
+                                            {{ sub_div }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterfeddistrict" name="filter_fed_district">
+                                    <option value="">All</option>
+                                    {% for district in feddistrict %}
+                                        <option value="{{ district }}" {% if district == selected_dist_name %} selected {% endif %}>
+                                            {{ district }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="feederresults">
+                                        {% for fed in fed_with_ss_info %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{fed.feeder.stn_name}}</td>
+                                                <td>{{fed.feeder.voltage}}</td>
+                                                <td>{{fed.feeder.bus_no}}</td>
+                                                <td>{{fed.feeder.bus_name}}</td>
+                                                <td>{{fed.feeder.feeder_name}}</td>
+                                                <td>{{fed.feeder.feeder_no}}</td>
+                                                <td>{{fed.feeder.otherend}}</td>
+                                                <td>{{fed.feeder.connectiontype}}</td>
+                                                <td>{{fed.feeder.cat_loads}}</td>
+                                                <td>{{fed.feeder.autoload_shed}}</td>
+                                                <td>{{fed.feeder.fedcmsndt | date:'d-m-Y'}}</td>
+                                                <td>{{fed.zone }}</td>
+                                                <td>{{fed.circle }}</td>
+                                                <td>{{fed.division }}</td>
+                                                <td>{{fed.sub_div }}</td>
+                                                <td>{{fed.district }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="stnTR-tab-pane" role="tabpanel" aria-labelledby="stnTR-tab"
+                        tabindex="-1">
+                        <div class="row font-sm">
+                            <div class="col-sm-12">
+                                <div align="right">
+                <div class="col-sm-6" align="right">
+                    <button id="exportButtonstntrf" class="btn btn-primary btn-sm">
+                        <i class="bi bi-upload"></i> Export to Excel
+                    </button>
+                </div>
+            </div>
+                                <div class="table-responsive mt-3">
+                                    <table class="table table-bordered table-sm font-sm text-center">
+                                        <thead>
+                                            <tr>
+
+                                               <th>SL NO</th>
+                                                <th>Station Name</th>
+                                                <th>Primary Voltage</th>
+                                                <th>Secondary Voltage</th>
+                                                <th>Rating</th>
+                                                 <th>Stn Trans ID</th>
+                                                <th>Source of Feeding</th>
+                                                <th>Discom SS</th>
+                                                <th>Feeder Name</th>
+                                                <th>Length of Feeder</th>
+                                                <th>Feeder Type</th>
+                                                <th>Trans ID</th>
+                                                <th>Zone</th>
+                                                <th>Circle</th>
+                                                <th>Division</th>
+                                                <th>Sub Division</th>
+                                                <th>District</th>
+
+                                            </tr>
+                                        <tr>
+
+                                               <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th>
+                                                    <select id="filterstntrfrating" name="filter_rating">
+                                    <option value="">All</option>
+                                    {% for stntrf in rating %}
+                                        <option value="{{ stntrf.rating }}" {% if stntrf.rating == selected_rating %} selected {% endif %}>
+                                            {{ stntrf.rating }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                                </th>
+                                                 <th></th>
+                                                <th>
+                                                    <select id="filterstntrfsource" name="filter_source">
+                                    <option value="">All</option>
+                                    {% for stntrf in source %}
+                                        <option value="{{ stntrf.source }}" {% if stntrf.source == selected_source %} selected {% endif %}>
+                                            {{ stntrf.source }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                                </th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+
+                                                <th>
+
+                                                <select id="filterstntrfzone" name="filter_stntrf_zone">
+                                    <option value="">All</option>
+                                    {% for zone in stntrfzones %}
+                                        <option value="{{ zone }}" {% if zone == selected_zone %} selected {% endif %}>
+                                            {{ zone }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterstntrfcircle" name="filter_stntrf_circle">
+                                    <option value="">All</option>
+                                    {% for circle in stntrfcircle %}
+                                        <option value="{{ circle }}" {% if circle == selected_circle %} selected {% endif %}>
+                                            {{ circle }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterstntrfdiv" name="filter_stntrf_div">
+                                    <option value="">All</option>
+                                    {% for division in stntrfdivision %}
+                                        <option value="{{ division }}" {% if division == selected_division %} selected {% endif %}>
+                                            {{ division }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterstntrfsubdiv" name="filter_stntrf_subdiv">
+                                    <option value="">All</option>
+                                    {% for sub_div in stntrfsub_div %}
+                                        <option value="{{ sub_div }}" {% if sub_div == selected_sub_div %} selected {% endif %}>
+                                            {{ sub_div }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterstntrfdistrict" name="filter_stntrf_district">
+                                    <option value="">All</option>
+                                    {% for district in stntrfdistrict %}
+                                        <option value="{{ district }}" {% if district == selected_dist_name %} selected {% endif %}>
+                                            {{ district }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="stntrfresults">
+                                        {% for stntrf in stntrf_with_ss_info %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{stntrf.stntransformer.stn_name}}</td>
+                                                <td>{{stntrf.stntransformer.prim_volt}}</td>
+                                                <td>{{stntrf.stntransformer.sec_volt}}</td>
+                                                <td>{{stntrf.stntransformer.rating}}</td>
+                                                <td>{{stntrf.stntransformer.stntrf_id}}</td>
+                                                <td>{{stntrf.stntransformer.source}}</td>
+                                                <td>{{stntrf.stntransformer.discomss | default:"--"}}</td>
+                                                <td>{{stntrf.stntransformer.feeder_name| default:"--"}}</td>
+                                                <td>{{stntrf.stntransformer.length_feeder| default:"--"}}</td>
+                                                <td>{{stntrf.stntransformer.feed_type| default:"--"}}</td>
+                                                <td>{{stntrf.stntransformer.trnf_id| default:"--"}}</td>
+                                                <td>{{stntrf.zone }}</td>
+                                                <td>{{stntrf.circle }}</td>
+                                                <td>{{stntrf.division }}</td>
+                                                <td>{{stntrf.sub_div }}</td>
+                                                <td>{{stntrf.district }}</td>
+
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="tab-pane fade" id="dgSet-tab-pane" role="tabpanel" aria-labelledby="dgSet-tab"
+                        tabindex="-1">
+                        <div class="row font-sm">
+                            <div class="col-sm-12">
+                                 <div align="right">
+                <div class="col-sm-6" align="right">
+                    <button id="exportButtondg" class="btn btn-primary btn-sm">
+                        <i class="bi bi-upload"></i> Export to Excel
+                    </button>
+                </div>
+            </div>
+                                <div class="table-responsive mt-3">
+                                    <table class="table table-bordered table-sm font-sm text-center">
+                                        <thead>
+                                            <tr>
+
+                                                <th>SL No</th>
+                                                <th>Station Name</th>
+                                                <th>DGSET ID</th>
+                                                <th>Rating</th>
+                                                <th>Commission Date</th>
+                                                <th>Zone</th>
+                                                <th>Circle</th>
+                                                <th>Division</th>
+                                                <th>Sub Division</th>
+                                                <th>District</th>
+
+                                            </tr>
+                                        <tr>
+
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th>
+
+                                                <select id="filterdgzone" name="filter_dg_zone">
+                                    <option value="">All</option>
+                                    {% for zone in dgzones %}
+                                        <option value="{{ zone }}" {% if zone == selected_zone %} selected {% endif %}>
+                                            {{ zone }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterdgcircle" name="filter_dg_circle">
+                                    <option value="">All</option>
+                                    {% for circle in dgcircle %}
+                                        <option value="{{ circle }}" {% if circle == selected_circle %} selected {% endif %}>
+                                            {{ circle }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterdgdiv" name="filter_dg_div">
+                                    <option value="">All</option>
+                                    {% for division in dgdivision %}
+                                        <option value="{{ division }}" {% if division == selected_division %} selected {% endif %}>
+                                            {{ division }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterdgsubdiv" name="filter_dg_subdiv">
+                                    <option value="">All</option>
+                                    {% for sub_div in dgsub_div %}
+                                        <option value="{{ sub_div }}" {% if sub_div == selected_sub_div %} selected {% endif %}>
+                                            {{ sub_div }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterdgdistrict" name="filter_dg_district">
+                                    <option value="">All</option>
+                                    {% for district in dgdistrict %}
+                                        <option value="{{ district }}" {% if district == selected_dist_name %} selected {% endif %}>
+                                            {{ district }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="dgsetresults">
+                                        {% for dg in dgset_with_ss_info %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{dg.dgset.stn_name}}</td>
+                                                <td>{{dg.dgset.dgset_id}}</td>
+                                                <td>{{dg.dgset.rating}}</td>
+                                                <td>{{dg.dgset.dgcmsndt | date:'d-m-Y'}}</td>
+                                                <td>{{dg.zone }}</td>
+                                                <td>{{dg.circle }}</td>
+                                                <td>{{dg.division }}</td>
+                                                <td>{{dg.sub_div }}</td>
+                                                <td>{{dg.district }}</td>
+
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+  <!--                  <div class="tab-pane fade" id="generator-tab-pane" role="tabpanel" aria-labelledby="generator-tab"
+                            tabindex="-1">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="table-responsive mt-3">
+                                    <table class="table table-bordered table-sm font-sm text-center">
+                                        <thead>
+                                            <tr>
+
+                                                <th>SL No</th>
+                                                <th>Type</th>
+                                                <th>Stage/No of WTG/Invt</th>
+                                                <th>Total Cap</th>
+                                                <th>DC Cap</th>
+                                                <th>Bus Voltage</th>
+                                                <th>Bus No</th>
+                                                <th>Bus Name</th>
+                                                <th>Gen Stn/PSS</th>
+                                                <th>Owner</th>
+                                                <th>To Grid SS</th>
+                                                <th>Grid Bus Vol</th>
+                                                <th>To Bus No</th>
+                                                <th>To Bus Name</th>
+                                                <th>Edit</th>
+                                                <th>Delete</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for genrt in genrtdata %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{genrt.type}}</td>
+                                                <td>{{genrt.stage}}</td>
+                                                <td>{{genrt.owner}}</td>
+                                                <td>{{genrt.dccap}}</td>
+                                                <td>{{genrt.busvolt}}</td>
+                                                <td>{{genrt.busno}}</td>
+                                                <td>{{genrt.busname}}</td>
+                                                <td>{{genrt.genstn}}</td>
+                                                <td>{{genrt.totalcap}}</td>
+                                                <td>{{genrt.togrid}}</td>
+                                                <td>{{genrt.gridbus}}</td>
+                                                <td>{{genrt.tobusno}}</td>
+                                                <td>{{genrt.tobusname}}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                </div>
+                            </div>
+                    </div> -->
+
+                    <div class="tab-pane fade" id="discomGen-tab-pane" role="tabpanel" aria-labelledby="discomGen-tab"
+                         tabindex="-1">
+                        <div class="row font-sm">
+                            <div class="col-sm-12">
+                                <div align="right">
+                <div class="col-sm-6" align="right">
+                    <button id="exportButtonbulk" class="btn btn-primary btn-sm">
+                        <i class="bi bi-upload"></i> Export to Excel
+                    </button>
+                </div>
+            </div>
+                                <div class="table-responsive mt-3">
+                                    <table class="table table-bordered table-sm font-sm text-center">
+                                        <thead>
+                                            <tr>
+
+                                                <th>SL NO</th>
+                                                <th>Station Name</th>
+                                                <th>Bus Voltage</th>
+                                                <th>Bus No</th>
+                                                <th>Bus Name</th>
+                                                <th>Cons Name</th>
+                                                <th>Cons Category</th>
+                                                <th>Discom</th>
+                                                <th>Contr Load</th>
+                                                <th>Commission Date</th>
+                                                <th>Zone</th>
+                                                <th>Circle</th>
+                                                <th>Division</th>
+                                                <th>Sub Division</th>
+                                                <th>District</th>
+                                            </tr>
+                                        <tr>
+
+                                                <th></th>
+                                                <th></th>
+                                                <th>
+                                                     <select id="filterbulkvolt" name="filter_bulkvolt">
+                                    <option value="">All</option>
+                                    {% for bulk in bulkvolt %}
+                                        <option value="{{ bulk.bus_volt }}" {% if bulk.bus_volt == selected_bulkvolt %} selected {% endif %}>
+                                            {{ bulk.bus_volt }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                                </th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th>
+                                                     <select id="filterbulkdiscom" name="filter_bulkdiscom">
+                                    <option value="">All</option>
+                                    {% for bulk in discom %}
+                                        <option value="{{ bulk.discom }}" {% if bulk.discom == selected_bulkdiscom %} selected {% endif %}>
+                                            {{ bulk.discom }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                                                </th>
+                                                <th></th>
+                                                <th></th>
+                                                <th>
+
+                                                <select id="filterbulkzone" name="filter_dg_zone">
+                                    <option value="">All</option>
+                                    {% for zone in bulkzones %}
+                                        <option value="{{ zone }}" {% if zone == selected_zone %} selected {% endif %}>
+                                            {{ zone }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterbulkcircle" name="filter_dg_circle">
+                                    <option value="">All</option>
+                                    {% for circle in bulkcircle %}
+                                        <option value="{{ circle }}" {% if circle == selected_circle %} selected {% endif %}>
+                                            {{ circle }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterbulkdiv" name="filter_dg_div">
+                                    <option value="">All</option>
+                                    {% for division in bulkdivision %}
+                                        <option value="{{ division }}" {% if division == selected_division %} selected {% endif %}>
+                                            {{ division }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterbulksubdiv" name="filter_dg_subdiv">
+                                    <option value="">All</option>
+                                    {% for sub_div in bulksub_div %}
+                                        <option value="{{ sub_div }}" {% if sub_div == selected_sub_div %} selected {% endif %}>
+                                            {{ sub_div }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                                <th>
+
+                                                <select id="filterbulkdistrict" name="filter_dg_district">
+                                    <option value="">All</option>
+                                    {% for district in bulkdistrict %}
+                                        <option value="{{ district }}" {% if district == selected_dist_name %} selected {% endif %}>
+                                            {{ district }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="bulkloadresults">
+                                        {% for bulk in bulk_with_ss_info %}
+                                            <tr>
+                                                <td>{{forloop.counter}}</td>
+                                                <td>{{bulk.bulkloads.stn_name}}</td>
+                                                <td>{{bulk.bulkloads.bus_volt}}</td>
+                                                <td>{{bulk.bulkloads.bus_no}}</td>
+                                                <td>{{bulk.bulkloads.bus_name}}</td>
+                                                <td>{{bulk.bulkloads.cons_name}}</td>
+                                                <td>{{bulk.bulkloads.cons_cat}}</td>
+                                                <td>{{bulk.bulkloads.discom}}</td>
+                                                <td>{{bulk.bulkloads.contr_load}}</td>
+                                                <td>{{bulk.bulkloads.bulkcmsndt | date:'d-m-Y'}}</td>
+                                                <td>{{bulk.zone }}</td>
+                                                <td>{{bulk.circle }}</td>
+                                                <td>{{bulk.division }}</td>
+                                                <td>{{bulk.sub_div }}</td>
+                                                <td>{{bulk.district }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade show active" id="station-tab-pane" role="tabpanel" aria-labelledby="station-tab" tabindex="-1">
+    <div class="row font-sm">
+        <div class="col-sm-12">
+            <div align="right">
+                <div class="col-sm-6" align="right">
+                    <button id="exportButtonstn" class="btn btn-primary btn-sm">
+                        <i class="bi bi-upload"></i> Export to Excel
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-responsive mt-3">
+                <table class="table table-bordered table-sm font-sm">
+                    <thead>
+                        <tr>
+                            <th>Sl No</th>
+                            <th>Station Name</th>
+                            <th>Voltage</th>
+                            <th>Zone</th>
+                            <th>Circle</th>
+                            <th>Division</th>
+                            <th>Sub Division</th>
+                            <th>District</th>
+                            <th>Owner</th>
+                            <th>Latitude</th>
+                            <th>Longitude</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th>
+                                <select id="filterstnvolt" name="filter_stnvolt">
+                                    <option value="">All</option>
+                                    {% for stn in stnvoltages %}
+                                        <option value="{{ stn.voltages }}" {% if stn.voltages == selected_voltages %} selected {% endif %}>
+                                            {{ stn.voltages }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </th>
+                            <th>
+                                <select id="filterstnzone" name="filter_stnzone">
+                                    <option value="">All</option>
+                                    {% for stn in stnzone %}
+                                        <option value="{{ stn.zone }}" {% if stn.zone == selected_zone %} selected {% endif %}>
+                                            {{ stn.zone }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </th>
+                            <th>
+                                <select id="filterstncircle" name="filter_stncircle">
+                                    <option value="">All</option>
+                                    {% for stn in stncircle %}
+                                        <option value="{{ stn.circle }}" {% if stn.circle == selected_circle %} selected {% endif %}>
+                                            {{ stn.circle }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </th>
+                            <th>
+                                <select id="filterstndivision" name="filter_stndivision">
+                                    <option value="">All</option>
+                                    {% for stn in stndivision %}
+                                        <option value="{{ stn.division }}" {% if stn.division == selected_division %} selected {% endif %}>
+                                            {{ stn.division }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </th>
+                            <th>
+                                <select id="filterstnsubdiv" name="filter_stnsubdiv">
+                                    <option value="">All</option>
+                                    {% for stn in stnsub_div %}
+                                        <option value="{{ stn.sub_div }}" {% if stn.sub_div == selected_sub_div %} selected {% endif %}>
+                                            {{ stn.sub_div }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </th>
+                            <th>
+                                <select id="filterstndist" name="filter_stndist">
+                                    <option value="">All</option>
+                                    {% for stn in stndistrict %}
+                                        <option value="{{ stn.district }}" {% if stn.district == selected_district %} selected {% endif %}>
+                                            {{ stn.district }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="stnresults">
+                        {% for stn in substnreports %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ stn.stn_name }}</td>
+                            <td>{{ stn.voltages }}</td>
+                            <td>{{ stn.zone }}</td>
+                            <td>{{ stn.circle }}</td>
+                            <td>{{ stn.division }}</td>
+                            <td>{{ stn.sub_div }}</td>
+                            <td>{{ stn.district }}</td>
+                            <td>{{ stn.owner_list }}</td>
+                            <td>{{ stn.latitude }}</td>
+                            <td>{{ stn.longitude }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div id="appPopUps">
+        <div class="modal fade" id="specsModal">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title">Specs Modal</h6>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        Display content
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-custom-primary w-15">Save</button>
+                        <button class="btn btn-secondary w-15" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="conducterModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title">Conducter Modal</h6>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive bg-light mt-3" style="height: 130px;">
+                            <table class="table table-sm table-light table-bordered font-sm">
+                                <thead class="sticky-top">
+                                    <tr>
+                                        <th>Bus Type</th> <th>Length</th> <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Moos</td> <td>3123</td> <td class="text-center"><i class="bi bi-trash-fill"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Moos</td> <td>3123</td> <td class="text-center"><i class="bi bi-trash-fill"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Moos</td> <td>3123</td> <td class="text-center"><i class="bi bi-trash-fill"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Moos</td> <td>3123</td> <td class="text-center"><i class="bi bi-trash-fill"></i></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Moos</td> <td>3123</td> <td class="text-center"><i class="bi bi-trash-fill"></i></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary w-15" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+        <script src="{% static 'js/reports.js' %}"></script>
+<!--        <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>-->
+<!--        <script src="{% static 'static/bootstrap/js/bootstrap.bundle.js' %}"></script>-->
+<!--        <script src="https://code.jquery.com/jquery-3.6.0.js"></script>-->
+     <script src="../static/topologybootstrap/js/bootstrap.bundle.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="{% static 'topologybootstrap/js/bootstrap.bundle.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+   <!-- Bootstrap JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/topologybootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+     <script type="text/javascript">
+        $(document).ready(function() {
+    $('#zone').change(function() {
+        var zone_id = $(this).val();
+
+        if (zone_id === "") {  // If 'ALL' is selected for zone
+            $('#circle').empty().append('<option value="">ALL</option>');
+            $('#div').empty().append('<option value="">ALL</option>');
+            $('#subdiv').empty().append('<option value="">ALL</option>');
+        } else {
+            $.ajax({
+                url: '/get_circles/' + zone_id + '/',
+                success: function(data) {
+                    $('#circle').empty().append('<option value="">ALL</option>');
+                    $.each(data, function(i, item) {
+                        $('#circle').append('<option value="'+item.circle_id+'">'+item.circle_name+'</option>');
+                    });
+                    $('#div').empty().append('<option value="">ALL</option>');
+                    $('#subdiv').empty().append('<option value="">ALL</option>');
+                }
+            });
+        }
+    });
+
+    $('#circle').change(function() {
+        var circle_id = $(this).val();
+
+        if (circle_id === "") {  // If 'ALL' is selected for circle
+            $('#div').empty().append('<option value="">ALL</option>');
+            $('#subdiv').empty().append('<option value="">ALL</option>');
+        } else {
+            $.ajax({
+                url: '/get_div/' + circle_id + '/',
+                success: function(data) {
+                    $('#div').empty().append('<option value="">ALL</option>');
+                    $.each(data, function(i, item) {
+                        $('#div').append('<option value="'+item.div_id+'">'+item.div_name+'</option>');
+                    });
+                    $('#subdiv').empty().append('<option value="">ALL</option>');
+                }
+            });
+        }
+    });
+
+    $('#div').change(function() {
+        var div_id = $(this).val();
+
+        if (div_id === "") {  // If 'ALL' is selected for division
+            $('#subdiv').empty().append('<option value="">ALL</option>');
+        } else {
+            $.ajax({
+                url: '/get_subdiv/' + div_id + '/',
+                success: function(data) {
+                    $('#subdiv').empty().append('<option value="">ALL</option>');
+                    $.each(data, function(i, item) {
+                        $('#subdiv').append('<option value="'+item.subdiv_id+'">'+item.subdiv_name+'</option>');
+                    });
+                }
+            });
+        }
+    });
+});
+
+    </script>
+
+<script>
+    $(document).ready(function() {
+  $("#stn_name").autocomplete({
+    source: function(request, response) {
+      $.ajax({
+        url: "/auto_stnname/",  // URL to your Django view
+        dataType: "json",
+        data: {
+          term: request.term  // Search term entered by the user
+        },
+        success: function(data) {
+          response(data);  // Return the list of matching station names
+        },
+        error: function() {
+          response([]);  // In case of error, return an empty list
+        }
+      });
+    },
+    minLength: 1,  // Minimum number of characters before triggering autocomplete
+    select: function(event, ui) {
+      // Optional: When a station name is selected, you can do something
+      // For example, submit the form or populate additional fields
+    }
+  });
+});
+
+</script>
+
+<script>
+    // Add event listeners for all filter elements
+document.querySelectorAll('select[id^="filter"]').forEach(select => {
+    select.addEventListener('change', stnfilters);
+});
+
+function stnfilters() {
+    const stn_volt = document.getElementById('filterstnvolt').value;
+    const stnzone = document.getElementById('filterstnzone').value;
+    const stncircle = document.getElementById('filterstncircle').value;
+    const stndiv = document.getElementById('filterstndivision').value;
+    const stnsubdiv = document.getElementById('filterstnsubdiv').value;
+    const stndistrict = document.getElementById('filterstndist').value;
+
+    let url = `/stnfilters?`;
+
+    if (stn_volt) url += `voltages=${encodeURIComponent(stn_volt)}&`;
+    if (stnzone) url += `zone=${encodeURIComponent(stnzone)}&`;
+    if (stncircle) url += `circle=${encodeURIComponent(stncircle)}&`;
+    if (stndiv) url += `division=${encodeURIComponent(stndiv)}&`;
+    if (stnsubdiv) url += `sub_div=${encodeURIComponent(stnsubdiv)}&`;
+    if (stndistrict) url += `district=${encodeURIComponent(stndistrict)}&`;
+
+    url = url.slice(0, -1); // Remove trailing '&'
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            const resultsContainer = document.getElementById('stnresults');
+            resultsContainer.innerHTML = '';
+
+            if (data.length === 0) {
+                resultsContainer.innerHTML = `<tr><td colspan="12">No station data found for the selected filters.</td></tr>`;
+            } else {
+                data.forEach((stn, index) => {
+                    resultsContainer.innerHTML += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${stn.stn_name}</td>
+                            <td>${stn.voltages}</td>
+                            <td>${stn.zone}</td>
+                            <td>${stn.circle}</td>
+                            <td>${stn.division}</td>
+                            <td>${stn.sub_div}</td>
+                            <td>${stn.district}</td>
+                            <td>${stn.owner_code}</td>
+                            <td>${stn.latitude}</td>
+                            <td>${stn.longitude}</td>
+                        </tr>`;
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const resultsContainer = document.getElementById('stnresults');
+            resultsContainer.innerHTML = `<tr><td colspan="12">Error loading station data. Please try again later.</td></tr>`;
+        });
+}
+
+</script>
+
+<script>
+    // Export button functionality
+document.getElementById('exportButtonstn').addEventListener('click', function() {
+    const stn_volt = document.getElementById('filterstnvolt').value;
+    const stnzone = document.getElementById('filterstnzone').value;
+    const stncircle = document.getElementById('filterstncircle').value;
+    const stndiv = document.getElementById('filterstndivision').value;
+    const stnsubdiv = document.getElementById('filterstnsubdiv').value;
+    const stndistrict = document.getElementById('filterstndist').value;
+
+    let url = '{% url "stnfilters" %}?export_to_excel=true';
+
+    if (stn_volt) url += `&voltages=${stn_volt}`;
+    if (stnzone && stnzone !== 'ALL') url += `&zone=${stnzone}`;
+    if (stncircle && stncircle !== 'ALL') url += `&circle=${stncircle}`;
+    if (stndiv && stndiv !== 'ALL') url += `&division=${stndiv}`;
+    if (stnsubdiv && stnsubdiv !== 'ALL') url += `&sub_div=${stnsubdiv}`;
+    if (stndistrict && stndistrict !== 'ALL') url += `&district=${stndistrict}`;
+
+    window.location.href = url;
+});
+</script>
+
+<script>
+    // Add event listeners for all filter elements
+document.querySelectorAll('select[id^="filter"]').forEach(select => {
+    select.addEventListener('change', busfilters);
+});
+
+function busfilters() {
+    const buscode = document.getElementById('filterbuscode').value;
+    const busno = document.getElementById('filterbusno').value;
+    const busvolt = document.getElementById('filterbusvolt').value;
+    const buszone = document.getElementById('filterbuszone').value;
+    const buscircle = document.getElementById('filterbuscircle').value;
+    const busdiv = document.getElementById('filterbusdiv').value;
+    const bussubdiv = document.getElementById('filterbussubdiv').value;
+    const busdistrict = document.getElementById('filterbusdistrict').value;
+
+    // Only send the filters that have values
+    let url = `/busfilters?`;
+
+    if (buscode) url += `bus_code=${encodeURIComponent(buscode)}&`;
+    if (busvolt) url += `bus_volt=${encodeURIComponent(busvolt)}&`;
+    if (buszone) url += `zone=${encodeURIComponent(buszone)}&`;
+    if (buscircle) url += `circle=${encodeURIComponent(buscircle)}&`;
+    if (busdiv) url += `division=${encodeURIComponent(busdiv)}&`;
+    if (bussubdiv) url += `sub_div=${encodeURIComponent(bussubdiv)}&`;
+    if (busdistrict) url += `district=${encodeURIComponent(busdistrict)}&`;
+
+    // Ensure bus_no is added only if it's a valid integer
+    if (busno && !isNaN(busno)) {
+        url += `bus_no=${parseInt(busno)}&`;
+    }
+
+    // Remove the trailing ampersand if it exists
+    url = url.slice(0, -1);
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();  // Parse JSON from response
+        })
+        .then(data => {
+            const resultsContainer = document.getElementById('busresults');
+            resultsContainer.innerHTML = '';  // Clear the existing rows
+
+            if (data.length === 0) {
+                resultsContainer.innerHTML = `<tr><td colspan="12">No bus data found for the selected filters.</td></tr>`;
+            } else {
+                data.forEach((bus, index) => {
+                    resultsContainer.innerHTML += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${bus.stn_name}</td>
+                            <td>${bus.bus_no}</td>
+                            <td>${bus.bus_code}</td>
+                            <td>${bus.bus_name}</td>
+                            <td>${bus.bus_volt}</td>
+                            <td>${bus.buscmsndt}</td>
+                            <td>${bus.zone}</td>
+                            <td>${bus.circle}</td>
+                            <td>${bus.division}</td>
+                            <td>${bus.sub_div}</td>
+                            <td>${bus.district}</td>
+                        </tr>
+                    `;
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const resultsContainer = document.getElementById('busresults');
+            resultsContainer.innerHTML = `<tr><td colspan="12">Error loading bus data. Please try again later.</td></tr>`;
+        });
+}
+
+</script>
+
+<script>
+    document.getElementById('exportButtonbus').addEventListener('click', function() {
+        const busno = document.getElementById('filterbusno').value;
+        const buscode = document.getElementById('filterbuscode').value;
+        const busvolt = document.getElementById('filterbusvolt').value;
+        const buszone = document.getElementById('filterbuszone').value;
+        const buscircle = document.getElementById('filterbuscircle').value;
+        const busdiv = document.getElementById('filterbusdiv').value;
+        const bussubdiv = document.getElementById('filterbussubdiv').value;
+        const busdistrict = document.getElementById('filterbusdistrict').value;
+
+        // Build the URL for the export functionality
+        let url = '{% url "busfilters" %}?export_to_excel=true';
+        if (busno) {
+            url += `&bus_no=${busno}`;
+        }
+        if (buscode) {
+            url += `&bus_code=${buscode}`;
+        }
+        if (busvolt) {
+            url += `&bus_volt=${busvolt}`; // Corrected parameter name
+        }
+        if (buszone && buszone !== 'ALL') {
+            url += `&zone=${buszone}`; // Use the correct filter name
+        }
+        if (buscircle && buscircle !== 'ALL') {
+            url += `&circle=${buscircle}`;
+        }
+        if (busdiv && busdiv !== 'ALL') {
+            url += `&division=${busdiv}`;
+        }
+        if (bussubdiv && bussubdiv !== 'ALL') {
+            url += `&sub_div=${bussubdiv}`;
+        }
+        if (busdistrict && busdistrict !== 'ALL') {
+            url += `&district=${busdistrict}`;
+        }
+
+        // Open the export URL in a new tab
+        window.open(url, '_blank');
+    });
+</script>
+
+<script>
+   // Add event listeners for filter changes
+document.getElementById('filterTrfType').addEventListener('change', function() {
+    filterTransformers();
+});
+
+document.getElementById('filterTrfvoltratio').addEventListener('change', function() {
+    filterTransformers();
+});
+document.getElementById('filterTrfcapacity').addEventListener('change', function() {
+    filterTransformers();
+});
+document.getElementById('filtertrfzone').addEventListener('change', function() {
+    filterTransformers();
+});
+document.getElementById('filtertrfcircle').addEventListener('change', function() {
+    filterTransformers();
+});
+document.getElementById('filtertrfdiv').addEventListener('change', function() {
+    filterTransformers();
+});
+document.getElementById('filtertrfsubdiv').addEventListener('change', function() {
+    filterTransformers();
+});
+document.getElementById('filtertrfdistrict').addEventListener('change', function() {
+    filterTransformers();
+});
+
+// Function to filter transformers
+function filterTransformers() {
+    var trfType = document.getElementById('filterTrfType').value;
+    var voltRatio = document.getElementById('filterTrfvoltratio').value;
+    var trfcap = document.getElementById('filterTrfcapacity').value;
+    var zone = document.getElementById('filtertrfzone').value;
+    var circle = document.getElementById('filtertrfcircle').value;
+    var division = encodeURIComponent(document.getElementById('filtertrfdiv').value);
+    var sub_div = document.getElementById('filtertrfsubdiv').value;
+    var district = document.getElementById('filtertrfdistrict').value;
+
+    // Send AJAX request to the server with transformer type and voltage ratio
+    fetch(`/filter_transformers?trf_type=${trfType}&voltage_ratio=${voltRatio}&trf_rating=${trfcap}&zone=${zone}&circle=${circle}&division=${division}&sub_div=${sub_div}&district=${district}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();  // Parse JSON from response
+        })
+        .then(data => {
+            var resultsContainer = document.getElementById('transformerResults');
+            resultsContainer.innerHTML = '';  // Clear existing rows
+
+            if (data.length === 0) {
+                resultsContainer.innerHTML = `<tr><td colspan="17">No transformer data found for the selected filters.</td></tr>`;
+            } else {
+                // Loop through the results and dynamically create table rows
+                data.forEach((tf, index) => {
+                    resultsContainer.innerHTML += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${tf.stn_name}</td>
+                            <td>${tf.trf_type}</td>
+                            <td>${tf.prim_voltage} / ${tf.sec_voltage}</td>
+                            <td>${tf.prim_busno}</td>
+                            <td>${tf.prim_busname}</td>
+                            <td>${tf.sec_busno}</td>
+                            <td>${tf.sec_busname}</td>
+                            <td>${tf.trf_title}</td>
+                            <td>${tf.trf_rating}</td>
+                            <td>${tf.trf_id}</td>
+                            <td>${tf.trfcmsndt}</td>
+                            <td>${tf.zone}</td>
+                            <td>${tf.circle}</td>
+                            <td>${tf.division}</td>
+                            <td>${tf.sub_div}</td>
+                            <td>${tf.district}</td>
+                        </tr>
+                    `;
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            var resultsContainer = document.getElementById('transformerResults');
+            resultsContainer.innerHTML = `<tr><td colspan="17">Error loading transformer data. Please try again later.</td></tr>`;
+        });
+}
+
+
+</script>
+
+<script>
+    document.getElementById('exportButton').addEventListener('click', function() {
+        const trfType = document.getElementById('filterTrfType').value;
+        const voltRatio = document.getElementById('filterTrfvoltratio').value;
+        const trfcap = document.getElementById('filterTrfcapacity').value;
+        const zone = document.getElementById('filtertrfzone').value;
+        const circle = document.getElementById('filtertrfcircle').value;
+        const division = encodeURIComponent(document.getElementById('filtertrfdiv').value);
+        const sub_div = document.getElementById('filtertrfsubdiv').value;
+        const district = document.getElementById('filtertrfdistrict').value;
+
+        // Build the URL for the export functionality
+        let url = '{% url "filter_transformers" %}?export_to_excel=true';
+        if (trfType) {
+            url += `&trf_type=${trfType}`;
+        }
+        if (voltRatio) {
+            url += `&voltage_ratio=${voltRatio}`;
+        }
+        if (trfcap) {
+            url += `&trf_rating=${trfcap}`;
+        }
+        if (zone && zone !== 'ALL') {
+            url += `&zone=${zone}`;
+        }
+        if (circle && circle !== 'ALL') {
+            url += `&circle=${circle}`;
+        }
+        if (division && division !== 'ALL') {
+            url += `&division=${division}`;
+        }
+        if (sub_div && sub_div !== 'ALL') {
+            url += `&sub_div=${sub_div}`;
+        }
+        if (district && district !== 'ALL') {
+            url += `&district=${district}`;
+        }
+
+        // Open the export URL in a new tab
+        window.open(url, '_blank');
+    });
+
+</script>
+
+<script>
+     // Add event listeners for filter changes
+document.getElementById('filterrectype').addEventListener('change', function() {
+    reactorfilters();
+});
+
+document.getElementById('filterrecvolt').addEventListener('change', function() {
+    reactorfilters();
+});
+document.getElementById('filterrecrating').addEventListener('change', function() {
+    reactorfilters();
+});
+document.getElementById('filterconv').addEventListener('change', function() {
+    reactorfilters();
+});
+document.getElementById('filterreczone').addEventListener('change', function() {
+    reactorfilters();
+});
+document.getElementById('filterreccircle').addEventListener('change', function() {
+    reactorfilters();
+});
+document.getElementById('filterrecdiv').addEventListener('change', function() {
+    reactorfilters();
+});
+document.getElementById('filterrecsubdiv').addEventListener('change', function() {
+    reactorfilters();
+});
+document.getElementById('filterrecdistrict').addEventListener('change', function() {
+    reactorfilters();
+});
+
+// Function to filter transformers
+function reactorfilters() {
+    var react_type = document.getElementById('filterrectype').value;
+    var react_voltage = document.getElementById('filterrecvolt').value;
+    var react_cap = document.getElementById('filterrecrating').value;
+    var rec_conv = document.getElementById('filterconv').value;
+    var zone = document.getElementById('filterreczone').value;
+    var circle = document.getElementById('filterreccircle').value;
+    var division = encodeURIComponent(document.getElementById('filterrecdiv').value);
+    var sub_div = document.getElementById('filterrecsubdiv').value;
+    var district = document.getElementById('filterrecdistrict').value;
+
+// Send AJAX request to the server with transformer type and voltage ratio
+    fetch(`/recfilters?react_type=${react_type}&react_voltage=${react_voltage}&react_cap=${react_cap}&convertible=${rec_conv}&zone=${zone}&circle=${circle}&division=${division}&sub_div=${sub_div}&district=${district}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();  // Parse JSON from response
+        })
+        .then(data => {
+            var resultsContainer = document.getElementById('reactorresults');
+            resultsContainer.innerHTML = '';  // Clear existing rows
+
+            if (data.length === 0) {
+                resultsContainer.innerHTML = `<tr><td colspan="17">No reactor data found for the selected filters.</td></tr>`;
+            } else {
+                // Loop through the results and dynamically create table rows
+                data.forEach((rect, index) => {
+                    resultsContainer.innerHTML += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${rect.react_type}</td>
+                            <td>${rect.react_voltage}</td>
+                            <td>${rect.line_id}</td>
+                            <td>${rect.line_name}</td>
+                            <td>${rect.react_cap}</td>
+                            <td>${rect.react_id}</td>
+                            <td>${rect.rated_voltage}</td>
+                            <td>${rect.convertible}</td>
+                            <td>${rect.reccmsndt}</td>
+                            <td>${rect.zone}</td>
+                            <td>${rect.circle}</td>
+                            <td>${rect.division}</td>
+                            <td>${rect.sub_div}</td>
+                            <td>${rect.district}</td>
+                        </tr>`;
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const resultsContainer = document.getElementById('reactorresults');
+            resultsContainer.innerHTML = `<tr><td colspan="12">Error loading station data. Please try again later.</td></tr>`;
+        });
+}
+
+</script>
+<script>
+    document.getElementById('exportButtonrec').addEventListener('click', function() {
+        const react_type = document.getElementById('filterrectype').value;
+        const react_voltage = document.getElementById('filterrecvolt').value;
+        const react_cap = document.getElementById('filterrecrating').value;
+        const rec_conv = document.getElementById('filterconv').value;
+        const zone = document.getElementById('filterreczone').value;
+        const circle = document.getElementById('filterreccircle').value;
+        const division = encodeURIComponent(document.getElementById('filterrecdiv').value);
+        const sub_div = document.getElementById('filterrecsubdiv').value;
+        const district = document.getElementById('filterrecdistrict').value;
+
+        // Build the URL for the export functionality
+        let url = '{% url "recfilters" %}?export_to_excel=true';
+        if (react_type) {
+            url += `&react_type=${react_type}`;
+        }
+        if (react_voltage) {
+            url += `&react_voltage=${react_voltage}`;
+        }
+        if (react_cap) {
+            url += `&react_cap=${react_cap}`;
+        }
+        if (rec_conv) {
+            url += `&convertible=${rec_conv}`;
+        }
+        if (zone && zone !== 'ALL') {
+            url += `&zone=${zone}`;
+        }
+        if (circle && circle !== 'ALL') {
+            url += `&circle=${circle}`;
+        }
+        if (division && division !== 'ALL') {
+            url += `&division=${division}`;
+        }
+        if (sub_div && sub_div !== 'ALL') {
+            url += `&sub_div=${sub_div}`;
+        }
+        if (district && district !== 'ALL') {
+            url += `&district=${district}`;
+        }
+
+        // Open the export URL in a new tab
+        window.open(url, '_blank');
+    });
+</script>
+
+<script>
+     // Add event listeners for filter changes
+document.getElementById('filtercapvolt').addEventListener('change', function() {
+    capfilters();
+});
+
+document.getElementById('filtercapbusname').addEventListener('change', function() {
+    capfilters();
+});
+
+document.getElementById('filtercapzone').addEventListener('change', function() {
+    capfilters();
+});
+document.getElementById('filtercapcircle').addEventListener('change', function() {
+    capfilters();
+});
+document.getElementById('filtercapdiv').addEventListener('change', function() {
+    capfilters();
+});
+document.getElementById('filtercapsubdiv').addEventListener('change', function() {
+    capfilters();
+});
+document.getElementById('filtercapdistrict').addEventListener('change', function() {
+    capfilters();
+});
+
+// Function to filter transformers
+function capfilters() {
+    var cap_voltage = document.getElementById('filtercapvolt').value;
+    var bus_name = document.getElementById('filtercapbusname').value;
+    var zone = document.getElementById('filtercapzone').value;
+    var circle = document.getElementById('filtercapcircle').value;
+    var division = encodeURIComponent(document.getElementById('filtercapdiv').value);
+    var sub_div = document.getElementById('filtercapsubdiv').value;
+    var district = document.getElementById('filtercapdistrict').value;
+
+// Send AJAX request to the server with transformer type and voltage ratio
+    fetch(`/capfilters?cap_voltage=${cap_voltage}&bus_name=${bus_name}&zone=${zone}&circle=${circle}&division=${division}&sub_div=${sub_div}&district=${district}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();  // Parse JSON from response
+        })
+        .then(data => {
+            var resultsContainer = document.getElementById('capacitorresults');
+            resultsContainer.innerHTML = '';  // Clear existing rows
+
+            if (data.length === 0) {
+                resultsContainer.innerHTML = `<tr><td colspan="17">No capacitor data found for the selected filters.</td></tr>`;
+            } else {
+                // Loop through the results and dynamically create table rows
+                data.forEach((cap, index) => {
+                    resultsContainer.innerHTML += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${cap.stn_name}</td>
+                            <td>${cap.cap_voltage}</td>
+                            <td>${cap.rated_voltage}</td>
+                            <td>${cap.bus_no}</td>
+                            <td>${cap.bus_name}</td>
+                            <td>${cap.cap_rating}</td>
+                            <td>${cap.cap_id}</td>
+                            <td>${cap.capcmsndt}</td>
+                            <td>${cap.zone}</td>
+                            <td>${cap.circle}</td>
+                            <td>${cap.division}</td>
+                            <td>${cap.sub_div}</td>
+                            <td>${cap.district}</td>
+                        </tr>`;
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const resultsContainer = document.getElementById('capacitorresults');
+            resultsContainer.innerHTML = `<tr><td colspan="12">Error loading station data. Please try again later.</td></tr>`;
+        });
+}
+
+</script>
+<script>
+    document.getElementById('exportButtoncap').addEventListener('click', function() {
+        const cap_voltage = document.getElementById('filtercapvolt').value;
+        const bus_name = document.getElementById('filtercapbusname').value;
+        const zone = document.getElementById('filtercapzone').value;
+        const circle = document.getElementById('filtercapcircle').value;
+        const division = encodeURIComponent(document.getElementById('filtercapdiv').value);
+        const sub_div = document.getElementById('filtercapsubdiv').value;
+        const district = document.getElementById('filtercapdistrict').value;
+
+        // Build the URL for the export functionality
+        let url = '{% url "capfilters" %}?export_to_excel=true';
+        if (cap_voltage) {
+            url += `&cap_voltage=${cap_voltage}`;
+        }
+        if (bus_name) {
+            url += `&react_voltage=${react_voltage}`;
+        }
+
+        if (zone && zone !== 'ALL') {
+            url += `&zone=${zone}`;
+        }
+        if (circle && circle !== 'ALL') {
+            url += `&circle=${circle}`;
+        }
+        if (division && division !== 'ALL') {
+            url += `&division=${division}`;
+        }
+        if (sub_div && sub_div !== 'ALL') {
+            url += `&sub_div=${sub_div}`;
+        }
+        if (district && district !== 'ALL') {
+            url += `&district=${district}`;
+        }
+
+        // Open the export URL in a new tab
+        window.open(url, '_blank');
+    });
+</script>
+
+<script>
+     // Add event listeners for filter changes
+document.getElementById('filterlinevolt').addEventListener('change', function() {
+    linefilters();
+});
+document.getElementById('filterlinefromzone').addEventListener('change', function() {
+    linefilters();
+});
+document.getElementById('filterlinefromcircle').addEventListener('change', function() {
+    linefilters();
+});
+document.getElementById('filterlinefromdiv').addEventListener('change', function() {
+    linefilters();
+});
+document.getElementById('filterlinefromsubdiv').addEventListener('change', function() {
+    linefilters();
+});
+document.getElementById('filterlinefromdistrict').addEventListener('change', function() {
+    linefilters();
+});
+document.getElementById('filterlinetozone').addEventListener('change', function() {
+    linefilters();
+});
+document.getElementById('filterlinetocircle').addEventListener('change', function() {
+    linefilters();
+});
+document.getElementById('filterlinetodiv').addEventListener('change', function() {
+    linefilters();
+});
+document.getElementById('filterlinetosubdiv').addEventListener('change', function() {
+    linefilters();
+});
+document.getElementById('filterlinetodistrict').addEventListener('change', function() {
+    linefilters();
+});
+// Function to filter transformers
+function linefilters() {
+    var fbus_voltage = document.getElementById('filterlinevolt').value;
+
+    var fzone = document.getElementById('filterlinefromzone').value;
+    var fcircle = document.getElementById('filterlinefromcircle').value;
+    var fdivision = encodeURIComponent(document.getElementById('filterlinefromdiv').value);
+    var fsub_div = document.getElementById('filterlinefromsubdiv').value;
+    var fdistrict = document.getElementById('filterlinefromdistrict').value;
+    var tozone = document.getElementById('filterlinetozone').value;
+    var tocircle = document.getElementById('filterlinetocircle').value;
+    var todivision = encodeURIComponent(document.getElementById('filterlinetodiv').value);
+    var tosub_div = document.getElementById('filterlinetosubdiv').value;
+    var todistrict = document.getElementById('filterlinetodistrict').value;
+
+// Send AJAX request to the server with transformer type and voltage ratio
+    fetch(`/linefilters?fbus_voltage=${fbus_voltage}&fzone=${fzone}&fcircle=${fcircle}&fdivision=${fdivision}&fsub_div=${fsub_div}&fdistrict=${fdistrict}&tozone=${tozone}&tocircle=${tocircle}&todivision=${todivision}&tosub_div=${tosub_div}&todistrict=${todistrict}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();  // Parse JSON from response
+        })
+        .then(data => {
+            var resultsContainer = document.getElementById('lineresults');
+            resultsContainer.innerHTML = '';  // Clear existing rows
+
+            if (data.length === 0) {
+                resultsContainer.innerHTML = `<tr><td colspan="17">No lines data found for the selected filters.</td></tr>`;
+            } else {
+                // Loop through the results and dynamically create table rows
+                data.forEach((line, index) => {
+                    resultsContainer.innerHTML += `
+                        <tr>
+                            <td>${index + 1}</td>
+
+                            <td>${line.fbus_voltage}</td>
+                            <td>${line.fbus_no}</td>
+                            <td>${line.fbus_name}</td>
+                            <td>${line.to_busno}</td>
+                            <td>${line.to_busname}</td>
+                            <td>${line.cktno}</td>
+                            <td>${line.to_length}</td>
+                            <td>${line.cond_type}</td>
+                            <td>${line.cond_length}</td>
+                            <td>${line.linecmsndt}</td>
+
+                            <td>${line.fzone}</td>
+                            <td>${line.fcircle}</td>
+                            <td>${line.fdivision}</td>
+                            <td>${line.fsub_div}</td>
+                            <td>${line.fdistrict}</td>
+
+                            <td>${line.tozone}</td>
+                            <td>${line.tocircle}</td>
+                            <td>${line.todivision}</td>
+                            <td>${line.tosub_div}</td>
+                            <td>${line.todistrict}</td>
+                        </tr>`;
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const resultsContainer = document.getElementById('lineresults');
+            resultsContainer.innerHTML = `<tr><td colspan="12">Error loading station data. Please try again later.</td></tr>`;
+        });
+}
+
+</script>
+
+<script>
+    document.getElementById('exportButtonlines').addEventListener('click', function() {
+        const fbus_voltage = document.getElementById('filterlinevolt').value;
+
+        const fzone = document.getElementById('filterlinefromzone').value;
+        const fcircle = document.getElementById('filterlinefromcircle').value;
+        const fdivision = encodeURIComponent(document.getElementById('filterlinefromdiv').value);
+        const fsub_div = document.getElementById('filterlinefromsubdiv').value;
+        const fdistrict = document.getElementById('filterlinefromdistrict').value;
+        const tozone = document.getElementById('filterlinetozone').value;
+        const tocircle = document.getElementById('filterlinetocircle').value;
+        const todivision = encodeURIComponent(document.getElementById('filterlinetodiv').value);
+        const tosub_div = document.getElementById('filterlinetosubdiv').value;
+        const todistrict = document.getElementById('filterlinetodistrict').value;
+
+        // Build the URL for the export functionality
+        let url = '{% url "linefilters" %}?export_to_excel=true';
+        if (fbus_voltage) {
+            url += `&fbus_voltage=${fbus_voltage}`;
+        }
+
+        if (fzone && fzone !== 'ALL') {
+            url += `&fzone=${fzone}`;
+        }
+        if (fcircle && fcircle !== 'ALL') {
+            url += `&fcircle=${fcircle}`;
+        }
+        if (fdivision && fdivision !== 'ALL') {
+            url += `&fdivision=${fdivision}`;
+        }
+        if (fsub_div && fsub_div !== 'ALL') {
+            url += `&fsub_div=${fsub_div}`;
+        }
+        if (fdistrict && fdistrict !== 'ALL') {
+            url += `&fdistrict=${fdistrict}`;
+        }
+
+        if (tozone && tozone !== 'ALL') {
+            url += `&tozone=${tozone}`;
+        }
+        if (tocircle && tocircle !== 'ALL') {
+            url += `&tocircle=${tocircle}`;
+        }
+        if (todivision && todivision !== 'ALL') {
+            url += `&todivision=${todivision}`;
+        }
+        if (tosub_div && tosub_div !== 'ALL') {
+            url += `&tosub_div=${tosub_div}`;
+        }
+        if (todistrict && todistrict !== 'ALL') {
+            url += `&todistrict=${todistrict}`;
+        }
+
+        // Open the export URL in a new tab
+        window.open(url, '_blank');
+    });
+</script>
+
+<script>
+     // Add event listeners for filter changes
+document.getElementById('filterfedcontype').addEventListener('change', function() {
+    fedfilters();
+});
+
+document.getElementById('filtercategory').addEventListener('change', function() {
+    fedfilters();
+});
+
+document.getElementById('filterfedzone').addEventListener('change', function() {
+    fedfilters();
+});
+document.getElementById('filterfedcircle').addEventListener('change', function() {
+    fedfilters();
+});
+document.getElementById('filterfeddiv').addEventListener('change', function() {
+    fedfilters();
+});
+document.getElementById('filterfedsubdiv').addEventListener('change', function() {
+    fedfilters();
+});
+document.getElementById('filterfeddistrict').addEventListener('change', function() {
+    fedfilters();
+});
+
+// Function to filter transformers
+function fedfilters() {
+    var connectiontype = document.getElementById('filterfedcontype').value;
+    var cat_loads = document.getElementById('filtercategory').value;
+    var zone = document.getElementById('filterfedzone').value;
+    var circle = document.getElementById('filterfedcircle').value;
+    var division = encodeURIComponent(document.getElementById('filterfeddiv').value);
+    var sub_div = document.getElementById('filterfedsubdiv').value;
+    var district = document.getElementById('filterfeddistrict').value;
+
+// Send AJAX request to the server with transformer type and voltage ratio
+    fetch(`/fedfilters?connectiontype=${connectiontype}&cat_loads=${cat_loads}&zone=${zone}&circle=${circle}&division=${division}&sub_div=${sub_div}&district=${district}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();  // Parse JSON from response
+        })
+        .then(data => {
+            var resultsContainer = document.getElementById('feederresults');
+            resultsContainer.innerHTML = '';  // Clear existing rows
+
+            if (data.length === 0) {
+                resultsContainer.innerHTML = `<tr><td colspan="17">No feeder data found for the selected filters.</td></tr>`;
+            } else {
+                // Loop through the results and dynamically create table rows
+                data.forEach((fed, index) => {
+                    resultsContainer.innerHTML += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${fed.stn_name}</td>
+                            <td>${fed.voltage}</td>
+                            <td>${fed.bus_no}</td>
+                            <td>${fed.bus_name}</td>
+                            <td>${fed.feeder_name}</td>
+                            <td>${fed.feeder_no}</td>
+                            <td>${fed.otherend}</td>
+                            <td>${fed.connectiontype}</td>
+                            <td>${fed.cat_loads}</td>
+                            <td>${fed.autoload_shed}</td>
+                            <td>${fed.fedcmsndt}</td>
+                            <td>${fed.zone}</td>
+                            <td>${fed.circle}</td>
+                            <td>${fed.division}</td>
+                            <td>${fed.sub_div}</td>
+                            <td>${fed.district}</td>
+                        </tr>`;
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const resultsContainer = document.getElementById('feederresults');
+            resultsContainer.innerHTML = `<tr><td colspan="12">Error loading station data. Please try again later.</td></tr>`;
+        });
+}
+
+</script>
+<script>
+    document.getElementById('exportButtonfed').addEventListener('click', function() {
+        const connectiontype = document.getElementById('filterfedcontype').value;
+        const cat_loads = document.getElementById('filtercategory').value;
+        const zone = document.getElementById('filterfedzone').value;
+        const circle = document.getElementById('filterfedcircle').value;
+        const division = encodeURIComponent(document.getElementById('filterfeddiv').value);
+        const sub_div = document.getElementById('filterfedsubdiv').value;
+        const district = document.getElementById('filterfeddistrict').value;
+
+        // Build the URL for the export functionality
+        let url = '{% url "fedfilters" %}?export_to_excel=true';
+        if (connectiontype) {
+            url += `&connectiontype=${connectiontype}`;
+        }
+        if (cat_loads) {
+            url += `&cat_loads=${cat_loads}`;
+        }
+
+        if (zone && zone !== 'ALL') {
+            url += `&zone=${zone}`;
+        }
+        if (circle && circle !== 'ALL') {
+            url += `&circle=${circle}`;
+        }
+        if (division && division !== 'ALL') {
+            url += `&division=${division}`;
+        }
+        if (sub_div && sub_div !== 'ALL') {
+            url += `&sub_div=${sub_div}`;
+        }
+        if (district && district !== 'ALL') {
+            url += `&district=${district}`;
+        }
+
+        // Open the export URL in a new tab
+        window.open(url, '_blank');
+    });
+</script>
+
+<script>
+     // Add event listeners for filter changes
+
+document.getElementById('filterdgzone').addEventListener('change', function() {
+    dgfilters();
+});
+document.getElementById('filterdgcircle').addEventListener('change', function() {
+    dgfilters();
+});
+document.getElementById('filterdgdiv').addEventListener('change', function() {
+    dgfilters();
+});
+document.getElementById('filterdgsubdiv').addEventListener('change', function() {
+    dgfilters();
+});
+document.getElementById('filterdgdistrict').addEventListener('change', function() {
+    dgfilters();
+});
+
+// Function to filter transformers
+function dgfilters() {
+
+    var zone = document.getElementById('filterdgzone').value;
+    var circle = document.getElementById('filterdgcircle').value;
+    var division = encodeURIComponent(document.getElementById('filterdgdiv').value);
+    var sub_div = document.getElementById('filterdgsubdiv').value;
+    var district = document.getElementById('filterdgdistrict').value;
+
+// Send AJAX request to the server with transformer type and voltage ratio
+    fetch(`/dgfilters?zone=${zone}&circle=${circle}&division=${division}&sub_div=${sub_div}&district=${district}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();  // Parse JSON from response
+        })
+        .then(data => {
+            var resultsContainer = document.getElementById('dgsetresults');
+            resultsContainer.innerHTML = '';  // Clear existing rows
+
+            if (data.length === 0) {
+                resultsContainer.innerHTML = `<tr><td colspan="17">No dgset data found for the selected filters.</td></tr>`;
+            } else {
+                // Loop through the results and dynamically create table rows
+                data.forEach((dg, index) => {
+                    resultsContainer.innerHTML += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${dg.stn_name}</td>
+                            <td>${dg.dgset_id}</td>
+
+                            <td>${dg.rating}</td>
+                            <td>${dg.dgcmsndt}</td>
+
+                            <td>${dg.zone}</td>
+                            <td>${dg.circle}</td>
+                            <td>${dg.division}</td>
+                            <td>${dg.sub_div}</td>
+                            <td>${dg.district}</td>
+                        </tr>`;
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const resultsContainer = document.getElementById('dgsetresults');
+            resultsContainer.innerHTML = `<tr><td colspan="12">Error loading station data. Please try again later.</td></tr>`;
+        });
+}
+
+</script>
+<script>
+    document.getElementById('exportButtondg').addEventListener('click', function() {
+
+        const zone = document.getElementById('filterdgzone').value;
+        const circle = document.getElementById('filterdgcircle').value;
+        const division = encodeURIComponent(document.getElementById('filterdgdiv').value);
+        const sub_div = document.getElementById('filterdgsubdiv').value;
+        const district = document.getElementById('filterdgdistrict').value;
+
+        // Build the URL for the export functionality
+        let url = '{% url "dgfilters" %}?export_to_excel=true';
+
+        if (zone && zone !== 'ALL') {
+            url += `&zone=${zone}`;
+        }
+        if (circle && circle !== 'ALL') {
+            url += `&circle=${circle}`;
+        }
+        if (division && division !== 'ALL') {
+            url += `&division=${division}`;
+        }
+        if (sub_div && sub_div !== 'ALL') {
+            url += `&sub_div=${sub_div}`;
+        }
+        if (district && district !== 'ALL') {
+            url += `&district=${district}`;
+        }
+
+        // Open the export URL in a new tab
+        window.open(url, '_blank');
+    });
+</script>
+
+<script>
+     // Add event listeners for filter changes
+document.getElementById('filterstntrfrating').addEventListener('change', function() {
+    stntrffilters();
+});
+
+document.getElementById('filterstntrfsource').addEventListener('change', function() {
+    stntrffilters();
+});
+
+document.getElementById('filterstntrfzone').addEventListener('change', function() {
+    stntrffilters();
+});
+document.getElementById('filterstntrfcircle').addEventListener('change', function() {
+    stntrffilters();
+});
+document.getElementById('filterstntrfdiv').addEventListener('change', function() {
+    stntrffilters();
+});
+document.getElementById('filterstntrfsubdiv').addEventListener('change', function() {
+    stntrffilters();
+});
+document.getElementById('filterstntrfdistrict').addEventListener('change', function() {
+    stntrffilters();
+});
+
+// Function to filter transformers
+function stntrffilters() {
+    var rating = document.getElementById('filterstntrfrating').value;
+    var sourcetrf = document.getElementById('filterstntrfsource').value;
+    var zone = document.getElementById('filterstntrfzone').value;
+    var circle = document.getElementById('filterstntrfcircle').value;
+    var division = encodeURIComponent(document.getElementById('filterstntrfdiv').value);
+    var sub_div = document.getElementById('filterstntrfsubdiv').value;
+    var district = document.getElementById('filterstntrfdistrict').value;
+
+// Send AJAX request to the server with transformer type and voltage ratio
+    fetch(`/stntrffilters?rating=${rating}&source=${sourcetrf}&zone=${zone}&circle=${circle}&division=${division}&sub_div=${sub_div}&district=${district}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();  // Parse JSON from response
+        })
+        .then(data => {
+            var resultsContainer = document.getElementById('stntrfresults');
+            resultsContainer.innerHTML = '';  // Clear existing rows
+
+            if (data.length === 0) {
+                resultsContainer.innerHTML = `<tr><td colspan="17">No stntrf data found for the selected filters.</td></tr>`;
+            } else {
+                // Loop through the results and dynamically create table rows
+                data.forEach((stntrf, index) => {
+                    resultsContainer.innerHTML += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${stntrf.stn_name}</td>
+                            <td>${stntrf.prim_volt}</td>
+                            <td>${stntrf.sec_volt}</td>
+                            <td>${stntrf.rating}</td>
+                            <td>${stntrf.stntrf_id}</td>
+                            <td>${stntrf.source}</td>
+                            <td>${stntrf.discomss}</td>
+                            <td>${stntrf.feeder_name}</td>
+                            <td>${stntrf.length_feeder}</td>
+                            <td>${stntrf.feed_type}</td>
+                            <td>${stntrf.trnf_id}</td>
+                            <td>${stntrf.zone}</td>
+                            <td>${stntrf.circle}</td>
+                            <td>${stntrf.division}</td>
+                            <td>${stntrf.sub_div}</td>
+                            <td>${stntrf.district}</td>
+                        </tr>`;
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const resultsContainer = document.getElementById('stntrfresults');
+            resultsContainer.innerHTML = `<tr><td colspan="12">Error loading station data. Please try again later.</td></tr>`;
+        });
+}
+
+</script>
+<script>
+    document.getElementById('exportButtonstntrf').addEventListener('click', function() {
+        const rating = document.getElementById('filterstntrfrating').value;
+        const source = document.getElementById('filterstntrfsource').value;
+        const zone = document.getElementById('filterstntrfzone').value;
+        const circle = document.getElementById('filterstntrfcircle').value;
+        const division = encodeURIComponent(document.getElementById('filterstntrfdiv').value);
+        const sub_div = document.getElementById('filterstntrfsubdiv').value;
+        const district = document.getElementById('filterstntrfdistrict').value;
+
+        // Build the URL for the export functionality
+        let url = '{% url "stntrffilters" %}?export_to_excel=true';
+        if (rating) {
+            url += `&rating=${rating}`;
+        }
+        if (source) {
+            url += `&source=${source}`;
+        }
+
+        if (zone && zone !== 'ALL') {
+            url += `&zone=${zone}`;
+        }
+        if (circle && circle !== 'ALL') {
+            url += `&circle=${circle}`;
+        }
+        if (division && division !== 'ALL') {
+            url += `&division=${division}`;
+        }
+        if (sub_div && sub_div !== 'ALL') {
+            url += `&sub_div=${sub_div}`;
+        }
+        if (district && district !== 'ALL') {
+            url += `&district=${district}`;
+        }
+
+        // Open the export URL in a new tab
+        window.open(url, '_blank');
+    });
+</script>
+
+<script>
+     // Add event listeners for filter changes
+document.getElementById('filterbulkvolt').addEventListener('change', function() {
+    bulkfilters();
+});
+
+document.getElementById('filterbulkdiscom').addEventListener('change', function() {
+    bulkfilters();
+});
+
+document.getElementById('filterbulkzone').addEventListener('change', function() {
+    bulkfilters();
+});
+document.getElementById('filterbulkcircle').addEventListener('change', function() {
+    bulkfilters();
+});
+document.getElementById('filterbulkdiv').addEventListener('change', function() {
+    bulkfilters();
+});
+document.getElementById('filterbulksubdiv').addEventListener('change', function() {
+    bulkfilters();
+});
+document.getElementById('filterbulkdistrict').addEventListener('change', function() {
+    bulkfilters();
+});
+
+// Function to filter transformers
+function bulkfilters() {
+    console.log('bulkfilters called');
+    var bus_volt = document.getElementById('filterbulkvolt').value;
+    var discom = document.getElementById('filterbulkdiscom').value;
+    var zone = document.getElementById('filterbulkzone').value;
+    var circle = document.getElementById('filterbulkcircle').value;
+    var division = encodeURIComponent(document.getElementById('filterbulkdiv').value);
+    var sub_div = document.getElementById('filterbulksubdiv').value;
+    var district = document.getElementById('filterbulkdistrict').value;
+
+// Send AJAX request to the server with transformer type and voltage ratio
+    fetch(`/bulkfilters?bus_volt=${bus_volt}&discom=${discom}&zone=${zone}&circle=${circle}&division=${division}&sub_div=${sub_div}&district=${district}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();  // Parse JSON from response
+        })
+        .then(data => {
+            var resultsContainer = document.getElementById('bulkloadresults');
+            resultsContainer.innerHTML = '';  // Clear existing rows
+
+            if (data.length === 0) {
+                resultsContainer.innerHTML = `<tr><td colspan="17">No bulkload data found for the selected filters.</td></tr>`;
+            } else {
+                // Loop through the results and dynamically create table rows
+                data.forEach((bulk, index) => {
+                    resultsContainer.innerHTML += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${bulk.stn_name}</td>
+                            <td>${bulk.bus_volt}</td>
+                            <td>${bulk.bus_no}</td>
+                            <td>${bulk.bus_name}</td>
+                            <td>${bulk.cons_name}</td>
+                            <td>${bulk.cons_cat}</td>
+                            <td>${bulk.discom}</td>
+                            <td>${bulk.contr_load}</td>
+                            <td>${bulk.bulkcmsndt}</td>
+                            <td>${bulk.zone}</td>
+                            <td>${bulk.circle}</td>
+                            <td>${bulk.division}</td>
+                            <td>${bulk.sub_div}</td>
+                            <td>${bulk.district}</td>
+                        </tr>`;
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const resultsContainer = document.getElementById('bulkloadresults');
+            resultsContainer.innerHTML = `<tr><td colspan="12">Error loading bulkloads data. Please try again later.</td></tr>`;
+        });
+}
+
+</script>
+<script>
+    document.getElementById('exportButtonbulk').addEventListener('click', function() {
+        const bulkvolt = document.getElementById('filterbulkvolt').value;
+        const discom = document.getElementById('filterbulkdiscom').value;
+        const zone = document.getElementById('filterbulkzone').value;
+        const circle = document.getElementById('filterbulkcircle').value;
+        const division = encodeURIComponent(document.getElementById('filterbulkdiv').value);
+        const sub_div = document.getElementById('filterbulksubdiv').value;
+        const district = document.getElementById('filterbulkdistrict').value;
+
+        // Build the URL for the export functionality
+        let url = '{% url "bulkfilters" %}?export_to_excel=true';
+        if (bulkvolt) {
+            url += `&bus_volt=${bulkvolt}`;
+        }
+        if (discom) {
+            url += `&discom=${discom}`;
+        }
+
+        if (zone && zone !== 'ALL') {
+            url += `&zone=${zone}`;
+        }
+        if (circle && circle !== 'ALL') {
+            url += `&circle=${circle}`;
+        }
+        if (division && division !== 'ALL') {
+            url += `&division=${division}`;
+        }
+        if (sub_div && sub_div !== 'ALL') {
+            url += `&sub_div=${sub_div}`;
+        }
+        if (district && district !== 'ALL') {
+            url += `&district=${district}`;
+        }
+
+        // Open the export URL in a new tab
+        window.open(url, '_blank');
+    });
+</script>
+
+</body>
+
+</html>

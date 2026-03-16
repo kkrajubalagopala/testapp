@@ -11,15 +11,16 @@
 
 
     <!--Bootstrap CSS -->
-    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'bootstrap/bs_css_icons/bs_icons.css' %}">
+    <link rel="stylesheet" href="{% static 'topologybootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'topologybootstrap/bs_css_icons/bs_icons.css' %}">
+
 
     <!--Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/transco-styles.css' %}">
-    <link rel="stylesheet" href="{% static 'css/topology.css' %}">
+    <link rel="stylesheet" href="{% static 'css/topology2.css' %}">
+    <link rel="stylesheet" href="{% static 'css/topology1.css' %}">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+    <script src="{% static 'js/data.js' %}"></script>
 
 </head>
 
@@ -48,13 +49,13 @@
 <!--                        <a class="nav-link" href="#">Sub Station</a>-->
 <!--                1    </li>-->
                     <li class="nav-item">
-                        <a class="nav-link" href="discoms">Discom</a>
+                        <a class="nav-link" href="{% url 'discoms' %}">Discom</a>
                     </li>
                     <li class="nav-item font-sm">
-                        <a class="nav-link" href="reports">Reports</a>
+                        <a class="nav-link" href="{% url 'reports' %}">Reports</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="usermngt">User Management</a>
+                        <a class="nav-link" href="{% url 'dataentry' %}">User Management</a>
                     </li>
                 </ul>
 
@@ -152,7 +153,7 @@
                                                 <select name="owner_list" id="owner" class="form-select" onchange="getownercode()">
                                                     <option value="-- Select --">-- Select --</option>
                                                     {% for owner in ownerdata %}
-                                                        <option value="{{owner.owner_name}}" {% if owner.owner_name == data.owner_code %} selected {% endif %}>{{owner.owner_name}}</option>
+                                                        <option value="{{owner.owner_name}}" data-code="{{ owner.owner_code }}" {% if owner.owner_name == data.owner_list %} selected {% endif %} >{{owner.owner_name}}</option>
                                                     {% endfor %}
 
                                                 </select>
@@ -246,7 +247,7 @@
                                     </tr>
                                     <tr>
                                       <th>Updated Date</th>
-                                      <td><input type="date" name="updated_dt" class="form-control" value="{{data.updated_dt|date:'Y-m-d'}}"></td>
+                                      <td><input type="date" name="updated_dt" id="updated_dt" class="form-control" value="{{data.updated_dt|date:'Y-m-d'}}"></td>
                                       <th>Remarks</th>
                                       <td><input name="remarks" type="text" class="form-control" id="remarks" value="{{ data.remarks }}"></td>
                                     </tr>
@@ -326,6 +327,7 @@
                         </button>
                     </li>
 
+                    {% if '33kv' in selected_voltages %}
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="feeders-tab" data-bs-toggle="tab"
                                 data-bs-target="#feeders-tab-pane" type="button" role="tab" aria-controls="feeders-tab-pane"
@@ -333,13 +335,9 @@
                             Feeder
                         </button>
                     </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="generator-tab" data-bs-toggle="tab"
-                                data-bs-target="#generator-tab-pane" type="button" role="tab"
-                                aria-controls="generator-tab-pane" aria-selected="false" tabindex="-1">
-                            Generation Station
-                        </button>
-                    </li>
+                    {% endif %}
+
+
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="dgSet-tab" data-bs-toggle="tab"
                                 data-bs-target="#dgSet-tab-pane" type="button" role="tab" aria-controls="dgSet-tab-pane"
@@ -355,14 +353,21 @@
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="discomGen-tab" data-bs-toggle="tab"
-                                data-bs-target="#discomGen-tab-pane" type="button" role="tab" aria-controls="discomGen-tab-pane"
+                        <button class="nav-link" id="bulkloads-tab" data-bs-toggle="tab"
+                                data-bs-target="#bulkloads-tab-pane" type="button" role="tab" aria-controls="bulkloads-tab-pane"
                                 aria-selected="false" tabindex="-1">
                             Bulk Loads
                         </button>
                     </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="generator-tab" data-bs-toggle="tab"
+                                data-bs-target="#generator-tab-pane" type="button" role="tab"
+                                aria-controls="generator-tab-pane" aria-selected="false" tabindex="-1">
+                            Generation Station
+                        </button>
+                    </li>
                 </ul>
-          </div>
+            </div>
           <div class="tab-content b-light rounded-bottom" id="myTabContent">
                <div id="message" style="color:black;font-size: 30px; display: block; margin: 0 auto; text-align: center;">{{message}}</div>
                              <div class="tab-pane fade show active" id="bus-tab-pane" role="tabpanel" aria-labelledby="bus-tab" tabindex="0">
@@ -381,7 +386,13 @@
                                             <div class="row mb-1 transco-form">
                                                 <label for="bus_code" class="col-4 col-form-label">Bus Code</label>
                                                 <div class="col-sm-8">
-                                                    <input type="text" name="bus_code" id="bus_code"  class="form-control">
+                                                    <select name="bus_code" id="bus_code" class="form-select">
+                                                        <option value="-- Select --">-- Select --</option>
+                                                        <option value="Non-Gen-Bus">Non-Gen-Bus</option>
+                                                        <option value="Generator Bus">Generator Bus</option>
+                                                        <option value="Swing Bus">Swing Bus</option>
+                                                        <option value="Disconnected">Disconnected</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="row mb-1 transco-form">
@@ -399,6 +410,12 @@
                                                         <option value="{{ voltage }}" >{{ voltage }}</option>
                                                         {% endfor %}
                                                     </select>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-1 transco-form">
+                                                <label  class="col-4 col-form-label">Commission Date</label>
+                                                <div class="col-sm-8">
+                                                    <input type="date" class="form-control" name="buscmsndt" id="buscmsndt">
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -423,6 +440,7 @@
                                                         <th>Bus code</th>
                                                         <th>Bus Name</th>
                                                         <th>Bus Voltage</th>
+                                                        <th>Bus Commission Date</th>
                                                         <th>Edit</th>
                                                         <th>Delete</th>
                                                         <th></th>
@@ -437,6 +455,7 @@
                                                         <td>{{ data.bus_code }}</td>
                                                         <td>{{ data.bus_name }}</td>
                                                         <td>{{ data.bus_volt }}</td>
+                                                        <td>{{ data.buscmsndt | date:'d-m-Y' }}</td>
                                                         <td class="text-center"><i class="bi bi-pencil-fill edit-icon" style="cursor: pointer;" data-bus-id="{{ data.id }}"></i></td>
                                                         <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-bus-id="{{ data.id }}"></i></td>
                                                         <td class="text-center w-10">
@@ -591,6 +610,10 @@
                                                                 </select>
                                                                 <input type="hidden" id="hidden_sec_bus_name" name="sec_busname">
                                                             </div>
+                                                            <div class="col-sm-6">
+                                                                <label  class="form-label">Commission Date</label>
+                                                                <input type="date" class="form-control" name="trfcmsndt" id="trfcmsndt">
+                                                            </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-sm-12">
@@ -619,6 +642,7 @@
                                                                     <th>Transformer Capacity(MVA)</th>
                                                                     <th>Transformer ID</th>
                                                                     <th>Specs</th>
+                                                                    <th>Transformer Commission Date</th>
                                                                     <th>Edit</th>
                                                                     <th>Delete</th>
                                                                 </tr>
@@ -637,6 +661,7 @@
                                                                     <td>{{tdata.trf_rating}}</td>
                                                                     <td>{{tdata.trf_id}}</td>
                                                                     <td><button class="btn btn-sm font-sm" data-bs-toggle="modal" data-bs-target="#specsModal">Specs</button> </td>
+                                                                     <td>{{tdata.trfcmsndt | date:'d-m-Y'}}</td>
                                                                     <td class="text-center"><i class="bi bi-pencil-fill edit-icon" style="cursor: pointer;" data-trf-id="{{ tdata.id }}"></i></td>
                                                                     <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-trf-id="{{ tdata.id }}"></i></td>
                                                                 </tr>
@@ -649,7 +674,7 @@
                                             </div>
 
 
-                                            <div class="tab-pane fade" id="stnTransformer-tab-pane" role="tabpanel" aria-labelledby="stnTransformer-tab"
+                             <div class="tab-pane fade" id="stnTransformer-tab-pane" role="tabpanel" aria-labelledby="stnTransformer-tab"
                                                  tabindex="0">
                                                 <div class="row">
                                                     <div class="col-sm-5">
@@ -771,89 +796,108 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                             </div>
                              </div>
                              <div class="tab-pane fade" id="reactor-tab-pane" role="tabpanel" aria-labelledby="reactor-tab" tabindex="-1">
     <div class="row font-sm">
         <div class="col-sm-4">
+            <form id="reactorForm" method="post" enctype="multipart/form-data"> {% csrf_token %}
             <div class="row transco-form g-3 mt-2">
-                <label for="recType" class="col-sm-2 col-form-label">Type</label>
+
+                    <input type="hidden" id="reactor_id" name="id" >
+                    <input type="hidden" name="stn_name" value="{{stn_name}}">
+                <label for="react_type" class="col-sm-2 col-form-label">Type</label>
                 <div class="col-sm-4">
-                    <select class="form-select">
-                        <option value="0">Select...</option>
+                    <select class="form-select" id="react_type" name="react_type">
+                        <option value="">-- Select --</option>
                         <option value="Bus">Bus</option>
                         <option value="Line">Line</option>
                     </select>
                 </div>
 
-                <label for="reactVoltage" class="col-sm-2 col-form-label">Voltage</label>
+                <label for="react_voltage" class="col-sm-2 col-form-label">Voltage</label>
                 <div class="col-sm-4">
-                    <select id="reactVoltage" class="form-select"></select>
+                    <select id="react_voltage" name="react_voltage" class="form-select">
+                        <option value="-- Select --">-- Select --</option>
+                        {% for voltage in selected_voltages %}
+                          <option value="{{ voltage }}">{{ voltage }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
 
-                <div class="col-sm-12" id="busIDType" style="display: none;">
+                <div class="col-sm-12 hidden" id="busIDType" >
                     <div class="row">
-                        <label for="recBusID" class="col-sm-2 col-form-label">Bus ID</label>
+                        <label for="react_bus" class="col-sm-2 col-form-label">Bus ID</label>
                         <div class="col-sm-4">
-                            <select id="recBusID" class="form-select" onchange="recbusname(this)">
-                                <option value="0">Select...</option>
+                            <select class="form-select busno" id="react_bus" name="react_bus">
+                            <option value="-- Select --">-- Select --</option>
                             </select>
                         </div>
-                        <label for="recBusName" class="col-sm-2 col-form-label">Bus Name</label>
+                        <label for="react_busname" class="col-sm-2 col-form-label">Bus Name</label>
                         <div class="col-sm-4">
-                            <input type="text" id="recBusName" class="form-control" disabled />
+                            <input type="text" id="react_busname" name="react_busname" class="form-control" readonly />
                         </div>
                     </div>
                 </div>
 
-                <div class="col-sm-12" id="lineIDType" style="display: none;">
+                <div class="col-sm-12 hidden" id="lineIDType" >
                     <div class="row">
-                        <label for="recLineName" class="col-sm-2 col-form-label">Line Name</label>
+                        <label for="line_name" class="col-sm-2 col-form-label">Line Name</label>
                         <div class="col-sm-10">
-                            <select id="recLineName" class="form-select">
-                                <option value="0">Select...</option>
+                            <select id="line_name" name="line_name" class="form-select">
+                                <option value="-- Select --">-- Select --</option>
+                                {% for data in linesdata %}
+                                    <option value="{{data.fbus_no}}-{{data.fbus_name}}-{{data.to_busno}}-{{data.to_busname}}-{{data.cktno}}">{{data.fbus_no}}-{{data.fbus_name}}-{{data.to_busno}}-{{data.to_busname}}-{{data.cktno}}</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </div>
                 </div>
 
-                <label for="recCapRating" class="col-sm-2 col-form-label">Capacity/Rating</label>
+                <label for="react_cap" class="col-sm-2 col-form-label">Capacity/Rating</label>
                 <div class="col-sm-4">
                     <div class="input-group">
-                        <input type="text" class="form-control" id="recCapRating" />
+                        <input type="text" class="form-control" id="react_cap" name="react_cap" />
                         <span class="input-group-text font-sm">MVAR</span>
                     </div>
                 </div>
 
-                <label for="recType" class="col-sm-2 col-form-label">Reactor ID</label>
+                <label for="react_id" class="col-sm-2 col-form-label">Reactor ID</label>
                 <div class="col-sm-4">
                     <div class="input-group">
-                        <input type="text" class="form-control" id="recID" />
+                        <input type="text" class="form-control" id="react_id" name="react_id" />
                     </div>
                 </div>
 
                 <span class="col-sm-2 fw-bold">Convertible</span>
                 <div class="col-sm-4">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="convertiblestatus" id="inlineRadio1" value="Yes">
+                        <input class="form-check-input" type="radio" name="convertible" id="inlineRadio1" value="Yes">
                         <label class="form-check-label" for="inlineRadio1">Yes</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="convertiblestatus" id="inlineRadio2" value="No">
+                        <input class="form-check-input" type="radio" name="convertible" id="inlineRadio2" value="No">
                         <label class="form-check-label" for="inlineRadio2">No</label>
                     </div>
                 </div>
 
                 <label for="recVoltage" class="col-sm-2 col-form-label">Rated Voltage</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" id="recVoltage" />
+                    <input type="text" class="form-control" id="recVoltage" name="rated_voltage"/>
+                </div>
+                <label  class="col-sm-2 mt-2 col-form-label">Commission Date</label>
+                <div class="col-sm-4 mt-2">
+                    <input type="date" id="reccmsndt" name="reccmsndt" class="form-control" >
                 </div>
 
                 <div class="col-sm-12">
-                    <button id="saveButton5" class="my-3 w-25 btn btn-sm btn-primary float-end btn-custom-primary fw-semibold" type="button" onclick="savereactor()">Save <i class="bi bi-save-fill"></i></button>
+                    <button  class="my-3 w-25 btn btn-sm btn-primary float-end btn-custom-primary fw-semibold" type="submit" name="save_reactor" id="savereactorButton">Save <i class="bi bi-save-fill"></i></button>
                 </div>
+
             </div>
+            </form>
         </div>
+
 
         <div class="col-sm-8">
             <div class="table-responsive mt-3" style="height: 400px;">
@@ -869,24 +913,26 @@
                             <th>Capacity/Rating</th>
                             <th>Rated Voltage</th>
                             <th>Convertible</th>
+                            <th>Commission Date</th>
                             <th>Edit</th>
                             <th>Delete</th>
                         </tr>
                     </thead>
-                    <tbody id="reacttablebody">
-                        {% for react in reactlist %}
+                    <tbody id="reactorTableBody">
+                        {% for react in reactordata %}
                         <tr>
                             <td>{{forloop.counter}}</td>
-                            <td>{{react.reactorid}}</td>
-                            <td>{{react.type}}</td>
-                            <td>{{react.voltage}}</td>
-                            <td>{{react.type_number}}</td>
-                            <td>{{react.type_name}}</td>
-                            <td>{{react.rating}}</td>
-                            <td>{{react.ratedvoltage}}</td>
+                            <td>{{react.react_id}}</td>
+                            <td>{{react.react_type}}</td>
+                            <td>{{react.react_voltage}}</td>
+                            <td>{{react.react_bus}}</td>
+                            <td>{{react.react_busname|default:react.line_name}}</td>
+                            <td>{{react.react_cap}}</td>
+                            <td>{{react.rated_voltage}}</td>
                             <td>{{react.convertible}}</td>
-                            <td class="btn btn-sm"><i onclick="editreactor({{react.reactorid}})" class="bi bi-pencil-fill"></i></td>
-                            <td><i onclick="delete_reactor({{react.reactorid}})" style="cursor: pointer;" class="bi bi-trash-fill"></i></td>
+                            <td>{{react.reccmsndt | date:'d-m-Y'}}</td>
+                            <td class="text-center"><i class="bi bi-pencil-fill edit-icon" style="cursor: pointer;" data-reactor-id="{{ react.id }}"></i></td>
+                            <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-reactor-id="{{ react.id }}"></i></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -942,6 +988,10 @@
                                                     <div class="col-sm-4">
                                                         <input type="text" id="rated_voltage" name="rated_voltage" class="form-control" />
                                                     </div>
+                                                    <label for="rated_voltage" class="col-sm-2 col-form-label">Commission Date</label>
+                                                    <div class="col-sm-4">
+                                                        <input type="date" class="form-control" name="capcmsndt" id="capcmsndt" >
+                                                    </div>
 
                                                     <div class="col-sm-12">
                                                         <button class="my-3 w-25 btn btn-sm btn-primary float-end btn-custom-primary fw-semibold" type="submit" name="save_cap" id="savecapButton">
@@ -966,6 +1016,7 @@
                                                         <th>Bus No</th>
                                                         <th>Bus Name</th>
                                                         <th>Rating</th>
+                                                        <th>Commission Date</th>
                                                         <th>Edit</th>
                                                         <th>Delete</th>
                                                     </tr>
@@ -980,6 +1031,7 @@
                                                         <td>{{cap.bus_no}}</td>
                                                         <td>{{cap.bus_name}}</td>
                                                         <td>{{cap.cap_rating}}</td>
+                                                        <td>{{cap.capcmsndt | date:'d-m-Y'}}</td>
                                                         <td class="text-center">
                                                             <i class="bi bi-pencil-fill edit-icon" style="cursor: pointer;" data-cap-id="{{ cap.id }}"></i>
                                                         </td>
@@ -1005,10 +1057,9 @@
                     <label for="fedvoltage" class="col-sm-2 col-form-label">Voltage</label>
                     <div class="col-sm-4">
                         <select class="form-select" name="voltage" id="fedvoltage">
-                            <option value="-- Select --">-- Select --</option>
-                            {% for voltage in selected_voltages %}
-                                <option value="{{ voltage }}">{{ voltage }}</option>
-                            {% endfor %}
+
+                             <option value="33kv">33kv</option>
+
                         </select>
                     </div>
 
@@ -1072,6 +1123,10 @@
                             <option value="DF/DT">DF/DT</option>
                         </select>
                     </div>
+                    <label for="feeder_name" class="col-sm-2 col-form-label">Commission Date</label>
+                    <div class="col-sm-4">
+                        <input type="date" class="form-control" name="fedcmsndt" id="fedcmsndt">
+                    </div>
 
                     <div class="col-sm-12">
                         <button class="my-3 w-25 btn btn-sm btn-primary float-end btn-custom-primary fw-semibold" type="submit" id="savefedButton">
@@ -1098,6 +1153,7 @@
                         <th>Connection Type</th>
                         <th>Category</th>
                         <th>Autoload</th>
+                        <th>Commission Date</th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -1115,6 +1171,7 @@
                             <td>{{ fed.connectiontype }}</td>
                             <td>{{ fed.cat_loads }}</td>
                             <td>{{ fed.autoload_shed }}</td>
+                            <td>{{ fed.fedcmsndt | date:'d-m-Y' }}</td>
                             <td class="text-center">
                                 <i class="bi bi-pencil-fill edit-icon" style="cursor: pointer;" data-fed-id="{{ fed.id }}"></i>
                             </td>
@@ -1227,6 +1284,10 @@
                                             <option value="{{key}}">{{value}}</option>
                                             {% endfor %}
                                         </select>
+                                    </div>
+                                    <div class="col-sm-3" style="float:left!important;">
+                                        <label  class="form-label">Commission Date</label>
+                                        <input type="date" class="form-control" >
                                     </div>
 
                                     <div class="col-sm-3" style="float:left!important;">
@@ -1420,29 +1481,6 @@
                                 </div>
 
 
-                                <!-- <div class="table-responsive mt-3 border border-opacity-25 border-success">
-        <table class="table table-sm table-light font-sm">
-            <thead>
-                <tr>
-                    <th>S No</th><th>Type</th> <th>Stage</th> <th>Unit No</th> <th>Unit Capacity</th>
-                    <th>Bus Voltage</th> <th>Bus ID</th> <th>Bus Name</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td> <td></td> <td></td> <td></td> <td></td>
-                    <td></td> <td></td> <td></td>
-                </tr>
-                <tr>
-                    <td>2</td> <td></td> <td></td> <td></td> <td></td>
-                    <td></td> <td></td> <td></td>
-                </tr>
-
-            </tbody>
-        </table>
-    </div>-->
-
-
                             </div>
                             <div class="col-sm-7">
                                 <div style="height: 400px; width:100%; overflow-y: scroll; overflow-x:scroll;">
@@ -1498,78 +1536,15 @@
                                         </table>
                                     </div>
 
-                                    <!-- <div class="table-responsive bg-light px-3 py-2 mt-3 shadow-sm">
-                                  <table class="table table-bordered table-secodary font-sm">
-                                        <tbody>
-                                            <tr>
-                                                <th>Owner</th>
-                                                <td>APGENCO</td>
-                                                <th>Station ID</th>
-                                                <td>STNID123</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Name</th>
-                                                <td></td>
-                                                <th>Stages</th>
-                                                <td>06</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <table class="table table-sm font-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>S No</th>
-                                                <th>Type</th>
-                                                <th>Stage</th>
-                                                <th>Unit No</th>
-                                                <th>Unit Capacity</th>
-                                                <th>Bus Voltage</th>
-                                                <th>Bus ID</th>
-                                                <th>Bus Name</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
-                                            <tr>
-                                                <td>3</td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                    </div>-->
+
                                 </div>
                             </div>
                         </div>
                     </div>
-                             <div class="tab-pane fade" id="discomGen-tab-pane" role="tabpanel" aria-labelledby="discomGen-tab" tabindex="-1">
-    <form method="post" enctype="multipart/form-data">
+                             <div class="tab-pane fade" id="bulkloads-tab-pane" role="tabpanel" aria-labelledby="bulkloads-tab" tabindex="-1">
+    <form id="bulkForm" method="post" enctype="multipart/form-data">
         {% csrf_token %}
+        <input type="hidden" name="id" id="bulk_id">
         <input type="hidden" name="stn_name" value="{{ stn_name }}">
         <div class="row font-sm">
             <div class="col-sm-4">
@@ -1597,14 +1572,14 @@
                         <input type="text" class="form-control" id="bulkbusname" name="bus_name"/>
                     </div>
 
-                    <label for="stntransid" class="col-sm-2 col-form-label">Cons Name</label>
+                    <label for="cons_name" class="col-sm-2 col-form-label">Cons Name</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" name="cons_name"/>
+                        <input type="text" class="form-control" id="cons_name" name="cons_name"/>
                     </div>
 
-                    <label for="feedingSource" class="col-sm-2 col-form-label">Cons Category</label>
+                    <label for="cons_cat" class="col-sm-2 col-form-label">Cons Category</label>
                     <div class="col-sm-4">
-                        <select class="form-select" name="cons_cat">
+                        <select class="form-select" name="cons_cat" id="cons_cat">
                             <option>--Select--</option>
                             <option>Industry</option>
                             <option>Irrigation</option>
@@ -1612,22 +1587,26 @@
                         </select>
                     </div>
 
-                    <label for="feedingSource" class="col-sm-2 col-form-label">Discom</label>
+                    <label for="bulkdiscom" class="col-sm-2 col-form-label">Discom</label>
                     <div class="col-sm-4">
-                        <select class="form-select" name="discom">
+                        <select class="form-select" name="discom" id="bulkdiscom">
                             <option>--Select--</option>
                             <option>APCPDCL</option>
                             <option>APEPDLC</option>
                         </select>
                     </div>
 
-                    <label for="stnrating" class="col-sm-2 col-form-label">Contr Load</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="stnrating" name="contr_load"/>
+                    <label for="contr_load" class="col-sm-2 col-form-label">Contr Load</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="contr_load" name="contr_load"/>
                     </div>
 
+                    <label for="bulkcmsndt" class="col-sm-2 col-form-label">Commission Date</label>
+                    <div class="col-sm-4">
+                        <input type="date" class="form-control" name="bulkcmsndt" id="bulkcmsndt"/>
+                    </div>
                     <div class="col-sm-12">
-                        <button class="my-3 w-25 btn btn-sm btn-primary float-end btn-custom-primary fw-semibold" type="submit" name="save_bulkloads">
+                        <button class="my-3 w-25 btn btn-sm btn-primary float-end btn-custom-primary fw-semibold" type="submit" name="save_bulkloads" id="savebulkButton">
                             Save <i class="bi bi-save-fill"></i>
                         </button>
                     </div>
@@ -1649,12 +1628,13 @@
                         <th>Cons Category</th>
                         <th>Discom</th>
                         <th>Contr Load</th>
+                        <th>Commission Date</th>
                         <th>Edit</th>
                         <th>Delete</th>
                         <th></th> <th></th> <th></th>
                     </tr>
                 </thead>
-                <tbody id="stntablebody">
+                <tbody id="bulkTableBody">
                     {% for data in bulkloadsdata %}
                         <tr>
                             <td>{{ forloop.counter }}</td>
@@ -1665,8 +1645,9 @@
                             <td>{{ data.cons_cat }}</td>
                             <td>{{ data.discom }}</td>
                             <td>{{ data.contr_load }}</td>
-                            <td><i class="bi bi-pencil-fill"></i></td>
-                            <td><i class="bi bi-trash-fill"></i></td>
+                            <td>{{ data.bulkcmsndt | date:'d-m-Y' }}</td>
+                            <td class="text-center"><i class="bi bi-pencil-fill edit-icon" style="cursor: pointer;" data-bulk-id="{{ data.id }}"></i></td>
+                            <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-bulk-id="{{ data.id }}"></i></td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -1674,11 +1655,12 @@
         </div>
     </div>
 </div>
-   </div>
+                             </div>
                              <div class="tab-pane fade" id="lines-tab-pane" role="tabpanel" aria-labelledby="line-tab" tabindex="0">
     <div class="row mt-3">
         <div class="col-sm-5">
-            <form action="saveline" class="border border-success border-opacity-25 ms-1 rounded-1 px-1">
+            <form id="linesForm" method="post" enctype="multipart/form-data"> {% csrf_token %}
+                <input type="hidden" name="id" id="lines_id">
                 <input type="hidden" value="{{stn_name}}" name="stn_name">
                 <div class="row transco-form py-3">
                     <h5 class="fs-6 mb-0">From End</h5>
@@ -1699,49 +1681,47 @@
                     </div>
                     <div class="col-sm-4">
                         <label for="fbus_name" class="form-label">Bus Name</label>
-                        <input type="text" id="fbus_name" class="form-control" readonly>
+                        <input type="text" id="fbus_name" name="fbus_name" class="form-control" readonly>
                     </div>
                 </div>
                 <hr class="border my-0 border-success border-1 border-opacity-50">
 
                 <div class="row g-2 transco-form">
                     <h5 class="fs-6 mb-0">To</h5>
-                    <label for="zone" class="col-sm-2 col-form-label">SS Voltage</label>
+                    <label for="hidden_toss_voltage" class="col-sm-2 col-form-label">SS Voltage</label>
                     <div class="col-sm-4">
-                        <select name="zone" id="tobusvolt" class="form-select">
-                            <option value="-- Select --">-- Select --</option>
-                            {% for voltage in selected_voltages %}
-                                <option value="{{ voltage }}">{{ voltage }}</option>
-                            {% endfor %}
-                        </select>
+                        <span id="toss_voltage" name="toss_voltage">-- Select --</span>
+                        <input type="hidden" name="toss_voltage" id="hidden_toss_voltage" value="-- Select --">
+
                     </div>
-                    <label for="ssName" class="col-sm-2 col-form-label">SS Name</label>
+                    <label for="toss_name" class="col-sm-2 col-form-label">SS Name</label>
                     <div class="col-sm-4">
-                        <input type="text" id="ssName" name="tossid" class="form-control">
-                        <button class="btn btn-sm btn-primary float-end btn-custom-primary fw-semibold">ShowBusNo</button>
+                        <input type="text" id="toss_name" name="toss_name" class="form-control">
+                        <button type="button" id="showBusNo" class="btn btn-sm btn-primary float-end btn-custom-primary fw-semibold mt-2">ShowBusNo</button>
                     </div>
-                    <label for="bus-id-2" class="col-sm-2 co-form-label">Bus No</label>
+
+                    <label for="to_busno" class="col-sm-2 co-form-label">Bus No</label>
                     <div class="col-sm-4">
-                        <select id="tobusno" class="form-select">
+                        <select id="to_busno" name="to_busno" class="form-select">
                             <option value="-- Select --">-- Select --</option>
                         </select>
                     </div>
-                    <label for="to-bus-name" class="col-sm-2 co-form-label">Bus Name</label>
+                    <label for="to_busname" class="col-sm-2 co-form-label">Bus Name</label>
                     <div class="col-sm-4">
-                        <input type="text" id="to-bus-name" class="form-control" disabled>
+                        <input type="text" id="to_busname" name="to_busname" class="form-control" readonly>
                     </div>
-                    <label for="nLength" class="col-sm-2 co-form-label">Length</label>
+                    <label for="to_length" class="col-sm-2 co-form-label">Length</label>
                     <div class="col-sm-4">
-                        <input type="text" id="nLength" class="form-control">
+                        <input type="text" id="to_length" name="to_length" class="form-control">
                     </div>
-                    <label for="cktNo" class="col-sm-2 co-form-label">CKT No</label>
+                    <label for="cktno" class="col-sm-2 co-form-label">CKT No</label>
                     <div class="col-sm-4">
-                        <input type="text" id="cktNo" class="form-control">
+                        <input type="text" id="cktno" name="cktno" class="form-control">
                     </div>
-                    <label for="cat" class="col-sm-2 col-form-label">Category</label>
+                    <label for="category" class="col-sm-2 col-form-label">Category</label>
                     <div class="col-sm-4">
-                        <select id="cat" class="form-select">
-                            <option value="0">Select</option>
+                        <select id="category" name="category" class="form-select">
+                            <option value="-- Select --">-- Select --</option>
                             <option value="INDUSTRY">INDUSTRY</option>
                             <option value="GENERATION">GENERATION</option>
                             <option value="SS">SS</option>
@@ -1749,19 +1729,34 @@
                             <option value="RTSS">RTSS</option>
                         </select>
                     </div>
-                    <label for="jur" class="col-sm-2 col-form-label">Jurisdiction</label>
+                    <label for="jursidiction" class="col-sm-2 col-form-label">Jurisdiction</label>
                     <div class="col-sm-4">
-                        <select id="jur" class="form-select">
-                            <option value="0">Select</option>
+                        <select id="jursidiction" name="jursidiction" class="form-select">
+                            <option value="-- Select --">-- Select --</option>
                             <option value="IntraState">IntraState</option>
                             <option value="InterState">InterState</option>
                         </select>
                     </div>
+
+
+                        <label class="col-sm-2 col-form-label">Commission Date</label>
+                        <div class="col-sm-4">
+                            <input type="date" id="linecmsndt" name="linecmsndt" class="form-control" >
+                        </div>
+                        <label class="col-2 col-form-label">PSSC</label>
+                        <div class="col-sm-4">
+                            <select id="PSSC" name="pssc" class="form-select">
+                            <option value="-- Select --">-- Select --</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                        </div>
+
                     <div class="col-sm-12 mb-1">
                         <div class="input-group rounded-0">
-                            <label for="condtype" class="input-group-text">Conductor Type</label>
-                            <select name="condtype" id="condtype" class="form-control">
-                                <option value="0">Select...</option>
+                            <label for="cond_type" class="input-group-text">Conductor Type</label>
+                            <select name="cond_type" id="cond_type" class="form-control">
+                                <option value="-- Select --">-- Select --</option>
                                 <option value="Moose">Moose</option>
                                 <option value="Twin Moose">Twin Moose</option>
                                 <option value="Quad Moose">Quad Moose</option>
@@ -1769,29 +1764,36 @@
                                 <option value="Panther">Panther</option>
                                 <option value="Cable">Cable</option>
                             </select>
-                            <label for="bLength" class="input-group-text">Length</label>
-                            <input type="text" id="bLength" class="form-control">
-                            <button type="button" onclick="saveline()" class="input-group-text py-0"><i class="bi bi-plus-circle"></i></button>
+                            <label for="cond_length" class="input-group-text">Length</label>
+                            <input type="text" id="cond_length" name="cond_length" class="form-control">
+
+                            <button type="button"  class="input-group-text py-0"><i class="bi bi-plus-circle"></i></button>
+
                         </div>
                     </div>
                 </div>
-            </form>
 
             <div class="table-responsive bg-light mt-3" style="height: 130px;">
-                <table class="table table-sm table-light table-bordered font-sm">
+                <table id="conductordata" class="table table-sm table-light table-bordered font-sm">
                     <thead class="sticky-top">
                         <tr>
                             <th>Conductor Type</th>
                             <th>Length</th>
-                            <th></th>
+                             <th>Edit</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
-                    <tbody id="condtable">
-                        <!-- Content here -->
+                    <tbody >
+
                     </tbody>
                 </table>
             </div>
+                 <div class="col-sm-12">
+                        <button class="my-3 w-25 btn btn-sm btn-primary float-end btn-custom-primary fw-semibold" type="submit" name="save_lines" id="savelinesButton">Save <i class="bi bi-save-fill"></i></button>
+                    </div>
+ </form>
         </div>
+
 
         <div class="col-sm-7">
             <div class="table-responsive">
@@ -1801,40 +1803,36 @@
                             <th>S No</th>
                             <th>Ckt No</th>
                             <th>Voltage</th>
-                            <th>Bus Number</th>
-                            <th>Bus Name</th>
+                            <th>From Bus Number</th>
+                            <th>From Bus Name</th>
                             <th>To Bus Number</th>
                             <th>To Bus Name</th>
-                            <th>Length</th>
+                            <th>Total Length</th>
                             <th>Conductor</th>
+                            <th> Length</th>
+                            <th> Commission Date</th>
+                            <th>PSSC</th>
                             <th>Edit</th>
                             <th>Delete</th>
                         </tr>
                     </thead>
-                    <tbody id="linedatabody">
-                        {% for linedt in linelist %}
+                    <tbody id="linesTableBody">
+                        {% for lines in linesdata %}
                         <tr>
                             <td>{{forloop.counter}}</td>
-                            <td>{{linedt.lineid}}</td>
-                            <td>{{linedt.volt}}</td>
-                            <td>{{linedt.fbusno}}</td>
-                            <td>{{linedt.fbusname}}</td>
-                            <td>{{linedt.tbusno}}</td>
-                            <td>{{linedt.tbusname}}</td>
-                            <td>{{linedt.length}}</td>
-                            <td>
-                                <button type="button" class="btn font-sm p-0" data-bs-toggle="modal" data-bs-target="#{{linedt.lineid}}">Conductor</button>
-                            </td>
-                            <td class="text-center">
-                                <button onclick="edit_transmissionlines('{{linedt.cktno}}')" class="btn p-0 font-sm">
-                                    <i class="bi bi-pencil-fill"></i>
-                                </button>
-                            </td>
-                            <td class="text-center">
-                                <button class="btn p-0 font-sm">
-                                    <i class="bi bi-trash-fill"></i>
-                                </button>
-                            </td>
+                            <td>{{lines.cktno}}</td>
+                            <td>{{lines.fbus_voltage}}</td>
+                            <td>{{lines.fbus_no}}</td>
+                            <td>{{lines.fbus_name}}</td>
+                            <td>{{lines.to_busno}}</td>
+                            <td>{{lines.to_busname}}</td>
+                            <td>{{lines.to_length}}</td>
+                            <td>{{lines.cond_type}}</td>
+                            <td> {{lines.cond_length}}</td>
+                            <td> {{lines.linecmsndt | date:'d-m-Y'}}</td>
+                            <td>{{lines.pssc}}</td>
+                            <td class="text-center"><i class="bi bi-pencil-fill edit-icon" style="cursor: pointer;" data-lines-id="{{lines.id}}"></i></td>
+                            <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-lines-id="{{lines.id}}"></i></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -1844,7 +1842,8 @@
     </div>
 </div>
                              <div class="tab-pane fade" id="dgSet-tab-pane" role="tabpanel" aria-labelledby="dgSet-tab" tabindex="-1">
-    <form method="post" enctype="multipart/form-data"> {% csrf_token %}
+    <form id="dgsetForm" method="post" enctype="multipart/form-data"> {% csrf_token %}
+         <input type="hidden" name="id" id="dg_id">
         <input type="hidden" name="stn_name" value="{{stn_name}}">
         <div class="row font-sm">
             <div class="col-sm-4">
@@ -1852,11 +1851,11 @@
                     <label class="col-sm-3 col-form-label">Details</label>
                     <div class="col-sm-9">
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="availability" value="Available">
+                            <input class="form-check-input" type="radio" name="availability" value="Available" id="availability_available">
                             <label class="form-check-label">Available</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="availability" value="Not Available">
+                            <input class="form-check-input" type="radio" name="availability" value="Not Available" id="availability_not_available">
                             <label class="form-check-label">Not Available</label>
                         </div>
                     </div>
@@ -1871,8 +1870,12 @@
                             <span class="input-group-text font-sm">KVA</span>
                         </div>
                     </div>
+                    <label  class="col-sm-2 col-form-label">Commission Date</label>
+                    <div class="col-sm-4">
+                        <input type="date" class="form-control" name="dgcmsndt" id="dgcmsndt" />
+                    </div>
                     <div class="col-sm-12">
-                        <button class="my-3 w-25 btn btn-sm btn-primary float-end btn-custom-primary fw-semibold" type="submit" name="save_dgset">Save <i class="bi bi-save-fill"></i></button>
+                        <button class="my-3 w-25 btn btn-sm btn-primary float-end btn-custom-primary fw-semibold" type="submit" name="save_dgset" id="savedgsetButton">Save <i class="bi bi-save-fill"></i></button>
                     </div>
                 </div>
             </div>
@@ -1887,19 +1890,21 @@
                         <th>DGset ID</th>
                         <th>Availability</th>
                         <th>Rating</th>
+                        <th>Commission Date</th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="dgsetTableBody">
                     {% for dg in dgsetdata %}
                     <tr>
                         <td>{{forloop.counter}}</td>
                         <td>{{dg.dgset_id}}</td>
                         <td>{{dg.availability}}</td>
                         <td>{{dg.rating}}</td>
-                        <td><i onclick="edit_dgset('{{dg.dgsetid}}')" class="bi bi-pencil-fill" style="cursor: pointer;"></i></td>
-                        <td><i onclick="delete_dgset('{{dg.dgsetid}}')" class="bi bi-trash-fill" style="cursor: pointer;"></i></td>
+                        <td>{{dg.dgcmsndt | date:'d-m-Y'}}</td>
+                        <td class="text-center"><i class="bi bi-pencil-fill edit-icon" style="cursor: pointer;" data-dgset-id="{{ dg.id }}"></i></td>
+                        <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-dgset-id="{{ dg.id }}"></i></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -1907,49 +1912,47 @@
         </div>
     </div>
 </div>
-   </div>
+                             </div>
                              <div class="tab-pane fade" id="stnTR-tab-pane" role="tabpanel" aria-labelledby="stnTR-tab"
                                  tabindex="-1">
-                                  <form method="post" enctype="multipart/form-data"> {% csrf_token %}
+                                  <form id="stntrfForm" method="post" enctype="multipart/form-data"> {% csrf_token %}
+                                    <input type="hidden" name="id" id="stf_id">
                                     <input type="hidden" name="stn_name" value="{{stn_name}}">
                                       <div class="row font-sm">
                                          <div class="col-sm-4">
 
                                             <div class="row transco-form g-3 mt-2">
 
-                                                <label for="stnprimary" class="col-sm-2 col-form-label">Primary Voltage</label>
+                                                <label for="prim_volt" class="col-sm-2 col-form-label">Primary Voltage</label>
                                                 <div class="col-sm-4">
-                                                    <select id="stnprimary" class="form-select" name="prim_volt">
+                                                    <select id="prim_volt" class="form-select" name="prim_volt">
                                                         <option value="-- Select --">-- Select --</option>
-                                                        {% for voltage in selected_voltages %}
-                                                        <option value="{{voltage}}">{{voltage}}</option>
-                                                        {% endfor %}
-
+                                                        <option value="33kv">33 kv</option>
+                                                        <option value="11kv">11 kv</option>
                                                     </select>
                                                 </div>
-                                                    <label for="stnsecondary" class="col-sm-2 col-form-label">Secondary Voltage</label>
+                                                    <label for="sec_volt" class="col-sm-2 col-form-label">Secondary Voltage</label>
                                                     <div class="col-sm-4">
-                                                        <select id="stnsecondary" class="form-select" name="sec_volt">
+                                                        <select id="sec_volt" class="form-select" name="sec_volt">
                                                             <option value="-- Select --">-- Select --</option>
-                                                            {% for voltage in selected_voltages %}
-                                                            <option value="{{voltage}}">{{voltage}}</option>
-                                                            {% endfor %}
+                                                            <option value="415v">415V</option>
+                                                            <option value="230v">230V</option>
                                                         </select>
                                                     </div>
-                                                    <label for="stnrating" class="col-sm-1 col-form-label">Rating</label>
+                                                    <label for="rating" class="col-sm-1 col-form-label">Rating</label>
                                                     <div class="col-sm-4">
                                                         <div class="input-group">
-                                                            <input type="text" class="form-control" id="stnrating" name="rating">
-                                                            <span class="input-group-text font-sm">MVAR</span>
+                                                            <input type="text" class="form-control" id="rating" name="rating">
+                                                            <span class="input-group-text font-sm">KVA</span>
                                                         </div>
                                                     </div>
                                                     <label for="stntrf_id" class="col-sm-3 col-form-label">Station Transformer ID</label>
                                                     <div class="col-sm-3">
                                                         <input type="text" class="form-control" id="stntrf_id" name="stntrf_id" />
                                                     </div>
-                                                    <label for="feedingSource" class="col-sm-4 col-form-label">Source of Feeding</label>
+                                                    <label for="source" class="col-sm-4 col-form-label">Source of Feeding</label>
                                                     <div class="col-sm-8">
-                                                        <select id="feedingSource" class="form-select" name="source" >
+                                                        <select id="source" class="form-select" name="source" >
                                                             <option value="-- Select --">-- Select --</option>
                                                             <option value="Local Tertiary">Local Tertiary</option>
                                                             <option value="Discom">Discom</option>
@@ -1960,7 +1963,7 @@
 
                                             <div class="col-sm-12 hidden" id="localTertiary" >
                                                 <div class="row g-3">
-                                                    <label for="trnf_id" class="col-sm-2 col-form-label">Transformer ID</label>
+                                                    <label for="trnf_id" class="col-sm-2 col-form-label">ICT ID</label>
                                                     <div class="col-sm-4">
                                                         <select id="trnf_id" class="form-select" name="trnf_id">
                                                             <option value="" selected>-- Select --</option>
@@ -1972,56 +1975,56 @@
                                                         <input type="hidden" id="strf_type" name="trftype">
                                                     </div>
 
-                                                    <label for="stntertiaryvoltage" class="col-sm-2 col-form-label">Tertiary Voltage</label>
+                                                    <label for="ict_capacity" class="col-sm-2 col-form-label">ICT Capacity (MVA)</label>
                                                     <div class="col-sm-4">
-                                                        <input id="stntertiaryvoltage" type="text" class="form-control" name="teritory_volt" />
+                                                        <input  type="text" class="form-control" id="ict_capacity" name="ict_capacity"  readonly/>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="col-sm-12 hidden" id="Discom" >
                                                 <div class="row">
-                                                    <label for="stnfeedername" class="col-sm-4 col-form-label">Feeder Name</label>
+                                                    <label for="sfeeder_name" class="col-sm-4 col-form-label">Feeder Name</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control" id="stnfeedername" name="feeder_name" />
+                                                        <input type="text" class="form-control" id="sfeeder_name" name="feeder_name" />
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <label for="stndiscomss" class="col-sm-4 col-form-label">Discom SS</label>
+                                                    <label for="discomss" class="col-sm-4 col-form-label">Discom SS</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control" id="stndiscomss" name="discomss"/>
+                                                        <input type="text" class="form-control" id="discomss" name="discomss"/>
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <label for="stnfeederlength" class="col-sm-4 col-form-label">Length of feeder</label>
+                                                    <label for="length_feeder" class="col-sm-4 col-form-label">Length of feeder</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control" id="stnfeederlength" name="length_feeder" />
+                                                        <input type="text" class="form-control" id="length_feeder" name="length_feeder" />
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <label for="stnfeedertype" class="col-sm-4 col-form-label">Feeder Type</label>
+                                                    <label for="feed_type" class="col-sm-4 col-form-label">Feeder Type</label>
                                                     <div class="col-sm-8">
-                                                        <select id="stnfeedertype" class="form-select" name="feed_type">
+                                                        <select id="feed_type" class="form-select" name="feed_type">
                                                             <option value="" selected>Select...</option>
                                                             <option value="Dedicated">Dedicated</option>
                                                             <option value="Mixed">Mixed</option>
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="row">
-                                                    <label for="stnfeedervoltage" class="col-sm-4 col-form-label">Feeder Voltage</label>
+                                                <!--<div class="row">
+                                                    <label for="feed_vol" class="col-sm-4 col-form-label">Feeder Voltage</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" class="form-control" id="stnfeedervoltage" name="feed_vol"/>
+                                                        <input type="text" class="form-control" id="feed_vol" name="feed_vol"/>
                                                     </div>
-                                                </div>
+                                                </div>-->
                                             </div>
 
                                             <div class="col-sm-12 hidden" id="localBus" name="bus_id">
                                                 <div class="row">
                                                     <label for="stnbusid" class="col-sm-4 col-form-label">Bus ID</label>
                                                     <div class="col-sm-8">
-                                                        <select id="stnbusid" class="form-select">
-                                                            <option value="-- Select --">-- Select --</option>
+                                                        <select id="stnbusid" name="bus_id" class="form-select">
+                                                            <option value="">-- Select --</option>
                                                             {% for bus in busdata %}
                                                             <option value="{{bus.bus_no}}">{{bus.bus_no}}</option>
                                                             {% endfor %}
@@ -2029,9 +2032,14 @@
                                                     </div>
                                                 </div>
                                             </div>
-
+                                             <div class="form-group row">
+                                                    <label for="stntfcmsndt" class="col-sm-4 col-form-label">Commission Date</label>
+                                                    <div class="col-sm-4 mt-2">
+                                                        <input type="date" class="form-control" id="stntfcmsndt" name="stntfcmsndt" />
+                                                    </div>
+                                                </div>
                                             <div class="col-sm-12">
-                                                <button   class="my-3 w-25 btn btn-sm btn-primary float-end btn-custom-primary fw-semibold" type="submit" name="save_stntrf">Save <i class="bi bi-save-fill"></i></button>
+                                                <button   class="my-3 w-25 btn btn-sm btn-primary float-end btn-custom-primary fw-semibold" type="submit" name="save_stntrf" id="savestntfButton">Save <i class="bi bi-save-fill"></i></button>
                                             </div>
                                         </div>
 
@@ -2044,40 +2052,43 @@
                                                         <th>S No</th>
                                                         <th>Primary Voltage</th>
                                                         <th>Secondary Voltage</th>
-                                                        <th>Rating</th>
+                                                        <th>Rating (KVA)</th>
+                                                        <th>Stn Trans ID</th>
                                                         <th>Source of Feeding</th>
                                                         <th>Trans Type</th>
-                                                        <th>Trans ID</th>
-                                                        <th>Stn Trans ID</th>
-                                                        <th>Tertiary Voltage</th>
+                                                        <th>ICT ID</th>
+                                                        <th>ICT Capacity (MVA)</th>
                                                         <th>Feeder Name</th>
                                                         <th>Discom SS</th>
-                                                        <th>Length of feeder</th>
+                                                        <th>Length of feeder (KM)</th>
                                                         <th>Feeder Type</th>
-                                                        <th>Feeder Voltage</th>
                                                         <th>Bus ID</th>
+                                                        <th>Commission Date</th>
+                                                        <th>Edit</th>
+                                                        <th>Delete</th>
                                              </tr>
                                                 </thead>
-                                                <tbody >
+                                                <tbody id="stntfTableBody" >
                                                     {% for stn in stntrfdata %}
                                                     <tr>
                                                         <td>{{forloop.counter}}</td>
                                                         <td>{{stn.prim_volt}}</td>
                                                         <td>{{stn.sec_volt}}</td>
                                                         <td>{{stn.rating}}</td>
+                                                        <td>{{stn.stntrf_id}}</td>
                                                         <td>{{stn.source}}</td>
                                                         <td>{{stn.trftype |default:"--"}}</td>
                                                         <td>{{stn.trnf_id |default:"--"}}</td>
-                                                        <td>{{stn.stntrf_id}}</td>
-                                                        <td>{{stn.teritory_volt|default:"--"}}</td>
+                                                        <td>{{stn.ict_capacity | default:"--"}}</td>
                                                         <td>{{stn.feeder_name|default:"--"}}</td>
                                                         <td>{{stn.discomss|default:"--"}}</td>
                                                         <td>{{stn.length_feeder|default:"--"}}</td>
                                                         <td>{{stn.feed_type|default:"--"}}</td>
-                                                        <td>{{stn.feed_vol|default:"--"}}</td>
+
                                                         <td>{{stn.bus_id|default:"--"}}</td>
-                                                        <td><i onclick="edit_dgset('{{dg.dgsetid}}')" class="bi bi-pencil-fill" style="cursor: pointer;"></i></td>
-                                                        <td><i onclick="delete_dgset('{{dg.dgsetid}}')" class="bi bi-trash-fill" style="cursor: pointer;"></i></td>
+                                                        <td>{{stn.stntfcmsndt | date:'d-m-Y'}}</td>
+                                                        <td class="text-center"><i class="bi bi-pencil-fill edit-icon" style="cursor: pointer;" data-stntf-id="{{ stn.id }}"></i></td>
+                                                        <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-stntf-id="{{ stn.id }}"></i></td>
                                               </tr>
                                                     {% endfor %}
                                                 </tbody>
@@ -2085,9 +2096,6 @@
                                         </div>
                                     </div>
                                  </div>
-
-
-
                             {% for linedt in linelist %}
                             <div class="modal fade" id="{{linedt.lineid}}">
                                 <div class="modal-dialog">
@@ -2128,28 +2136,58 @@
 
       </div>
 
-           </div>
+</div>
       </div>
     </div>
 
+<script>
+        $(document).ready(function(){
+            // Check if the station data is available
+            var stationId = "{{ data.stn_name }}";
+            if (stationId) {
+                $('#additional-forms').show();
+            } else {
+                $('#additional-forms').hide();
+            }
+        });
+</script>
 
 
-
-       <!-- <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script> -->
-        <script src="../static/bootstrap/js/bootstrap.bundle.js"></script>
+       <!-- <script src="assets/topologybootstrap/js/topologybootstrap.bundle.min.js"></script> -->
+        <script src="../static/topologybootstrap/js/bootstrap.bundle.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
         <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+   <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+   <!-- Bootstrap JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/topologybootstrap.bundle.min.js"></script>
+<script src="{% static 'topologybootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- jQuery UI CSS -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+   <script>commission_dt.max = new Date().toISOString().split("T")[0];</script>
+   <script>updated_dt.max = new Date().toISOString().split("T")[0];</script>
+   <script>buscmsndt.max = new Date().toISOString().split("T")[0];</script>
+   <script>trfcmsndt.max = new Date().toISOString().split("T")[0];</script>
+   <script>reccmsndt.max = new Date().toISOString().split("T")[0];</script>
+   <script>capcmsndt.max = new Date().toISOString().split("T")[0];</script>
+   <script>linecmsndt.max = new Date().toISOString().split("T")[0];</script>
+   <script>fedcmsndt.max = new Date().toISOString().split("T")[0];</script>
+   <script>gencmsndt.max = new Date().toISOString().split("T")[0];</script>
+   <script>dgcmsndt.max = new Date().toISOString().split("T")[0];</script>
+   <script>stntfcmsndt.max = new Date().toISOString().split("T")[0];</script>
+   <script>bulkcmsndt.max = new Date().toISOString().split("T")[0];</script>
+   <script>modifieddt.max = new Date().toISOString().split("T")[0];</script>
 <script>
     function getownercode() {
-        const ownerCode = document.getElementById('owner').value;
-        document.getElementById('ownerCode').value = ownerCode;
-    }
+    const ownerSelect = document.getElementById('owner');
+    const selectedOption = ownerSelect.options[ownerSelect.selectedIndex];
+    const ownerCode = selectedOption.getAttribute('data-code');
+    document.getElementById('ownerCode').value = ownerCode || '';
+}
 
-    document.addEventListener('DOMContentLoaded', function() {
-        getownercode();
-    });
+document.addEventListener('DOMContentLoaded', function() {
+    getownercode();
+});
 </script>
 
 <script type="text/javascript">
@@ -2164,6 +2202,8 @@
                         $.each(data, function(i, item) {
                             $('#circle').append('<option value="'+item.circle_id+'">'+item.circle_name+'</option>');
                         });
+                        $('#div').empty().append('<option value="">-- Select Division --</option>');
+                        $('#subdiv').empty().append('<option value="">-- Select Sub-Division --</option>');
                     }
                 });
             });
@@ -2178,6 +2218,7 @@
                         $.each(data, function(i, item) {
                             $('#div').append('<option value="'+item.div_id+'">'+item.div_name+'</option>');
                         });
+                        $('#subdiv').empty().append('<option value="">-- Select Sub-Division --</option>');
                     }
                 });
             });
@@ -2214,16 +2255,35 @@
  </script>
 
 <script>
-        $(document).ready(function(){
-            // Check if the station data is available
-            var stationId = "{{ data.stn_name }}";
-            if (stationId) {
-                $('#additional-forms').show();
-            } else {
-                $('#additional-forms').hide();
-            }
-        });
-    </script>
+    $(document).ready(function() {
+  $("#stn_name").autocomplete({
+    source: function(request, response) {
+      $.ajax({
+        url: "/auto_stnname/",  // URL to your Django view
+        dataType: "json",
+        data: {
+          term: request.term  // Search term entered by the user
+        },
+        success: function(data) {
+          response(data);  // Return the list of matching station names
+        },
+        error: function() {
+          response([]);  // In case of error, return an empty list
+        }
+      });
+    },
+    minLength: 1,  // Minimum number of characters before triggering autocomplete
+    select: function(event, ui) {
+      // Optional: When a station name is selected, you can do something
+      // For example, submit the form or populate additional fields
+    }
+  });
+});
+
+</script>
+
+
+
 
 <script type="text/javascript">
     var busdata = [
@@ -2382,7 +2442,7 @@ updateBusDropdown('sec_voltage', 'sec_busno', 'hidden_sec_bus_name');
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const feedingSource = document.getElementById('feedingSource');
+        const feedingSource = document.getElementById('source');
         const localTertiary = document.getElementById('localTertiary');
         const discom = document.getElementById('Discom');
         const localBus = document.getElementById('localBus');
@@ -2416,6 +2476,7 @@ updateBusDropdown('sec_voltage', 'sec_busno', 'hidden_sec_bus_name');
         {
             trf_id: "{{ trf.trf_id|escapejs }}",
             trf_type: "{{ trf.trf_type|escapejs }}",
+            trf_rating: "{{ trf.trf_rating|escapejs }}",
         },
         {% endfor %}
     ];
@@ -2423,20 +2484,24 @@ updateBusDropdown('sec_voltage', 'sec_busno', 'hidden_sec_bus_name');
     document.getElementById('trnf_id').addEventListener('change', function() {
         var trfId = this.value;
         var trfTypeField = document.getElementById('strf_type');
+        var trfRatingField = document.getElementById('ict_capacity');
         if (trfId && trfId !== "") {
             var selectedTrf = trfdata.find(function(trf) {
                 return trf.trf_id === trfId;
             });
             if (selectedTrf) {
                 trfTypeField.value = selectedTrf.trf_type;
+                trfRatingField.value = selectedTrf.trf_rating;
             } else {
                 trfTypeField.value = '';
+                trfRatingField.value = '';
             }
         } else {
             trfTypeField.value = '';
+            trfRatingField.value = '';
         }
         // Alert the value of the hidden field
-        //alert('Transformer Type: ' + trfTypeField.value);
+        //alert('Transformer Rating: ' + trfRatingField.value);
     });
 </script>
 
@@ -2539,6 +2604,38 @@ updateBusDropdown('sec_voltage', 'sec_busno', 'hidden_sec_bus_name');
         });
     });
 </script>
+   <script >
+    document.addEventListener('DOMContentLoaded', function() {
+        var lineVoltageDropDown = document.getElementById('toss_voltage');
+        var linebusNoDropDown = document.getElementById('to_busno');
+        var busName = document.getElementById('to_busname');
+
+        lineVoltageDropDown.addEventListener('change', function() {
+            var selectedVoltage = this.value;
+
+            linebusNoDropDown.innerHTML = '<option value="-- Select --">-- Select --</option>';
+
+            var filteredBusData = busdata.filter(function(bus) {
+                return bus.bus_volt === selectedVoltage;
+            });
+
+            filteredBusData.forEach(function(bus) {
+                var option = document.createElement('option');
+                option.value = bus.bus_no;
+                option.textContent = bus.bus_no;
+                linebusNoDropDown.appendChild(option);
+            });
+        });
+
+        linebusNoDropDown.addEventListener('change', function() {
+            var selectedbusNo = this.value;
+            var selectedBus = busdata.find(function(bus) {
+                return bus.bus_no === selectedbusNo;
+            });
+            busName.value = selectedBus ? selectedBus.bus_name : '';
+        });
+    });
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
     const busForm = document.getElementById('busForm');
@@ -2553,6 +2650,7 @@ updateBusDropdown('sec_voltage', 'sec_busno', 'hidden_sec_bus_name');
         const response = await fetch('/save_bus/', {
             method: 'POST',
             body: formData,
+
             headers: {
                 'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
             },
@@ -2595,6 +2693,7 @@ updateBusDropdown('sec_voltage', 'sec_busno', 'hidden_sec_bus_name');
                 document.getElementById('bus_code').value = data.bus_code;
                 document.getElementById('bus_name').value = data.bus_name;
                 document.getElementById('bus_volt').value = data.bus_volt;
+                document.getElementById('buscmsndt').value = data.buscmsndt;
                 saveBusButton.innerHTML = 'Update <i class="bi bi-save-fill"></i>';
             }
         }
@@ -2639,6 +2738,7 @@ updateBusDropdown('sec_voltage', 'sec_busno', 'hidden_sec_bus_name');
                 <td>${data.bus_code}</td>
                 <td>${data.bus_name}</td>
                 <td>${data.bus_volt}</td>
+                <td>${data.buscmsndt}</td>
                 <td class="text-center"><i class="bi bi-pencil-fill edit-icon" style="cursor: pointer;" data-bus-id="${data.id}"></i></td>
                 <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-bus-id="${data.id}"></i></td>
                 <td class="text-center w-10">
@@ -2752,6 +2852,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('trf_title').value = data.trf_title;
                 document.getElementById('prim_voltage').value = data.prim_voltage;
                 document.getElementById('sec_voltage').value = data.sec_voltage;
+                document.getElementById('trfcmsndt').value = data.trfcmsndt
 
                 // Manually trigger change event to update dropdowns
                 document.getElementById('prim_voltage').dispatchEvent(new Event('change'));
@@ -2810,6 +2911,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${tdata.trf_id}</td>
                 <td>${tdata.prim_busname}</td>
                 <td>${tdata.sec_busname}</td>
+                <td>${tdata.trfcmsndt}</td>
                 <td class="text-center"><i class="bi bi-pencil-fill edit-icon" style="cursor: pointer;" data-trf-id="${tdata.id}"></i></td>
                 <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-trf-id="${tdata.id}"></i></td>
             </tr>`;
@@ -2918,6 +3020,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('cap_rating').value = data.cap_rating;
                 document.getElementById('cap_id').value = data.cap_id;
                 document.getElementById('rated_voltage').value = data.rated_voltage;
+                document.getElementById('capcmsndt').value = data.capcmsndt;
 
                 // Manually trigger change event to update dropdowns
                 document.getElementById('cap_voltage').dispatchEvent(new Event('change'));
@@ -2971,6 +3074,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${cap.bus_no}</td>
                 <td>${cap.bus_name}</td>
                 <td>${cap.cap_rating}</td>
+                <td>${cap.capcmsndt}</td>
                 <td class="text-center"><i class="bi bi-pencil-fill edit-icon" style="cursor: pointer;" data-cap-id="${cap.id}"></i></td>
                 <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-cap-id="${cap.id}"></i></td>
             </tr>`;
@@ -3097,6 +3201,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('connectiontype').value = data.connectiontype;
                 document.getElementById('cat_loads').value = data.cat_loads;
                 document.getElementById('autoload_shed').value = data.autoload_shed;
+                document.getElementById('fedcmsndt').value = data.fedcmsndt;
 
                 savefedButton.innerHTML = 'Update <i class="bi bi-save-fill"></i>';
             }
@@ -3145,6 +3250,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${fed.connectiontype}</td>
                 <td>${fed.cat_loads}</td>
                 <td>${fed.autoload_shed}</td>
+                <td>${fed.fedcmsndt}</td>
                 <td class="text-center"><i class="bi bi-pencil-fill edit-icon" style="cursor: pointer;" data-fed-id="${fed.id}"></i></td>
                 <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-fed-id="${fed.id}"></i></td>
             </tr>`;
@@ -3154,8 +3260,1074 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const dgsetForm = document.getElementById('dgsetForm');
+    const savedgsetButton = document.getElementById('savedgsetButton');
+    const dgsetTableBody = document.getElementById('dgsetTableBody');
+    const messageDiv = document.getElementById('message');
 
-   </div>
+    // Handle form submission
+    dgsetForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(dgsetForm);
+        const response = await fetch('/save_dgset/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+            },
+        });
+
+        const data = await response.json();
+        messageDiv.innerText = data.msg || '';
+
+        setTimeout(() => {
+            messageDiv.innerText = '';
+        }, 3000);
+
+        if (data.dgsetdata) {
+            updatedgsetTable(data.dgsetdata);
+            dgsetForm.reset();
+            savedgsetButton.innerHTML = 'Save <i class="bi bi-save-fill"></i>';
+            dgsetForm.querySelector('#dg_id').value = '';  // Clear the hidden id field
+        }
+    });
+
+    // Handle edit icon click
+    dgsetTableBody.addEventListener('click', async (event) => {
+        if (event.target.classList.contains('edit-icon')) {
+            const dgId = event.target.dataset.dgsetId;
+            const response = await fetch('/edit_dgset/', {
+                method: 'POST',
+                body: new URLSearchParams({ 'dg_id': dgId }),
+                headers: {
+                    'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value,
+                },
+            });
+
+            const data = await response.json();
+            if (data.error) {
+                messageDiv.innerText = data.error;
+            } else {
+                document.getElementById('dg_id').value = data.id;
+                document.getElementById('dgset_id').value = data.dgset_id;
+                document.getElementById('dgsetrating').value = data.rating;
+                document.getElementById('dgcmsndt').value = data.dgcmsndt;
+
+                // Set the radio button based on the availability value
+                document.getElementById('availability_available').checked = (data.availability === 'Available');
+                document.getElementById('availability_not_available').checked = (data.availability === 'Not Available');
+
+                savedgsetButton.innerHTML = 'Update <i class="bi bi-save-fill"></i>';
+            }
+        }
+    });
+
+    // Handle delete icon click
+    dgsetTableBody.addEventListener('click', async (event) => {
+        if (event.target.classList.contains('delete-icon')) {
+            const dgId = event.target.dataset.dgsetId;
+            if (confirm('Are you sure you want to delete this DG Set?')) {
+                const response = await fetch('/delete_dgset/', {
+                    method: 'POST',
+                    body: new URLSearchParams({ 'dg_id': dgId }),
+                    headers: {
+                        'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value,
+                    },
+                });
+
+                const data = await response.json();
+                messageDiv.innerText = data.msg || data.error;
+
+                setTimeout(() => {
+                    messageDiv.innerText = '';
+                }, 3000);
+
+                if (!data.error) {
+                    const row = event.target.closest('tr');
+                    row.remove();
+                }
+            }
+        }
+    });
+
+    function updatedgsetTable(dgsetdata) {
+        dgsetTableBody.innerHTML = '';
+        dgsetdata.forEach((dg, index) => {
+            const row = `<tr>
+                <td>${index + 1}</td>
+                <td>${dg.dgset_id}</td>
+                <td>${dg.availability}</td>
+                <td>${dg.rating}</td>
+                <td>${dg.dgcmsndt}</td>
+                <td class="text-center"><i class="bi bi-pencil-fill edit-icon" style="cursor: pointer;" data-dgset-id="${dg.id}"></i></td>
+                <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-dgset-id="${dg.id}"></i></td>
+            </tr>`;
+            dgsetTableBody.insertAdjacentHTML('beforeend', row);
+        });
+    }
+});
+
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const stntrfForm = document.getElementById('stntrfForm');
+    const savestntfButton = document.getElementById('savestntfButton');
+    const stntfTableBody = document.getElementById('stntfTableBody');
+    const messageDiv = document.getElementById('message');
+
+    // Function to handle source-specific fields visibility
+    function handleSourceChange(source) {
+        // Hide all fields initially
+        document.getElementById('localTertiary').classList.add('hidden');
+        document.getElementById('Discom').classList.add('hidden');
+        document.getElementById('localBus').classList.add('hidden');
+
+        // Show relevant fields based on selected source
+        if (source === 'Local Tertiary') {
+            document.getElementById('localTertiary').classList.remove('hidden');
+        } else if (source === 'Discom') {
+            document.getElementById('Discom').classList.remove('hidden');
+        } else if (source === 'Local Bus') {
+            document.getElementById('localBus').classList.remove('hidden');
+        }
+    }
+
+    // Handle form submission
+    stntrfForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(stntrfForm);
+        const response = await fetch('/save_stntrf/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+            },
+        });
+
+        const data = await response.json();
+        messageDiv.innerText = data.msg || '';
+
+        setTimeout(() => {
+            messageDiv.innerText = '';
+        }, 3000);
+
+        if (data.stntrfdata) {
+            updateStntrfTable(data.stntrfdata);
+            stntrfForm.reset();
+            savestntfButton.innerHTML = 'Save <i class="bi bi-save-fill"></i>';
+            stntrfForm.querySelector('#stf_id').value = '';  // Clear the hidden id field
+        }
+    });
+
+    // Handle edit icon click
+    stntfTableBody.addEventListener('click', async (event) => {
+        if (event.target.classList.contains('edit-icon')) {
+            const stntrfId = event.target.getAttribute('data-stntf-id');
+            if (!stntrfId) {
+                messageDiv.innerText = 'Station Transformer ID is missing.';
+                return;
+            }
+
+            console.log(`Editing transformer with ID: ${stntrfId}`);
+
+            const response = await fetch('/edit_stntrf/', {
+                method: 'POST',
+                body: new URLSearchParams({ 'id': stntrfId }),
+                headers: {
+                    'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value,
+                },
+            });
+
+            const data = await response.json();
+            if (data.error) {
+                messageDiv.innerText = data.error;
+            } else {
+                // Populate form fields with returned data
+                document.getElementById('stf_id').value = data.id;
+                document.getElementById('prim_volt').value = data.prim_volt || '';
+                document.getElementById('sec_volt').value = data.sec_volt || '';
+                document.getElementById('rating').value = data.rating || '';
+                document.getElementById('stntrf_id').value = data.stntrf_id || '';
+                document.getElementById('source').value = data.source || '';
+                document.getElementById('stntfcmsndt').value = data.stntfcmsndt || '';
+
+                // Clear all source-specific fields first
+                document.getElementById('trnf_id').value = '';
+                document.getElementById('ict_capacity').value = '';
+                document.getElementById('sfeeder_name').value = '';
+                document.getElementById('discomss').value = '';
+                document.getElementById('length_feeder').value = '';
+                document.getElementById('feed_type').value = '';
+
+                document.getElementById('stnbusid').value = '';
+
+                // Set additional fields based on the source
+                if (data.source === 'Local Tertiary') {
+                    document.getElementById('trnf_id').value = data.trnf_id || '';
+                    document.getElementById('ict_capacity').value = data.ict_capacity || '';
+                } else if (data.source === 'Discom') {
+                    document.getElementById('sfeeder_name').value = data.feeder_name || '';
+                    document.getElementById('discomss').value = data.discomss || '';
+                    document.getElementById('length_feeder').value = data.length_feeder || '';
+                    document.getElementById('feed_type').value = data.feed_type || '';
+
+                } else if (data.source === 'Local Bus') {
+                    document.getElementById('stnbusid').value = data.bus_id || '';
+                }
+
+                // Update fields visibility based on the source
+                handleSourceChange(data.source);
+
+                savestntfButton.innerHTML = 'Update <i class="bi bi-save-fill"></i>';
+            }
+        }
+    });
+
+    // Handle delete icon click
+    stntfTableBody.addEventListener('click', async (event) => {
+        if (event.target.classList.contains('delete-icon')) {
+            const stntrfId = event.target.dataset.stntfId;
+            if (confirm('Are you sure you want to delete this Station Transformer?')) {
+                const response = await fetch('/delete_stntrf/', {
+                    method: 'POST',
+                    body: new URLSearchParams({ 'stf_id': stntrfId }),
+                    headers: {
+                        'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value,
+                    },
+                });
+
+                const data = await response.json();
+                messageDiv.innerText = data.msg || data.error;
+
+                setTimeout(() => {
+                    messageDiv.innerText = '';
+                }, 3000);
+
+                if (!data.error) {
+                    const row = event.target.closest('tr');
+                    row.remove();
+                }
+            }
+        }
+    });
+
+    function updateStntrfTable(stntrfdata) {
+        stntfTableBody.innerHTML = '';
+        stntrfdata.forEach((stn, index) => {
+            const row = `<tr>
+                <td>${index + 1}</td>
+                <td>${stn.prim_volt}</td>
+                <td>${stn.sec_volt}</td>
+                <td>${stn.rating}</td>
+                <td>${stn.stntrf_id}</td>
+                <td>${stn.source}</td>
+                <td>${stn.trftype || '--'}</td>
+                <td>${stn.trnf_id || '--'}</td>
+
+                <td>${stn.ict_capacity || '--'}</td>
+                <td>${stn.feeder_name || '--'}</td>
+                <td>${stn.discomss || '--'}</td>
+                <td>${stn.length_feeder || '--'}</td>
+                <td>${stn.feed_type || '--'}</td>
+
+                <td>${stn.bus_id || '--'}</td>
+                <td>${stn.stntfcmsndt}</td>
+                <td class="text-center"><i class="bi bi-pencil-fill edit-icon" style="cursor: pointer;" data-stntf-id="${stn.id}"></i></td>
+                <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-stntf-id="${stn.id}"></i></td>
+            </tr>`;
+            stntfTableBody.insertAdjacentHTML('beforeend', row);
+        });
+    }
+
+    // Initialize the visibility of source-specific fields on page load
+    handleSourceChange(document.getElementById('source').value);
+});
+
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const bulkForm = document.getElementById('bulkForm');
+    const savebulkButton = document.getElementById('savebulkButton');
+    const bulkTableBody = document.getElementById('bulkTableBody');
+    const messageDiv = document.getElementById('message');
+
+    const busdata = [
+        {% for bus in busdata %}
+        {
+            bus_no: "{{ bus.bus_no }}",
+            bus_volt: "{{ bus.bus_volt }}",
+            bus_name: "{{ bus.bus_name }}"
+        },
+        {% endfor %}
+    ];
+
+    function updateBusDropdown(voltageId, busNoId, BusNameId) {
+        document.getElementById(voltageId).addEventListener('change', function() {
+            const selectedVoltage = this.value;
+            const busNoDropdown = document.getElementById(busNoId);
+            const BusName = document.getElementById(BusNameId);
+
+            busNoDropdown.innerHTML = '<option value="-- Select --">-- Select --</option>';
+
+            const filteredBusData = busdata.filter(bus => bus.bus_volt === selectedVoltage);
+
+            filteredBusData.forEach(bus => {
+                const option = document.createElement('option');
+                option.value = bus.bus_no;
+                option.textContent = bus.bus_no;
+                busNoDropdown.appendChild(option);
+            });
+
+            busNoDropdown.addEventListener('change', function() {
+                const selectedBusNo = this.value;
+                const selectedBus = filteredBusData.find(bus => bus.bus_no === selectedBusNo);
+                BusName.value = selectedBus ? selectedBus.bus_name : '';
+            });
+        });
+    }
+
+    updateBusDropdown('bulkvoltage', 'bulkbusno', 'bulkbusname');
+
+    async function fetchData(url, method, body) {
+        return await fetch(url, {
+            method,
+            body,
+            headers: {
+                'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value,
+            },
+        });
+    }
+
+    function showMessage(message) {
+        messageDiv.innerText = message;
+        setTimeout(() => {
+            messageDiv.innerText = '';
+        }, 3000);
+    }
+
+    function populateForm(data) {
+        document.getElementById('bulk_id').value = data.id || '';
+        document.getElementById('bulkvoltage').value = data.bus_volt || '';
+        document.getElementById('bulkbusno').value = data.bus_no || '';
+        document.getElementById('bulkbusname').value = data.bus_name || '';
+        document.getElementById('cons_name').value = data.cons_name || '';
+        document.getElementById('cons_cat').value = data.cons_cat || '';
+        document.getElementById('bulkdiscom').value = data.discom || '';
+        document.getElementById('contr_load').value = data.contr_load || '';
+        document.getElementById('bulkcmsndt').value = data.bulkcmsndt || '';
+
+        // Manually trigger change event to update dropdowns
+        document.getElementById('bulkvoltage').dispatchEvent(new Event('change'));
+
+        document.getElementById('bulkbusno').value = data.bus_no;
+
+        document.getElementById('bulkbusname').value = data.bus_name;
+
+
+
+    }
+
+    function clearForm() {
+        bulkForm.reset();
+        document.getElementById('bulk_id').value = '';
+        savebulkButton.innerHTML = 'Save <i class="bi bi-save-fill"></i>';
+    }
+
+    bulkForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(bulkForm);
+        const response = await fetchData('/save_bulk/', 'POST', formData);
+        const data = await response.json();
+        showMessage(data.msg || '');
+
+        if (data.bulkloadsdata) {
+            updatebulkTable(data.bulkloadsdata);
+            clearForm();
+        }
+    });
+
+    bulkTableBody.addEventListener('click', async (event) => {
+        const target = event.target;
+
+        if (target.classList.contains('edit-icon')) {
+            const bulkId = target.dataset.bulkId;
+            const response = await fetchData('/edit_bulk/', 'POST', new URLSearchParams({ 'bulk_id': bulkId }));
+            const data = await response.json();
+
+            if (data.error) {
+                showMessage(data.error);
+            } else {
+                populateForm(data);
+                savebulkButton.innerHTML = 'Update <i class="bi bi-save-fill"></i>';
+            }
+        } else if (target.classList.contains('delete-icon')) {
+            const bulkId = target.dataset.bulkId;
+            if (confirm('Are you sure you want to delete this Bulk load data?')) {
+                const response = await fetchData('/delete_bulk/', 'POST', new URLSearchParams({ 'bulk_id': bulkId }));
+                const data = await response.json();
+                showMessage(data.msg || data.error);
+
+                if (!data.error) {
+                    target.closest('tr').remove();
+                }
+            }
+        }
+    });
+
+    function updatebulkTable(bulkloadsdata) {
+        bulkTableBody.innerHTML = '';
+        bulkloadsdata.forEach((data, index) => {
+            const row = `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${data.bus_volt}</td>
+                    <td>${data.bus_no}</td>
+                    <td>${data.bus_name}</td>
+                    <td>${data.cons_name}</td>
+                    <td>${data.cons_cat}</td>
+                    <td>${data.discom}</td>
+                    <td>${data.contr_load}</td>
+                    <td>${data.bulkcmsndt}</td>
+                    <td class="text-center"><i class="bi bi-pencil-fill edit-icon" style="cursor: pointer;" data-bulk-id="${data.id}"></i></td>
+                    <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-bulk-id="${data.id}"></i></td>
+                </tr>`;
+            bulkTableBody.insertAdjacentHTML('beforeend', row);
+        });
+    }
+});
+
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const reacttype = document.getElementById('react_type');
+        const busIDType = document.getElementById('busIDType');
+        const lineIDType = document.getElementById('lineIDType');
+
+        reacttype.addEventListener('change', function() {
+            const value = this.value;
+
+            busIDType.classList.add('hidden');
+            lineIDType.classList.add('hidden');
+
+            if (value === 'Bus') {
+                busIDType.classList.remove('hidden');
+            } else if (value === 'Line') {
+                lineIDType.classList.remove('hidden');
+            }
+        });
+    });
+</script>
+
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const reactorForm = document.getElementById('reactorForm');
+    const savereactorButton = document.getElementById('savereactorButton');
+    const reactorTableBody = document.getElementById('reactorTableBody');
+    const messageDiv = document.getElementById('message');
+
+    function updateBusDropdown(voltageId, busNoId, busNameId) {
+        document.getElementById(voltageId).addEventListener('change', function() {
+            const selectedVoltage = this.value;
+            const busNoDropdown = document.getElementById(busNoId);
+            const busName = document.getElementById(busNameId);
+
+            busNoDropdown.innerHTML = '<option value="-- Select --">-- Select --</option>';
+
+            const filteredBusData = busdata.filter(bus => bus.bus_volt === selectedVoltage);
+
+            filteredBusData.forEach(bus => {
+                const option = document.createElement('option');
+                option.value = bus.bus_no;
+                option.textContent = bus.bus_no;
+                busNoDropdown.appendChild(option);
+            });
+
+            busNoDropdown.addEventListener('change', function() {
+                const selectedBusNo = this.value;
+                const selectedBus = filteredBusData.find(bus => bus.bus_no === selectedBusNo);
+                busName.value = selectedBus ? selectedBus.bus_name : '';
+            });
+        });
+    }
+
+    updateBusDropdown('react_voltage', 'react_bus', 'react_busname');
+
+
+    // Function to handle source-specific fields visibility
+    function handletypeChange(react_type) {
+        // Hide all fields initially
+        document.getElementById('busIDType').classList.add('hidden');
+        document.getElementById('lineIDType').classList.add('hidden');
+
+
+        // Show relevant fields based on selected source
+        if (react_type === 'Bus') {
+            document.getElementById('busIDType').classList.remove('hidden');
+        } else if (react_type === 'Line') {
+            document.getElementById('lineIDType').classList.remove('hidden');
+        }
+    }
+
+    // Handle form submission
+    reactorForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(reactorForm);
+        const response = await fetch('/save_reactor/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+            },
+        });
+
+        const data = await response.json();
+        messageDiv.innerText = data.msg || '';
+
+        setTimeout(() => {
+            messageDiv.innerText = '';
+        }, 3000);
+
+        if (data.reactordata) {
+            updatereactorTable(data.reactordata);
+            reactorForm.reset();
+            savereactorButton.innerHTML = 'Save <i class="bi bi-save-fill"></i>';
+            reactorForm.querySelector('#reactor_id').value = '';  // Clear the hidden id field
+        }
+    });
+
+    // Handle edit icon click
+    reactorTableBody.addEventListener('click', async (event) => {
+        if (event.target.classList.contains('edit-icon')) {
+            const reactorId = event.target.getAttribute('data-reactor-id');
+            if (!reactorId) {
+                messageDiv.innerText = 'Reactor ID is missing.';
+                return;
+            }
+
+            const response = await fetch('/edit_reactor/', {
+                method: 'POST',
+                body: new URLSearchParams({ 'reactor_id': reactorId }),
+                headers: {
+                    'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value,
+                },
+            });
+
+            const data = await response.json();
+            if (data.error) {
+                messageDiv.innerText = data.error;
+            } else {
+                // Populate form fields with returned data
+                document.getElementById('reactor_id').value = data.id;
+                document.getElementById('react_type').value = data.react_type || '';
+                document.getElementById('react_voltage').value = data.react_voltage || '';
+                document.getElementById('react_cap').value = data.react_cap || '';
+                document.getElementById('react_id').value = data.react_id || '';
+                document.getElementById('inlineRadio1').checked = (data.convertible === 'Yes');
+                document.getElementById('inlineRadio2').checked = (data.convertible === 'No');
+                document.getElementById('recVoltage').value = data.rated_voltage || '';
+                document.getElementById('reccmsndt').value = data.reccmsndt || '';
+
+                 // Manually trigger change event to update dropdowns
+        document.getElementById('react_voltage').dispatchEvent(new Event('change'));
+
+        document.getElementById('react_bus').value = data.bus_no;
+
+        document.getElementById('react_busname').value = data.bus_name;
+
+                // Clear all source-specific fields first
+                //document.getElementById('reactor_id').value = '';
+                document.getElementById('line_name').value = '';
+                document.getElementById('react_bus').value = '';
+                document.getElementById('react_busname').value = '';
+
+                // Set additional fields based on the source
+                if (data.react_type === 'Bus') {
+                    document.getElementById('trnf_id').value = data.trnf_id || '';
+                    document.getElementById('react_bus').value = data.react_bus || '';
+                    document.getElementById('react_busname').value = data.react_busname || '';
+                } else if (data.react_type === 'Line') {
+
+                    document.getElementById('trnf_id').value = data.trnf_id || '';
+                    document.getElementById('line_name').value = data.line_name || '';
+                }
+
+                // Update fields visibility based on the source
+                handletypeChange(data.react_type);
+
+                savereactorButton.innerHTML = 'Update <i class="bi bi-save-fill"></i>';
+            }
+        }
+    });
+
+    // Handle delete icon click
+    reactorTableBody.addEventListener('click', async (event) => {
+        if (event.target.classList.contains('delete-icon')) {
+            const reactorId = event.target.dataset.reactorId;
+            if (confirm('Are you sure you want to delete this Reactor?')) {
+                const response = await fetch('/delete_reactor/', {
+                    method: 'POST',
+                    body: new URLSearchParams({ 'reactor_id': reactorId }),
+                    headers: {
+                        'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value,
+                    },
+                });
+
+                const data = await response.json();
+                messageDiv.innerText = data.msg || data.error;
+
+                setTimeout(() => {
+                    messageDiv.innerText = '';
+                }, 3000);
+
+                if (!data.error) {
+                    const row = event.target.closest('tr');
+                    row.remove();
+                }
+            }
+        }
+    });
+
+    function updatereactorTable(reactordata) {
+        reactorTableBody.innerHTML = '';
+        reactordata.forEach((react, index) => {
+            const row = `<tr>
+                <td>${index + 1}</td>
+                <td>${react.react_id}</td>
+                <td>${react.react_type}</td>
+                <td>${react.react_voltage}</td>
+                <td>${react.react_bus || '--'}</td>
+                <td>${react.react_busname || react.line_name}</td>
+                <td>${react.react_cap }</td>
+                <td>${react.rated_voltage}</td>
+                <td>${react.convertible}</td>
+                <td>${react.reccmsndt}</td>
+                <td class="text-center"><i class="bi bi-pencil-fill edit-icon" style="cursor: pointer;" data-reactor-id="${react.id}"></i></td>
+                <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-reactor-id="${react.id}"></i></td>
+            </tr>`;
+            reactorTableBody.insertAdjacentHTML('beforeend', row);
+        });
+    }
+
+    // Initialize the visibility of source-specific fields on page load
+    handletypeChange(document.getElementById('react_type').value);
+});
+</script>
+<script>
+    document.getElementById('fbus_voltage').addEventListener('change', function() {
+    var selectedVoltage = this.value;
+    var tossVoltageSpan = document.getElementById('toss_voltage');
+    var hiddenTossVoltage = document.getElementById('hidden_toss_voltage');
+
+    // Update the text content of the toss_voltage span
+    tossVoltageSpan.textContent = selectedVoltage;
+    // Update the hidden input value
+    hiddenTossVoltage.value = selectedVoltage;
+});
+
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('showBusNo').addEventListener('click', function (event) {
+        event.preventDefault();  // Prevent the form from submitting normally
+
+        const stationName = document.getElementById('toss_name').value;
+        const voltage = document.getElementById('toss_voltage').innerText;
+
+        if (stationName && voltage) {
+            fetch(`/get_busnos/?station_name=${stationName}&voltage=${voltage}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        const busNoSelect = document.getElementById('to_busno');
+                        busNoSelect.innerHTML = '<option value="">-- Select --</option>'; // Clear current options
+                        data.bus_list.forEach(bus => {
+                            const option = document.createElement('option');
+                            option.value = bus.bus_no;
+                            option.text = bus.bus_no;
+                            option.dataset.busName = bus.bus_name;  // Store bus_name in a data attribute
+                            busNoSelect.appendChild(option);
+                        });
+                    } else if (data.status === 'error') {
+                        alert(data.message);  // Display the error message as an alert or show it on the page
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        } else {
+            alert('Please enter both SS Name and SS Voltage');
+        }
+    });
+
+    // Add an event listener to handle the selection of a bus number
+    document.getElementById('to_busno').addEventListener('change', function () {
+        const selectedOption = this.options[this.selectedIndex];
+        const busName = selectedOption.dataset.busName || '';  // Retrieve bus_name from the data attribute
+        document.getElementById('to_busname').value = busName;  // Set the bus name in the input field
+    });
+});
+
+</script>
+<script>
+     document.getElementById('to_busno').addEventListener('change', function () {
+    const selectedBusNo = this.value;
+    const selectedBus = data.find(bus => bus.bus_no === selectedBusNo);
+    if (selectedBus) {
+        document.getElementById('to_busname').value = selectedBus.bus_name;
+    } else {
+        document.getElementById('to_busname').value = '';
+    }
+});
+</script>
+<script>
+    $(document).ready(function() {
+  $("#toss_name").autocomplete({
+    source: function(request, response) {
+      $.ajax({
+        url: "/auto_stnname/",  // URL to your Django view
+        dataType: "json",
+        data: {
+          term: request.term  // Search term entered by the user
+        },
+        success: function(data) {
+          response(data);  // Return the list of matching station names
+        },
+        error: function() {
+          response([]);  // In case of error, return an empty list
+        }
+      });
+    },
+    minLength: 1,  // Minimum number of characters before triggering autocomplete
+    select: function(event, ui) {
+      // Optional: When a station name is selected, you can do something
+      // For example, submit the form or populate additional fields
+    }
+  });
+});
+
+</script>
+<script>
+
+// Lines
+document.addEventListener('DOMContentLoaded', () => {
+        const linesForm = document.getElementById('linesForm');
+        const savelinesButton = document.getElementById('savelinesButton');
+        const linesTableBody = document.getElementById('linesTableBody');
+        const messageDiv = document.getElementById('message');
+        const conductorDataTable = document.getElementById('conductordata').querySelector('tbody');
+        const addConductorButton = document.querySelector('.input-group-text.py-0');
+        const condTypeInput = document.getElementById('cond_type');
+        const condLengthInput = document.getElementById('cond_length');
+
+        let editingRow = null; // Variable to track the row being edited
+        let editingLinesId = null; // Variable to track the lines ID being edited
+
+
+
+        function updateBusDropdown(voltageId, busNoId, busNameId) {
+            document.getElementById(voltageId).addEventListener('change', function() {
+                const selectedVoltage = this.value;
+                const busNoDropdown = document.getElementById(busNoId);
+                const busName = document.getElementById(busNameId);
+
+                busNoDropdown.innerHTML = '<option value="-- Select --">-- Select --</option>';
+
+                const filteredBusData = busdata.filter(bus => bus.bus_volt === selectedVoltage);
+
+                filteredBusData.forEach(bus => {
+                    const option = document.createElement('option');
+                    option.value = bus.bus_no;
+                    option.textContent = bus.bus_no;
+                    busNoDropdown.appendChild(option);
+                });
+
+                busNoDropdown.addEventListener('change', function() {
+                    const selectedBusNo = this.value;
+                    const selectedBus = filteredBusData.find(bus => bus.bus_no === selectedBusNo);
+                    busName.value = selectedBus ? selectedBus.bus_name : '';
+                });
+            });
+        }
+
+        updateBusDropdown('fbus_voltage', 'fbus_no', 'fbus_name');
+
+        async function fetchData(url, method, body) {
+            return await fetch(url, {
+                method,
+                body,
+                headers: {
+                    'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value,
+                },
+            });
+        }
+
+        function showMessage(message) {
+            messageDiv.innerText = message;
+            setTimeout(() => {
+                messageDiv.innerText = '';
+            }, 3000);
+        }
+
+        function populateForm(data) {
+            document.getElementById('lines_id').value = data.id || '';
+            document.getElementById('fbus_voltage').value = data.fbus_voltage || '';
+            document.getElementById('fbus_no').value = data.fbus_no || '';
+            document.getElementById('fbus_name').value = data.fbus_name || '';
+            document.getElementById('toss_voltage').value = data.toss_voltage || '';
+            document.getElementById('toss_name').value = data.toss_name || '';
+            document.getElementById('to_busno').value = data.to_busno || '';
+            document.getElementById('to_busname').value = data.to_busname || '';
+            document.getElementById('to_length').value = data.to_length || '';
+            document.getElementById('cktno').value = data.cktno || '';
+            document.getElementById('category').value = data.category || '';
+            document.getElementById('jursidiction').value = data.jursidiction || '';
+            document.getElementById('linecmsndt').value = data.linecmsndt || '';
+
+            // Manually trigger change event to update dropdowns
+            document.getElementById('fbus_voltage').dispatchEvent(new Event('change'));
+
+            document.getElementById('fbus_no').value = data.fbus_no;
+
+            document.getElementById('fbus_name').value = data.fbus_name;
+
+
+            // Populate the conductor data table
+            conductorDataTable.innerHTML = '';
+            if (data.conductor_data) {
+                data.conductor_data.split(', ').forEach(cond => {
+                    const [condType, condLength] = cond.split('-');
+                    addConductorRow(condType, condLength);
+                });
+            }
+
+            savelinesButton.innerHTML = 'Update <i class="bi bi-save-fill"></i>';
+        }
+
+        function clearForm() {
+            linesForm.reset();
+            conductorDataTable.innerHTML = '';  // Clear conductor data table
+            document.getElementById('lines_id').value = '';
+            savelinesButton.innerHTML = 'Save <i class="bi bi-save-fill"></i>';
+            editingRow = null;  // Clear editing row reference
+            editingLinesId = null; // Clear editing lines ID reference
+        }
+
+        function addConductorRow(condType, condLength) {
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${condType}</td>
+                <td>${condLength}</td>
+                <td class="text-center"><i class="bi bi-pencil-fill edit-cond-icon" style="cursor: pointer;"></i></td>
+                <td class="text-center"><i class="bi bi-trash-fill delete-cond-icon" style="cursor: pointer;"></i></td>
+            `;
+            conductorDataTable.appendChild(newRow);
+        }
+
+        addConductorButton.addEventListener('click', function() {
+            const condType = condTypeInput.value;
+            const condLength = condLengthInput.value;
+
+            // Validate before adding the conductor data
+            if (condType !== "-- Select --" && condLength.trim() !== "") {
+                if (editingRow) {
+                    // Update existing row
+                    editingRow.cells[0].textContent = condType;
+                    editingRow.cells[1].textContent = condLength;
+                    editingRow = null;  // Clear editing row reference
+                } else {
+                    // Add new row
+                    addConductorRow(condType, condLength);
+                }
+
+                // Clear inputs after adding
+                condTypeInput.value = "-- Select --";
+                condLengthInput.value = "";
+            } else {
+                showMessage("Please select a conductor type and enter the length.");
+            }
+        });
+
+        conductorDataTable.addEventListener('click', function(event) {
+            const target = event.target;
+
+            if (target.classList.contains('edit-cond-icon')) {
+                const row = target.closest('tr');
+                const condType = row.cells[0].textContent;
+                const condLength = row.cells[1].textContent;
+
+                condTypeInput.value = condType;
+                condLengthInput.value = condLength;
+
+                // Set the row being edited
+                editingRow = row;
+            } else if (target.classList.contains('delete-cond-icon')) {
+                if (confirm('Are you sure you want to delete this conductor data?')) {
+                    target.closest('tr').remove();
+                }
+            }
+        });
+
+        linesForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(linesForm);
+
+            // Add conductor data to form data
+            const conductorData = [];
+            conductorDataTable.querySelectorAll('tr').forEach(row => {
+                const condType = row.cells[0].textContent;
+                const condLength = row.cells[1].textContent;
+                conductorData.push(`${condType}-${condLength}`);
+            });
+            formData.append('conductor_data', conductorData.join(', '));
+            formData.append('lines_id', editingLinesId || ''); // Include lines ID for update
+
+            const response = await fetchData('/save_lines/', 'POST', formData);
+            const data = await response.json();
+            showMessage(data.msg || '');
+
+            if (data.linesdata) {
+                updatelinesTable(data.linesdata);
+                clearForm();
+            }
+        });
+
+        linesTableBody.addEventListener('click', async (event) => {
+            const target = event.target;
+
+            if (target.classList.contains('edit-icon')) {
+                editingLinesId = target.dataset.linesId;
+                const response = await fetchData('/edit_lines/', 'POST', new URLSearchParams({ 'lines_id': editingLinesId }));
+                const data = await response.json();
+
+                if (data.error) {
+                    showMessage(data.error);
+                } else {
+                    populateForm(data);
+                }
+            } else if (target.classList.contains('delete-icon')) {
+                                // Function to open the delete modal with the line ID
+                        function openDeleteModal(lineId) {
+                            // Set the line ID in the hidden input field
+                            document.getElementById('linesid').value = lineId;
+                            // Show the modal
+                            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                            deleteModal.show();
+                        }
+
+                        // Event listener for delete icon clicks
+                        document.addEventListener('click', function (event) {
+                            const target = event.target;
+
+                            // Check if the clicked element is a delete icon
+                            if (target.classList.contains('delete-icon')) {
+                                const linesId = target.dataset.linesId;
+                                openDeleteModal(linesId);
+                            }
+                        });
+
+                        // Event listener for form submission within the modal
+                        document.getElementById('deleteForm').addEventListener('submit', async function (event) {
+                            event.preventDefault(); // Prevent the default form submission
+
+                            const modifiedDate = document.getElementById('modifieddt').value;
+                            const linesId = document.getElementById('linesid').value;
+
+                            if (!modifiedDate) {
+                                alert('Please select a modification date.');
+                                return;
+                            }
+
+                            try {
+                                // Send the delete request
+                                const response = await fetchData('/delete_lines/', 'POST', new URLSearchParams({
+                                    'lines_id': linesId,
+                                    'modifieddt': modifiedDate
+                                }));
+
+                                const data = await response.json();
+                                showMessage(data.msg || data.error);
+
+                                if (!data.error) {
+                                    // Remove the row from the table
+                                    const row = document.querySelector(`tr[data-lines-id="${linesId}"]`);
+                                    if (row) {
+                                        row.remove();
+                                    }
+                                    // Hide the modal
+                                    const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+                                    deleteModal.hide();
+                                }
+                            } catch (error) {
+                                console.error('Error during deletion:', error);
+                                showMessage('An error occurred while trying to delete the data.');
+                            }
+                        });
+
+
+            }
+        });
+
+        function updatelinesTable(linesdata) {
+            linesTableBody.innerHTML = '';
+            linesdata.forEach((lines, index) => {
+                const row = `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${lines.cktno}</td>
+                        <td>${lines.fbus_voltage}</td>
+                        <td>${lines.fbus_no}</td>
+                        <td>${lines.fbus_name}</td>
+                        <td>${lines.to_busno}</td>
+                        <td>${lines.to_busname}</td>
+                        <td>${lines.to_length}</td>
+                        <td>${lines.cond_type}</td>
+                        <td>${lines.cond_length}</td>
+                        <td>${lines.linecmsndt}</td>
+                        <td>${lines.pssc}</td>
+                        <td class="text-center"><i class="bi bi-pencil-fill edit-icon" data-lines-id="${lines.id}" style="cursor: pointer;"></i></td>
+                        <td class="text-center"><i class="bi bi-trash-fill delete-icon" style="cursor: pointer;" data-lines-id="${lines.id}"></i></td>
+                    </tr>
+                `;
+                linesTableBody.insertAdjacentHTML('beforeend', row);
+            });
+        }
+    });
+</script>
+<!-- Modal for Deletion Confirmation -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Delete Confirmation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="deleteForm" method="post">
+          {% csrf_token %}
+          <input type="hidden" id="linesid" name="lines_id">
+          <div class="mb-3">
+            <label for="modifieddt" class="form-label">Select Modification Date</label>
+            <input type="date" class="form-control" id="modifieddt" name="modifieddt" placeholder="Enter modification date">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 
 </html>

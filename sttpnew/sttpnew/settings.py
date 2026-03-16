@@ -85,6 +85,11 @@ WSGI_APPLICATION = 'sttpnew.wsgi.application'
 
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    },
+
+    'sttpnew': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgres',
         'USER': 'postgres',
@@ -96,7 +101,7 @@ DATABASES = {
         }
     }
 }
-
+#
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -144,3 +149,5 @@ MEDIA_ROOT = BASE_DIR / 'sttpapp/media'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+DATABASE_ROUTERS = ['sttpapp.routers.SttpappRouter']
