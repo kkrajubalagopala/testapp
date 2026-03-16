@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 
 
 from .models import owner_master, district_master, zone_master, circle_master, div_master, subdiv_master, \
-    substation_master, bus, transformer, capacitorbank, feeder, dgset, stntransformer, bulkloads
+    substation_master, bus, transformer, capacitorbank, feeder, dgset, stntransformer, bulkloads, lines, reactor
 
 
 # Create your views here.
@@ -21,6 +21,20 @@ class home(View):
         context = {'ownerdata': ownerdata,'distdata':distdata,'zonedata':zonedata,'circldata':circldata,'divdata':divdata,'subdivdata':subdivdata
                    ,'substndata':substndata}
         return render(request, 'mtoplogy.html', context)
+
+class discoms(View):
+    def get(self, request):
+        ownerdata = owner_master.objects.all()
+        distdata = district_master.objects.all()
+        zonedata = zone_master.objects.all()
+        circldata = circle_master.objects.all()
+        divdata = div_master.objects.all()
+        subdivdata = subdiv_master.objects.all()
+        substndata = substation_master.objects.all()
+        context = {'ownerdata': ownerdata,'distdata':distdata,'zonedata':zonedata,'circldata':circldata,'divdata':divdata,'subdivdata':subdivdata
+                   ,'substndata':substndata}
+        return render(request, 'discoms.html', context)
+
 
 class get_circles(View):
     def get(self,request, zone_id):
@@ -65,30 +79,30 @@ class get_stnname(View):
         divdata = div_master.objects.all()
         subdivdata = subdiv_master.objects.all()
         substndata = substation_master.objects.all()
-        #busdata = bus.objects.all()
         trfdata = transformer.objects.all()
-        #feederdata = feeder.objects.all()
-        #dgsetdata = dgset.objects.all()
         search_term = request.POST.get('stn_name')
         station_id = request.POST.get('station_id')
-        bus_id = request.POST.get('id')
+
 
         if 'find' in request.POST:
             if search_term:
                 data = substation_master.objects.filter(stn_name=search_term).first()
                 if data:
-                    busdata = bus.objects.filter(stn_name=search_term)
-                    trfdata = transformer.objects.filter(stn_name=search_term)
-                    capdata = capacitorbank.objects.filter(stn_name=search_term)
-                    feederdata = feeder.objects.filter(stn_name=search_term)
-                    dgsetdata = dgset.objects.filter(stn_name=search_term)
-                    stntrfdata = stntransformer.objects.filter(stn_name=search_term)
-                    bulkloadsdata = bulkloads.objects.filter(stn_name=search_term)
+                    busdata = bus.objects.filter(stn_name=search_term, deleted=False)
+                    trfdata = transformer.objects.filter(stn_name=search_term, deleted=False)
+                    capdata = capacitorbank.objects.filter(stn_name=search_term, deleted=False)
+                    feederdata = feeder.objects.filter(stn_name=search_term, deleted=False)
+                    dgsetdata = dgset.objects.filter(stn_name=search_term, deleted=False)
+                    stntrfdata = stntransformer.objects.filter(stn_name=search_term, deleted=False)
+                    bulkloadsdata = bulkloads.objects.filter(stn_name=search_term, deleted=False)
+                    linesdata = lines.objects.filter(stn_name=search_term, deleted=False)
+                    reactordata = reactor.objects.filter(stn_name=search_term, deleted=False)
+
                     selected_voltages = data.voltages.split(',') if data.voltages else []
                     context = {'stn_name': search_term,'ownerdata': ownerdata,'distdata': distdata,'zonedata': zonedata,'circldata': circldata,
                         'divdata': divdata,'subdivdata': subdivdata,'substndata': substndata,'data': data,'selected_voltages': selected_voltages,
                                'busdata':busdata,'trfdata':trfdata,'capdata':capdata,'feederdata':feederdata,'dgsetdata':dgsetdata,'stntrfdata':stntrfdata,
-                               'bulkloadsdata':bulkloadsdata}
+                               'bulkloadsdata':bulkloadsdata,'linesdata':linesdata,'reactordata':reactordata}
                 else:
                     msg = 'No data found for the given station name'
                     context = {'ownerdata': ownerdata,'distdata': distdata,'zonedata': zonedata,'circldata': circldata,
@@ -148,65 +162,18 @@ class get_stnname(View):
                 'divdata': divdata,'subdivdata': subdivdata,'substndata': substndata,'trfdata':trfdata }
             return render(request, 'mtoplogy.html', context)
 
-
-        if 'save_dgset' in request.POST:
-            stn_name = request.POST.get('stn_name')
-            dgset_id = request.POST.get('dgset_id')
-            availability = request.POST.get('availability')
-            rating = request.POST.get('rating')
-
-            dgset_obj = dgset.objects.create(stn_name=stn_name,dgset_id=dgset_id,availability=availability,rating=rating)
-
-            msg = 'DGset data saved successfully'
-            dgsetdata = dgset.objects.filter(stn_name=stn_name)
-            context = {'msg':msg,'dgset_obj':dgset_obj,'dgsetdata':dgsetdata,'stn_name':stn_name}
-            return render(request,'mtoplogy.html',context)
-
-        if 'save_stntrf' in request.POST:
-            stn_name = request.POST.get('stn_name')
-            prim_volt = request.POST.get('prim_volt')
-            sec_volt = request.POST.get('sec_volt')
-            rating = request.POST.get('rating')
-            stntrf_id = request.POST.get('stntrf_id')
-            source = request.POST.get('source')
-            trnf_id = request.POST.get('trnf_id')
-            teritory_volt = request.POST.get('teritory_volt')
-            feeder_name = request.POST.get('feeder_name')
-            discomss = request.POST.get('discomss')
-            length_feeder = request.POST.get('length_feeder')
-            feed_type = request.POST.get('feed_type')
-            feed_vol = request.POST.get('feed_vol')
-            bus_id = request.POST.get('bus_id')
-            trftype = request.POST.get('trftype')
-
-            stntrf_obj = stntransformer.objects.create(stn_name=stn_name,prim_volt=prim_volt,sec_volt=sec_volt,rating=rating,stntrf_id=stntrf_id,source=source,
-                                                       trnf_id=trnf_id,teritory_volt=teritory_volt,feeder_name=feeder_name,discomss=discomss,length_feeder=length_feeder,
-                                                       feed_type=feed_type,feed_vol=feed_vol,bus_id=bus_id,trftype=trftype)
-            msg = 'Station Transformer data saved successfully'
-            stntrfdata = stntransformer.objects.filter(stn_name=stn_name)
-            context = {'msg':msg,'stntrf_obj':stntrf_obj,'stntrfdata':stntrfdata,'trfdata':trfdata,'stn_name':stn_name}
-            return render(request,'mtoplogy.html',context)
-
-        if 'save_bulkloads' in request.POST:
-            stn_name = request.POST.get('stn_name')
-            bus_volt = request.POST.get('bus_volt')
-            bus_no = request.POST.get('bus_no')
-            bus_name = request.POST.get('bus_name')
-            cons_name = request.POST.get('cons_name')
-            cons_cat = request.POST.get('cons_cat')
-            discom = request.POST.get('discom')
-            contr_load = request.POST.get('contr_load')
-
-            bulkloads_obj = bulkloads.objects.create(stn_name=stn_name,bus_volt=bus_volt,bus_no=bus_no,bus_name=bus_name,cons_name=cons_name,
-                                                     cons_cat=cons_cat,discom=discom,contr_load=contr_load)
-            msg = 'Bulkloads data saved successfully'
-            bulkloadsdata = bulkloads.objects.filter(stn_name=stn_name)
-            context = {'msg':msg,'bulkloads_obj':bulkloads_obj,'bulkloadsdata':bulkloadsdata,'stn_name':stn_name}
-            return render(request,'mtoplogy.html',context)
-
-
         return render(request, 'mtoplogy.html')
 
+class auto_stnname(View):
+    def get(self, request):
+        term = request.GET.get('term', '')
+        if term:
+            stnname = substation_master.objects.filter(stn_name__icontains=term).values_list('stn_name', flat=True).distinct()
+        else:
+            stnname = []
+
+        response_data = list(stnname)
+        return JsonResponse(response_data, safe=False)
 
 class save_bus(View):
     def post(self, request):
@@ -216,6 +183,7 @@ class save_bus(View):
         bus_name = request.POST.get('bus_name')
         bus_code = request.POST.get('bus_code')
         bus_volt = request.POST.get('bus_volt')
+        buscmsndt = request.POST.get('buscmsndt')
 
         if bus_id:  # If bus_id is present, update the existing record
             try:
@@ -225,14 +193,15 @@ class save_bus(View):
                 bus_obj.bus_code = bus_code
                 bus_obj.bus_name = bus_name
                 bus_obj.bus_volt = bus_volt
+                bus_obj.buscmsndt = buscmsndt
                 bus_obj.save()
                 msg = 'Bus details updated successfully'
             except bus.DoesNotExist:
                 return JsonResponse({'error': 'Bus not found'}, status=404)
         else:  # Otherwise, create a new record
-            bus_obj = bus.objects.create(stn_name=stn_name,bus_no=bus_no,bus_code=bus_code,bus_name=bus_name,bus_volt=bus_volt            )
+            bus_obj = bus.objects.create(stn_name=stn_name,bus_no=bus_no,bus_code=bus_code,bus_name=bus_name,bus_volt=bus_volt,buscmsndt=buscmsndt)
             msg = 'Bus details saved successfully'
-        busdata = list(bus.objects.filter(stn_name=stn_name).values())  # Convert queryset to list of dictionaries
+        busdata = list(bus.objects.filter(stn_name=stn_name,deleted=False).values())  # Convert queryset to list of dictionaries
         return JsonResponse({'msg': msg, 'busdata': busdata})
 
 
@@ -246,6 +215,7 @@ class edit_bus(View):
                 'bus_code': bus_obj.bus_code,
                 'bus_name': bus_obj.bus_name,
                 'bus_volt': bus_obj.bus_volt,
+                'buscmsndt': bus_obj.buscmsndt,
             }
             return JsonResponse(response_data)
         except bus.DoesNotExist:
@@ -256,7 +226,8 @@ class delete_bus(View):
         bus_id = request.POST.get('bus_id')
         try:
             bus_obj = bus.objects.get(id=bus_id)
-            bus_obj.delete()
+            bus_obj.deleted = True
+            bus_obj.save()
             return JsonResponse({'msg': 'Bus deleted successfully'})
         except bus.DoesNotExist:
             return JsonResponse({'error': 'Bus not found'}, status=404)
@@ -276,6 +247,7 @@ class save_trf(View):
         sec_busno = request.POST.get('sec_busno')
         prim_busname = request.POST.get('prim_busname')
         sec_busname = request.POST.get('sec_busname')
+        trfcmsndt = request.POST.get('trfcmsndt')
 
         if trans_id:  # If trans_id is present, update the existing record
             try:
@@ -291,6 +263,7 @@ class save_trf(View):
                 trf_obj.sec_busno = sec_busno
                 trf_obj.prim_busname = prim_busname
                 trf_obj.sec_busname = sec_busname
+                trf_obj.trfcmsndt = trfcmsndt
                 trf_obj.save()
                 msg = 'Transformer details updated successfully'
             except transformer.DoesNotExist:
@@ -301,11 +274,11 @@ class save_trf(View):
                 trf_id=trf_id, trf_title=trf_title,
                 prim_voltage=prim_voltage, prim_busno=prim_busno,
                 sec_voltage=sec_voltage, sec_busno=sec_busno,
-                prim_busname=prim_busname, sec_busname=sec_busname
+                prim_busname=prim_busname, sec_busname=sec_busname,trfcmsndt=trfcmsndt
             )
             msg = 'Transformer details saved successfully'
 
-        trfdata = list(transformer.objects.filter(stn_name=stn_name).values())
+        trfdata = list(transformer.objects.filter(stn_name=stn_name,deleted=False).values())
         return JsonResponse({'msg': msg, 'trfdata': trfdata})
 
 class edit_trf(View):
@@ -324,6 +297,7 @@ class edit_trf(View):
                 'sec_busno': trf_obj.sec_busno,
                 'prim_busname': trf_obj.prim_busname,
                 'sec_busname': trf_obj.sec_busname,
+                'trfcmsndt': trf_obj.trfcmsndt,
             }
             return JsonResponse(response_data)
         except transformer.DoesNotExist:
@@ -334,7 +308,8 @@ class delete_trf(View):
         trans_id = request.POST.get('trans_id')
         try:
             trf_obj = transformer.objects.get(id=trans_id)
-            trf_obj.delete()
+            trf_obj.deleted = True
+            trf_obj.save()
             return JsonResponse({'msg': 'Transformer deleted successfully'})
         except transformer.DoesNotExist:
             return JsonResponse({'error': 'Transformer not found'}, status=404)
@@ -349,6 +324,7 @@ class save_cap(View):
         cap_rating = request.POST.get('cap_rating')
         cap_id = request.POST.get('cap_id')
         rated_voltage = request.POST.get('rated_voltage')
+        capcmsndt = request.POST.get('capcmsndt')
 
         if capbnk_id:
             try:
@@ -360,6 +336,7 @@ class save_cap(View):
                 cap_obj.cap_rating = cap_rating
                 cap_obj.cap_id = cap_id
                 cap_obj.rated_voltage = rated_voltage
+                cap_obj.capcmsndt = capcmsndt
                 cap_obj.save()
                 msg = 'Capacitor Bank data updated successfully'
             except capacitorbank.DoesNotExist:
@@ -372,11 +349,12 @@ class save_cap(View):
                 bus_name=bus_name,
                 cap_rating=cap_rating,
                 cap_id=cap_id,
-                rated_voltage=rated_voltage
+                rated_voltage=rated_voltage,
+                capcmsndt=capcmsndt,
             )
             msg = 'Capacitor Bank details saved successfully'
 
-        capdata = list(capacitorbank.objects.filter(stn_name=stn_name).values())
+        capdata = list(capacitorbank.objects.filter(stn_name=stn_name,deleted=False).values())
         return JsonResponse({'msg': msg, 'capdata': capdata})
 
 class edit_cap(View):
@@ -392,6 +370,7 @@ class edit_cap(View):
                 'cap_rating': cap_obj.cap_rating,
                 'cap_id': cap_obj.cap_id,
                 'rated_voltage': cap_obj.rated_voltage,
+                'capcmsndt': cap_obj.capcmsndt,
             }
             return JsonResponse(response_data)
         except capacitorbank.DoesNotExist:
@@ -402,7 +381,8 @@ class delete_cap(View):
         capbnk_id = request.POST.get('capbnk_id')
         try:
             cap_obj = capacitorbank.objects.get(id=capbnk_id)
-            cap_obj.delete()
+            cap_obj.deleted = True
+            cap_obj.save()
             return JsonResponse({'msg': 'Capacitor Bank data deleted successfully'})
         except capacitorbank.DoesNotExist:
             return JsonResponse({'error': 'Capacitor Bank not found'}, status=404)
