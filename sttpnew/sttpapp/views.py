@@ -155,7 +155,7 @@ class get_stnname(View):
                     commission_dt=commission_dt,owner_list=owner_list,owner_code=owner_code,zone=zone,circle=circle,division=division,
                     sub_div=sub_div,lattitude=lattitude,longitude=longitude,ssid=ssid,construction=construction,updated_dt=updated_dt,
                     remarks=remarks)
-                msg = 'Station details saved successfully'
+                msg = 'Station details are saved successfully'
 
             substndata = substation_master.objects.all()
             context = {'msg': msg,'ownerdata': ownerdata,'distdata': distdata,'zonedata': zonedata,'circldata': circldata,
